@@ -4,10 +4,10 @@ import {
   Flex,
   Avatar,
   HStack,
-  Link,
   IconButton,
   Button,
   Menu,
+  Link,
   MenuButton,
   MenuList,
   MenuItem,
@@ -17,6 +17,8 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
+import { AiFillMedicineBox } from "react-icons/ai";
+// import { Link } from "react-router-dom";
 
 const Links = [
   { menu: "Home", url: "/" },
@@ -25,12 +27,12 @@ const Links = [
 
 const NavLink = ({ menu, url }) => (
   <Link
-    px={2}
-    py={1}
+    px={3}
+    py={2}
     rounded={"md"}
     _hover={{
       textDecoration: "none",
-      bg: useColorModeValue("gray.200", "gray.700"),
+      bg: useColorModeValue("red.800", "red.900"),
     }}
     href={url}
   >
@@ -43,7 +45,7 @@ export default function Navbar() {
 
   return (
     <>
-      <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
+      <Box bg={useColorModeValue("red.500", "red.900")} px={4}>
         <Flex
           h={16}
           alignItems={"center"}
@@ -58,11 +60,26 @@ export default function Navbar() {
             onClick={isOpen ? onClose : onOpen}
           />
           <HStack spacing={8} alignItems={"center"}>
-            <Box>Logo</Box>
+            <Box
+              display="flex"
+              flexDirection="row"
+              alignItems="center"
+              justifyContent="center"
+              fontSize="1.2rem"
+              color="white"
+            >
+              <AiFillMedicineBox />
+              <Box ml={2} fontWeight="600">
+                {" "}
+                Pharmastore
+              </Box>
+            </Box>
             <HStack
               as={"nav"}
               spacing={4}
               display={{ base: "none", md: "flex" }}
+              color="white"
+              fontWeight="600"
             >
               {Links.map((link, index) => (
                 <NavLink key={index} url={link.url} menu={link.menu}></NavLink>
@@ -96,7 +113,7 @@ export default function Navbar() {
         </Flex>
 
         {isOpen ? (
-          <Box pb={4} display={{ md: "none" }}>
+          <Box pb={4} display={{ md: "none" }} color="white">
             <Stack as={"nav"} spacing={4}>
               {Links.map((link, index) => (
                 <NavLink key={index} url={link.url} menu={link.menu} />

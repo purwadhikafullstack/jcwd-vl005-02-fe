@@ -389,11 +389,7 @@ function SortDrawer({ sort, setSort }) {
                     control={<Radio />}
                     label="Sold"
                   />
-                  <FormControlLabel
-                    value="sold"
-                    control={<Radio />}
-                    label="Sold"
-                  />
+
                   <FormControlLabel
                     value="stock"
                     control={<Radio />}
