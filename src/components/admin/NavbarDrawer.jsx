@@ -38,12 +38,7 @@ import { GiMedicines } from "react-icons/gi";
 import { IconType } from "react-icons";
 import { ReactText } from "react";
 
-interface LinkItemProps {
-  name: string;
-  icon: IconType;
-  url: string;
-}
-const LinkItems: Array<LinkItemProps> = [
+const LinkItems = [
   { name: "Dashboard", icon: MdDashboard, url: "/admin" },
   { name: "Products", icon: GiMedicines, url: "/admin/products" },
   { name: "Categories", icon: AiFillMedicineBox, url: "/admin/categories" },
@@ -51,7 +46,7 @@ const LinkItems: Array<LinkItemProps> = [
   { name: "Settings", icon: FiSettings, url: "/admin" },
 ];
 
-export default function NavbarDrawer({ children }: { children: ReactNode }) {
+export default function NavbarDrawer({ children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box minH="100vh" bg={useColorModeValue("white", "gray.900")}>
@@ -81,11 +76,7 @@ export default function NavbarDrawer({ children }: { children: ReactNode }) {
   );
 }
 
-interface SidebarProps extends BoxProps {
-  onClose: () => void;
-}
-
-const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+const SidebarContent = ({ onClose, ...rest }) => {
   return (
     <Box
       transition="3s ease"
@@ -124,12 +115,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   );
 };
 
-interface NavItemProps extends FlexProps {
-  icon: IconType;
-  children: ReactText;
-  url: string;
-}
-const NavItem = ({ icon, children, url, ...rest }: NavItemProps) => {
+const NavItem = ({ icon, children, url, ...rest }) => {
   return (
     <Link
       href={url}
@@ -165,10 +151,7 @@ const NavItem = ({ icon, children, url, ...rest }: NavItemProps) => {
   );
 };
 
-interface MobileProps extends FlexProps {
-  onOpen: () => void;
-}
-const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+const MobileNav = ({ onOpen, ...rest }) => {
   return (
     <Flex
       ml={{ base: 0, md: 60 }}

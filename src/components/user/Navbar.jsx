@@ -71,7 +71,7 @@ export default function Navbar(props) {
   return (
     <>
       {token ? (
-        <Box bg={useColorModeValue("red.500", "red.900")} px={4}>
+        <Box bg="red.500" px={4}>
           <Flex
             h={16}
             alignItems={"center"}
