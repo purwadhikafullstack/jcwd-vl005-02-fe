@@ -66,6 +66,8 @@ export default function Navbar(props) {
     dispatch({ type: "LOGOUT" });
     navigate("/login");
   };
+
+  
   const color = useColorModeValue;
 
   return (
