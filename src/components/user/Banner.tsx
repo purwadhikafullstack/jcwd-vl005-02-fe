@@ -12,7 +12,10 @@ import {
   createIcon,
   IconProps,
   useColorModeValue,
+  UnorderedList,
+  ListItem,
 } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 
 export default function Banner() {
   return (
@@ -43,18 +46,26 @@ export default function Banner() {
                 zIndex: -1,
               }}
             >
-              Write once,
+              Genuine medicine,
             </Text>
             <br />
             <Text as={"span"} color={"red.400"}>
-              use everywhere!
+              fast delivery!
             </Text>
           </Heading>
           <Text color={"gray.500"}>
-            Snippy is a rich coding snippets app that lets you create your own
-            code snippets, categorize them, and even sync them in the cloud so
-            you can use them anywhere. All that is free!
+            Because ordering medicines online need not be complicated but rather
+            a cakewalk. And at Pharmastore we ensure that. All you need to do
+            is:
+            <UnorderedList pt={5}>
+              <ListItem>Browse through our wide variety of products</ListItem>
+              <ListItem>
+                Add products to your cart and complete the payment.
+              </ListItem>
+              <ListItem>Voila! Your order will be on its way to you.</ListItem>
+            </UnorderedList>
           </Text>
+
           <Stack
             spacing={{ base: 4, sm: 6 }}
             direction={{ base: "column", sm: "row" }}
@@ -68,7 +79,9 @@ export default function Banner() {
               bg={"red.400"}
               _hover={{ bg: "red.500" }}
             >
-              Get started
+              <Link style={{ padding: "10px" }} to="/shop">
+                Shop now
+              </Link>
             </Button>
             <Button
               rounded={"full"}
@@ -77,7 +90,7 @@ export default function Banner() {
               px={6}
               leftIcon={<PlayIcon h={4} w={4} color={"gray.300"} />}
             >
-              How It Works
+              Who we are
             </Button>
           </Stack>
         </Stack>
@@ -105,7 +118,7 @@ export default function Banner() {
             width={"full"}
             overflow={"hidden"}
           >
-            <IconButton
+            {/* <IconButton
               aria-label={"Play Button"}
               variant={"ghost"}
               _hover={{ bg: "transparent" }}
@@ -116,7 +129,7 @@ export default function Banner() {
               left={"50%"}
               top={"50%"}
               transform={"translateX(-50%) translateY(-50%)"}
-            />
+            /> */}
             <Image
               alt={"Hero Image"}
               fit={"cover"}
@@ -124,7 +137,7 @@ export default function Banner() {
               w={"100%"}
               h={"100%"}
               src={
-                "https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=800&q=80"
+                "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
               }
             />
           </Box>

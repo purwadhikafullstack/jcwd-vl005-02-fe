@@ -3,22 +3,15 @@ import { useSelector, useDispatch } from "react-redux";
 import Axios from "axios";
 import "./App.css";
 import { ChakraProvider } from "@chakra-ui/react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import UserHome from "./pages/user/UserHome";
-import Navbar from "./components/user/Navbar";
-import Footer from "./components/user/Footer";
-import UserProducts from "./pages/user/UserProducts.";
-import NavbarDrawer from "./components/admin/NavbarDrawer.tsx";
-import AppRoutes from "./Routes";
-import UserLogin from "./pages/user/userLogin";
-import ForgotPassword from "./pages/user/forgotPassword";
-import ResetPassword from "./pages/user/resetPassword";
+import { Route, Routes } from "react-router-dom";
+import AdminRouter from "./AdminRouter";
+import UserRouter from "./UserRouter";
 
 
 const API_URL = "http://localhost:5000";
 function App() {
   // global state
-  const global = useSelector(state => state);
+  const global = useSelector((state) => state);
   console.log("Global:", global);
   const dispatch = useDispatch();
 
@@ -44,18 +37,10 @@ function App() {
   }, []);
   return (
     <ChakraProvider>
-      {/* <NavbarDrawer children={<AppRoutes />} /> */}
-      <Navbar></Navbar>
-      
-        <Routes>
-          <Route path="/" element={<UserHome />}></Route>
-          <Route path="/shop" element={<UserProducts />}></Route>
-          <Route path="/login" element={<UserLogin />}></Route>
-          <Route path="/forgotpassword" element={<ForgotPassword />}></Route>
-          <Route path="/resetpassword/:token"  element={<ResetPassword />}></Route>
-        </Routes>
-   
-      <Footer></Footer>
+      <Routes>
+        <Route path="/admin/*" element={<AdminRouter />} />
+        <Route path="/*" element={<UserRouter />} />
+      </Routes>
     </ChakraProvider>
   );
 }

@@ -38,10 +38,10 @@ function createData(id, name) {
 
 const headCells = [
   {
-    id: "id",
+    id: "no",
     numeric: true,
     disablePadding: true,
-    label: "ID",
+    label: "No.",
   },
   {
     id: "name",
@@ -338,7 +338,7 @@ function EnhancedTable(props) {
                           padding="none"
                           sx={{ margin: "auto", textAlign: "center" }}
                         >
-                          {row.id}
+                          {index + 1 + rowsPerPage * page}
                         </TableCell>
                         <TableCell align="center">{row.name}</TableCell>
 

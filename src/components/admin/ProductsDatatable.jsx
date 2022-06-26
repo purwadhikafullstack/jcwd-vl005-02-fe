@@ -102,10 +102,10 @@ function createData(
 
 const headCells = [
   {
-    id: "id",
+    id: "no",
     numeric: true,
     disablePadding: true,
-    label: "ID",
+    label: "No.",
   },
   {
     id: "name",
@@ -389,11 +389,7 @@ function SortDrawer({ sort, setSort }) {
                     control={<Radio />}
                     label="Sold"
                   />
-                  <FormControlLabel
-                    value="sold"
-                    control={<Radio />}
-                    label="Sold"
-                  />
+
                   <FormControlLabel
                     value="stock"
                     control={<Radio />}
@@ -707,7 +703,7 @@ function ProductsDatatable(props) {
                           padding="none"
                           sx={{ paddingLeft: "20px" }}
                         >
-                          {row.id}
+                          {index + 1 + rowsPerPage * page}
                         </TableCell>
                         <TableCell align="center">{row.name}</TableCell>
                         <TableCell align="center">
