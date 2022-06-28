@@ -34,6 +34,7 @@ export default function VerificationPage() {
       ) : (
         <Box display="inline-block">
           <Flex
+          // test
             flexDirection="column"
             justifyContent="center"
             alignItems="center"
