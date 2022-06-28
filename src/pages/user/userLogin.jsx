@@ -20,15 +20,17 @@ import {
   FormLabel,
   InputGroup,
   InputRightElement,
-  useToast
+  useToast,
+  useColorModeValue,
+  Image,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 import { Link as ReactLink } from "react-router-dom";
-
-const API_URL = "http://localhost:5000";
+import { color } from "@mui/system";
 
 export default function UserLogin() {
+  const API_URL = process.env.REACT_APP_URL_API;
   const username = useRef("");
   const password = useRef("");
   const [loading, setLoading] = useState(false);
@@ -42,9 +44,9 @@ export default function UserLogin() {
     setLoading(true);
     Axios.post(API_URL + `/users/login`, {
       username: username.current.value,
-      password: password.current.value
+      password: password.current.value,
     })
-      .then(respond => {
+      .then((respond) => {
         console.log(respond.data);
         setLoading(false);
         // if success =>
@@ -53,7 +55,7 @@ export default function UserLogin() {
           // description:"Email & password doesn't found. ",
           status: "success",
           duration: 3000,
-          isClosable: true
+          isClosable: true,
         });
         console.log(respond.data.token);
         // save token to local storage
@@ -68,18 +70,18 @@ export default function UserLogin() {
           title: "Login Success",
           status: "success",
           duration: 3000,
-          isClosable: true
+          isClosable: true,
         });
         navigate("/");
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
         toast({
           title: "Error",
           description: error.response.data,
           status: "error",
           duration: 3000,
-          isClosable: true
+          isClosable: true,
         });
         setLoading(false);
       });
@@ -87,6 +89,7 @@ export default function UserLogin() {
 
   const token = localStorage.getItem("token");
   if (token) return <Navigate to="/" />;
+  const color = useColorModeValue;
 
   return (
     <Box position={"relative"}>
@@ -102,41 +105,47 @@ export default function UserLogin() {
             lineHeight={1.1}
             fontSize={{ base: "3xl", sm: "4xl", md: "5xl", lg: "6xl" }}
           >
-            Pharmacy Store 
+            Wellcome to Pharmastore Medical{" "}
             <Text
               as={"span"}
-              bgGradient="linear(to-r, red.400,pink.400)"
+              bgGradient="linear(to-r, red.500,red.500)"
+              bgClip="text"
+            >
+              &
+            </Text>{" "}
+            Health
+            <Text
+              as={"span"}
+              bgGradient="linear(to-r, red.400,red.400)"
               bgClip="text"
             ></Text>{" "}
           </Heading>
           <Stack direction={"row"} spacing={4} align={"center"}></Stack>
         </Stack>
         <Stack
-          bg={"gray.50"}
+          // bg={"gray.50"}
+          bg={color("white", "gray.700")}
           rounded={"xl"}
           p={{ base: 4, sm: 6, md: 8 }}
           spacing={{ base: 8 }}
           maxW={{ lg: "lg" }}
+          boxShadow={"lg"}
         >
           <Stack spacing={4}>
             <Heading
-              color={"gray.800"}
+              color={color("black", "white")}
               lineHeight={1.1}
               fontSize={{ base: "2xl", sm: "3xl", md: "4xl" }}
             >
               Sign in to your account
               <Text
                 as={"span"}
-                bgGradient="linear(to-r, red.400,pink.400)"
+                bgGradient="linear(to-r, red.400,red.400)"
                 bgClip="text"
               >
                 !
               </Text>
             </Heading>
-            {/* <Text color={"gray.500"} fontSize={{ base: "sm", sm: "md" }}>
-              We’re looking for amazing engineers just like you! Become a part
-              of our rockstar engineering team and skyrocket your career!
-            </Text> */}
           </Stack>
           <Box as={"form"} mt={10}>
             <Stack spacing={4}>
@@ -155,7 +164,7 @@ export default function UserLogin() {
                     <Button
                       variant={"ghost"}
                       onClick={() =>
-                        setShowPassword(showPassword => !showPassword)
+                        setShowPassword((showPassword) => !showPassword)
                       }
                     >
                       {showPassword ? <ViewIcon /> : <ViewOffIcon />}
@@ -167,9 +176,9 @@ export default function UserLogin() {
             <Stack
               direction={{ base: "column", sm: "row" }}
               align={"start"}
-              justify={"flex-end"}
+              justify={"space-between"}
             >
-              {/* <Checkbox>Remember me</Checkbox> */}
+              <Checkbox>Remember me</Checkbox>
               <Link as={ReactLink} to="/forgotpassword" color={"blue.400"}>
                 Forgot password?
               </Link>
@@ -178,12 +187,9 @@ export default function UserLogin() {
               fontFamily={"heading"}
               mt={8}
               w={"full"}
-              bgGradient="linear(to-r, red.400,pink.400)"
+              bg={"red.400"}
               color={"white"}
-              _hover={{
-                bgGradient: "linear(to-r, red.400,pink.400)",
-                boxShadow: "xl"
-              }}
+              _hover={{ bg: "red.500" }}
               onClick={onButtonLogin}
             >
               Login
@@ -202,12 +208,12 @@ export default function UserLogin() {
   );
 }
 
-export const Blur = IconProps => {
+export const Blur = (IconProps) => {
   return (
     <Icon
       width={useBreakpointValue({ base: "100%", md: "40vw", lg: "30vw" })}
       zIndex={useBreakpointValue({ base: -1, md: -1, lg: 0 })}
-      height="560px"
+      height="750px"
       viewBox="0 0 528 560"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
