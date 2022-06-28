@@ -11,15 +11,14 @@ import {
   useColorModeValue,
   InputGroup,
   useToast,
-  InputRightElement
+  InputRightElement,
 } from "@chakra-ui/react";
 
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 // const API_URL = process.env.REACT_APP_URL_API;
 
 export default function ResetPassword() {
-  // const API_URL = process.env.REACT_APP_URL_API;
-  const API_URL = "http://localhost:5000";
+  const API_URL = process.env.REACT_APP_URL_API;
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const toast = useToast();
@@ -39,23 +38,22 @@ export default function ResetPassword() {
         description: "Fill in all the form",
         status: "error",
         duration: 3000,
-        isClosable: true
+        isClosable: true,
       });
     }
 
     const newUser = {
       email: email.current.value,
       password: password.current.value,
-      repassword: repassword.current.value
+      repassword: repassword.current.value,
     };
     console.log(newUser);
 
     setLoading(true);
-    Axios.post(API_URL + `/users/resetpassword`, newUser).then(respond => {
+    Axios.post(API_URL + `/users/resetpassword`, newUser).then((respond) => {
       console.log("Respond:", respond.data);
 
       // reset state
-      
 
       email.current.value = "";
       password.current.value = "";
@@ -65,7 +63,7 @@ export default function ResetPassword() {
         description: respond.data,
         status: "success",
         duration: 3000,
-        isClosable: true
+        isClosable: true,
       });
 
       setLoading(false);
@@ -108,7 +106,7 @@ export default function ResetPassword() {
             <InputRightElement h={"full"}>
               <Button
                 variant={"ghost"}
-                onClick={() => setShowPassword(showPassword => !showPassword)}
+                onClick={() => setShowPassword((showPassword) => !showPassword)}
               >
                 {showPassword ? <ViewIcon /> : <ViewOffIcon />}
               </Button>
@@ -122,7 +120,7 @@ export default function ResetPassword() {
             <InputRightElement h={"full"}>
               <Button
                 variant={"ghost"}
-                onClick={() => setShowPassword(showPassword => !showPassword)}
+                onClick={() => setShowPassword((showPassword) => !showPassword)}
               >
                 {showPassword ? <ViewIcon /> : <ViewOffIcon />}
               </Button>
@@ -136,7 +134,7 @@ export default function ResetPassword() {
             color={"white"}
             _hover={{
               bgGradient: "linear(to-r, red.400,pink.400)",
-              boxShadow: "xl"
+              boxShadow: "xl",
             }}
           >
             Submit
