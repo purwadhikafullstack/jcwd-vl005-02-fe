@@ -8,6 +8,7 @@ import UserLogin from "./pages/user/userLogin";
 import UserProductDetails from "./pages/user/UserProductDetails";
 import UserProducts from "./pages/user/UserProducts";
 import Footer from "./components/user/Footer";
+import UserCart from "./pages/user/UserCart";
 
 function UserRouter() {
   return (
@@ -17,6 +18,7 @@ function UserRouter() {
         <Route exact path="/" element={<UserHome />} />
 
         <Route path="/shop" element={<UserProducts />}></Route>
+        <Route path="/cart" element={<UserCart />}></Route>
         <Route path="/products">
           <Route index element={<UserProducts />} />
           <Route path=":productId" element={<UserProductDetails />} />

@@ -70,7 +70,7 @@ export default function Navbar(props) {
 
   return (
     <>
-      {token ? (
+      {!token ? (
         <Box bg="red.500" px={4}>
           <Flex
             h={16}
