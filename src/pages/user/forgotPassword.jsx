@@ -10,10 +10,10 @@ import {
   Stack,
   Text,
   useColorModeValue,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 
-const API_URL = "http://localhost:5000";
+const API_URL = process.env.REACT_APP_URL_API;
 
 export default function ForgotPassword() {
   const toast = useToast();
@@ -22,8 +22,8 @@ export default function ForgotPassword() {
   const onButtonRequest = () => {
     setLoading(true);
     Axios.post(API_URL + `/users/forgotpassword`, {
-      emailUser: emailUser.current.value
-    }).then(respond => {
+      emailUser: emailUser.current.value,
+    }).then((respond) => {
       console.log("Respond:", respond.data);
 
       // reset state
@@ -35,7 +35,7 @@ export default function ForgotPassword() {
         // description: respond.data,
         status: "success",
         duration: 3000,
-        isClosable: true
+        isClosable: true,
       });
 
       setLoading(false);
@@ -82,7 +82,7 @@ export default function ForgotPassword() {
             color={"white"}
             _hover={{
               bgGradient: "linear(to-r, red.400,pink.400)",
-              boxShadow: "xl"
+              boxShadow: "xl",
             }}
           >
             Request Reset

@@ -7,6 +7,7 @@ import { Route, Routes } from "react-router-dom";
 import AdminRouter from "./AdminRouter";
 import UserRouter from "./UserRouter";
 
+
 const API_URL = "http://localhost:5000";
 function App() {
   // global state
@@ -23,14 +24,14 @@ function App() {
 
     Axios.get(API_URL + `/users/keeplogin`, {
       headers: {
-        "Auth-Token": id,
-      },
+        "Auth-Token": id
+      }
     })
-      .then((respond) => {
+      .then(respond => {
         dispatch({ type: "LOGIN", payload: respond.data });
         console.log("User Status:", respond.data.status);
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error);
       });
   }, []);

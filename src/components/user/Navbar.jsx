@@ -61,11 +61,16 @@ export default function Navbar(props) {
   const onButtonLogin = () => {
     navigate("/login");
   };
+  const onButtonRegister = () => {
+    navigate("/register");
+  };
   const onButtonLogout = () => {
     localStorage.removeItem("token");
     dispatch({ type: "LOGOUT" });
     navigate("/login");
   };
+
+  
   const color = useColorModeValue;
 
   return (
@@ -116,16 +121,16 @@ export default function Navbar(props) {
                 ))}
               </HStack>
             </HStack>
-            <Flex alignItems={"center"}>
+            <Flex alignItems={"center"} justify={"flex-end"}>
               <Menu>
-                <Button
-                  onClick={onButtonLogout}
-                  size={"md"}
-                  leftIcon={<BiLogIn />}
-                >
-                  Logout
-                </Button>
-                <Text>Hi,{username}</Text>
+              <Stack
+                // flex={{ base: 1, md: 0 }}
+                justify={"flex-end"}
+                direction={"row"}
+                alignItems={'center'}
+                // spacing={6}
+              >
+                <Text fontWeight="600" fontSize='lg' color={'white'}>Hi,{username}</Text>
                 <MenuButton
                   as={Button}
                   rounded={"full"}
@@ -140,11 +145,14 @@ export default function Navbar(props) {
                     }
                   />
                 </MenuButton>
+              
+              </Stack>
+                
                 <MenuList>
-                  <MenuItem>{email}</MenuItem>
-                  <MenuItem>Link 2</MenuItem>
+                  <MenuItem>My Account</MenuItem>
+                  <MenuItem>My Purchase</MenuItem>
                   <MenuDivider />
-                  <MenuItem>Link 3</MenuItem>
+                  <MenuItem onClick={onButtonLogout}>Logout</MenuItem>
                 </MenuList>
               </Menu>
             </Flex>
@@ -161,7 +169,7 @@ export default function Navbar(props) {
           ) : null}
         </Box>
       ) : (
-        <Box bg={color("gray.100", "gray.900")} px={4}>
+        <Box bg="red.500" px={4}>
           <Flex
             h={16}
             alignItems={"center"}
@@ -176,11 +184,26 @@ export default function Navbar(props) {
               onClick={isOpen ? onClose : onOpen}
             />
             <HStack spacing={8} alignItems={"center"}>
-              <Box>Logo</Box>
+              <Box
+                display="flex"
+                flexDirection="row"
+                alignItems="center"
+                justifyContent="center"
+                fontSize="1.2rem"
+                color="white"
+              >
+                <AiFillMedicineBox />
+                <Box ml={2} fontWeight="600">
+                  {" "}
+                  Pharmastore
+                </Box>
+              </Box>
               <HStack
                 as={"nav"}
                 spacing={4}
                 display={{ base: "none", md: "flex" }}
+                color="white"
+                fontWeight="600"
               >
                 {Links.map((link, index) => (
                   <NavLink
@@ -192,40 +215,50 @@ export default function Navbar(props) {
               </HStack>
             </HStack>
             <Flex alignItems={"center"}>
-              <Menu>
+            <Menu>
+              {/* <Button onClick={onButtonLogin} size={'md'} leftIcon={<BiLogIn/>}>Login</Button> */}
+              <Stack
+                // flex={{ base: 1, md: 0 }}
+                justify={"flex-end"}
+                direction={"row"}
+                alignItems={'center'}
+                spacing={3}
+              >
                 <Button
                   onClick={onButtonLogin}
-                  size={"md"}
-                  leftIcon={<BiLogIn />}
+                  as={"a"}
+                  fontSize={'md'}
+                  fontWeight={600}
+                  variant={"link"}
+                  color={'white'}
+                  cursor='pointer'
                 >
                   Login
                 </Button>
-                <MenuButton
-                  as={Button}
-                  rounded={"full"}
-                  variant={"link"}
-                  cursor={"pointer"}
-                  minW={0}
+                <Button
+                  onClick={onButtonRegister}
+                  // display={{ base: "none", md: "inline-flex" }}
+                  fontSize={"sm"}
+                  fontWeight={600}
+                  // bgGradient="linear(to-r, white,white)"
+                  colorScheme={"red"}
+                  color={'black'}
+                  bg={"white"}
+                  _hover={{
+                    bgGradient: "linear(to-r, red.400,red.400)",
+                    boxShadow: "xl",
+                    color:'white'
+                  }}
                 >
-                  <Avatar
-                    size={"sm"}
-                    src={
-                      "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
-                    }
-                  />
-                </MenuButton>
-                <MenuList>
-                  <MenuItem>{email}</MenuItem>
-                  <MenuItem>Link 2</MenuItem>
-                  <MenuDivider />
-                  <MenuItem>Link 3</MenuItem>
-                </MenuList>
-              </Menu>
-            </Flex>
+                  Register
+                </Button>
+              </Stack>
+            </Menu>
+          </Flex>
           </Flex>
 
           {isOpen ? (
-            <Box pb={4} display={{ md: "none" }}>
+            <Box pb={4} display={{ md: "none" }} color="white">
               <Stack as={"nav"} spacing={4}>
                 {Links.map((link, index) => (
                   <NavLink key={index} url={link.url} menu={link.menu} />
