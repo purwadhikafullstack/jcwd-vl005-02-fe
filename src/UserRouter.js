@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Navbar from "./components/user/Navbar";
 import ForgotPassword from "./pages/user/ForgotPassword";
 import ResetPassword from "./pages/user/ResetPassword";
@@ -11,8 +11,10 @@ import UserProducts from "./pages/user/UserProducts";
 import Footer from "./components/user/Footer";
 import UserCart from "./pages/user/UserCart";
 import VerificationPage from "./pages/user/VerificationPage";
+import { useSelector } from "react-redux";
 
 function UserRouter() {
+  const { email, username, id: userId } = useSelector((state) => state.user);
   return (
     <>
       <Navbar></Navbar>
@@ -20,7 +22,12 @@ function UserRouter() {
         <Route exact path="/" element={<UserHome />} />
 
         <Route path="/shop" element={<UserProducts />}></Route>
-        <Route path="/cart" element={<UserCart />}></Route>
+        {userId ? (
+          <Route path="/cart" element={<UserCart />}></Route>
+        ) : (
+          <Route path="/cart" element={<Navigate to="/" replace />} />
+        )}
+
         <Route path="/products">
           <Route index element={<UserProducts />} />
           <Route path=":productId" element={<UserProductDetails />} />
@@ -33,6 +40,7 @@ function UserRouter() {
           path="/authentication/:token"
           element={<VerificationPage />}
         ></Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Footer></Footer>
     </>

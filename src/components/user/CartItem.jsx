@@ -8,14 +8,82 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   Text,
+  Box,
+  Button,
 } from "@chakra-ui/react";
 import * as React from "react";
 import { CartProductMeta } from "./CartProductMeta";
 import { URL_API } from "../../helpers";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
 export const CartItem = (props) => {
-  const { isGiftWrapping, name, description, picture, price, onClickDelete } =
-    props;
+  const [data, setData] = useState([]);
+  const {
+    name,
+    product_id,
+    category,
+    picture,
+    price,
+    amount,
+    stock,
+    onClickDelete,
+    updateCart,
+    setUpdateCart,
+  } = props;
+  const [currentAmount, setCurentAmount] = useState(amount);
+
+  // console.log(props);
+
+  const { email, username, id: userId } = useSelector((state) => state.user);
+
+  // let userId = 2;
+
+  const increaseQuantity = () => {
+    if (currentAmount < stock) {
+      setCurentAmount((currentAmount) => currentAmount + 1);
+      setUpdateCart(true);
+    } else {
+      setCurentAmount(stock);
+      setUpdateCart(true);
+    }
+  };
+
+  const decreaseQuantity = () => {
+    if (currentAmount > 0) {
+      setCurentAmount((currentAmount) => currentAmount - 1);
+      setUpdateCart(true);
+    }
+  };
+
+  const changeQuantity = (event) => {
+    if (event.target.value < stock) {
+      setCurentAmount(event.target.value);
+      setUpdateCart(true);
+    } else {
+      setCurentAmount(stock);
+      setUpdateCart(true);
+    }
+  };
+
+  useEffect(() => {
+    let fetchCart = `${URL_API}/user/cart/${userId}/update/${product_id}`;
+
+    let obj = {
+      qty: currentAmount,
+    };
+
+    axios
+      .patch(fetchCart, obj)
+      .then((res) => {
+        setData(() => res.data.content);
+        // console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [currentAmount, updateCart]);
 
   return (
     <Flex
@@ -28,9 +96,8 @@ export const CartItem = (props) => {
     >
       <CartProductMeta
         name={name}
-        description={description}
+        description={category}
         image={URL_API + picture}
-        isGiftWrapping={isGiftWrapping}
       />
 
       {/* Desktop */}
@@ -42,16 +109,43 @@ export const CartItem = (props) => {
           md: "flex",
         }}
       >
-        <NumberInput size="sm" maxW={20} defaultValue={15} min={10}>
-          <NumberInputField />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
+        {stock ? (
+          <NumberInput
+            size="sm"
+            maxW={20}
+            defaultValue={currentAmount}
+            min={1}
+            max={stock}
+          >
+            <NumberInputField onChange={changeQuantity} />
+            <NumberInputStepper>
+              <NumberIncrementStepper
+                onClick={currentAmount < stock ? increaseQuantity : null}
+              />
+              <NumberDecrementStepper
+                onClick={currentAmount > 1 ? decreaseQuantity : null}
+              />
+            </NumberInputStepper>
+          </NumberInput>
+        ) : (
+          <Box>
+            <Text
+              bg="red.300"
+              px={2}
+              py={1}
+              color="gray.900"
+              fontSize="xs"
+              fontWeight="600"
+              rounded="xl"
+            >
+              Out of Stock
+            </Text>
+          </Box>
+        )}
+
         {/* <PriceTag price={price} currency={currency} /> */}
         <Text my="auto" fontWeight="500">
-          Rp {price}
+          Rp {price * currentAmount}
         </Text>
         <CloseButton
           aria-label={`Delete ${name} from cart`}
@@ -70,19 +164,50 @@ export const CartItem = (props) => {
           md: "none",
         }}
       >
-        <Link fontSize="sm" textDecor="underline">
+        <Button
+          fontSize="sm"
+          onClick={onClickDelete}
+          // backgroundColor="red.300"
+          py={1}
+          variant="outline"
+        >
           Delete
-        </Link>
-
-        <NumberInput size="sm" maxW={20} defaultValue={15} min={10}>
-          <NumberInputField />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
+        </Button>
+        {stock ? (
+          <NumberInput
+            size="sm"
+            maxW={20}
+            defaultValue={currentAmount}
+            min={1}
+            max={stock}
+          >
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper
+                onClick={currentAmount < stock ? increaseQuantity : null}
+              />
+              <NumberDecrementStepper
+                onClick={currentAmount > 0 ? decreaseQuantity : null}
+              />
+            </NumberInputStepper>
+          </NumberInput>
+        ) : (
+          <Box>
+            <Text
+              bg="red.300"
+              px={2}
+              py={1}
+              color="gray.900"
+              fontSize="xs"
+              fontWeight="600"
+              rounded="xl"
+            >
+              Out of Stock
+            </Text>
+          </Box>
+        )}
         <Text my="auto" fontWeight="500">
-          Rp {price}
+          Rp {price * currentAmount}
         </Text>
       </Flex>
     </Flex>

@@ -105,7 +105,7 @@ export default function UserLogin() {
             lineHeight={1.1}
             fontSize={{ base: "3xl", sm: "4xl", md: "5xl", lg: "6xl" }}
           >
-            Wellcome to Pharmastore Medical{" "}
+            Welcome to Pharmastore Medical{" "}
             <Text
               as={"span"}
               bgGradient="linear(to-r, red.500,red.500)"
@@ -212,7 +212,7 @@ export const Blur = (IconProps) => {
   return (
     <Icon
       width={useBreakpointValue({ base: "100%", md: "40vw", lg: "30vw" })}
-      zIndex={useBreakpointValue({ base: -1, md: -1, lg: 0 })}
+      zIndex={useBreakpointValue({ base: -9, md: -9, lg: -9 })}
       height="750px"
       viewBox="0 0 528 560"
       fill="none"

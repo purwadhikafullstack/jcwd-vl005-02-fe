@@ -12,13 +12,86 @@ import {
   Image,
   Badge,
   Tag,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
 } from "@chakra-ui/react";
 import { FaCheckCircle } from "react-icons/fa";
 import { BsCartPlus } from "react-icons/bs";
 import { URL_API } from "../../helpers/index";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
+import { useSelector } from "react-redux";
+
+function ModalMessage({ isOpen, onClose, status, subject, message }) {
+  return (
+    <>
+      <Modal
+        isCentered
+        onClose={onClose}
+        isOpen={isOpen}
+        motionPreset="slideInBottom"
+      >
+        <ModalOverlay
+          backgroundColor="rgba(211, 211, 211, 0.7)"
+          opacity="0.4"
+        />
+        <ModalContent
+          p={3}
+          backgroundColor={status == "success" ? "green.100" : "red.100"}
+        >
+          <ModalHeader>{subject}</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>{message}</ModalBody>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+}
 
 export default function UserProductCard({ productData }) {
+  const { email, username, id: userId } = useSelector((state) => state.user);
+
+  const [isOpen, setIsOpen] = useState({
+    open: false,
+    status: "",
+    subject: "",
+    message: "",
+  });
+
+  const addToCart = (productData) => {
+    console.log(productData);
+    let productId = productData.id;
+
+    axios
+      .post(URL_API + `/user/cart/${userId}/add/${productId}`, productData)
+      .then((res) => {
+        console.log(res);
+        setIsOpen({
+          ...isOpen,
+          open: true,
+          status: "success",
+          subject: res.data.subject,
+          message: res.data.message,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsOpen({
+          ...isOpen,
+          open: true,
+          status: "error",
+          subject: err.data.subject,
+          message: err.data.message,
+        });
+      });
+  };
+
   return (
     <Box
       mb={4}
@@ -33,6 +106,22 @@ export default function UserProductCard({ productData }) {
       bg={useColorModeValue("gray.50", "gray.700")}
       position="relative"
     >
+      <ModalMessage
+        isOpen={isOpen.open}
+        onClose={() => {
+          setIsOpen({
+            ...isOpen,
+            open: false,
+            status: "",
+            subject: "",
+            message: "",
+          });
+        }}
+        status={isOpen.status}
+        subject={isOpen.subject}
+        message={isOpen.message}
+      ></ModalMessage>
+
       {productData.stock != 0 ? (
         ""
       ) : (
@@ -147,9 +236,20 @@ export default function UserProductCard({ productData }) {
               View
             </Button>
           </Link>
-          <Button w="45%" colorScheme="red">
-            <BsCartPlus />
-          </Button>
+
+          {productData.stock == 0 || !userId ? (
+            <Button w="45%" colorScheme="red" disabled>
+              <BsCartPlus />
+            </Button>
+          ) : (
+            <Button
+              w="45%"
+              colorScheme="red"
+              onClick={() => addToCart(productData)}
+            >
+              <BsCartPlus />
+            </Button>
+          )}
         </Flex>
       </Box>
     </Box>

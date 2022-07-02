@@ -1,5 +1,8 @@
 import {
+  Alert,
+  AlertIcon,
   Box,
+  Button,
   Flex,
   Heading,
   HStack,
@@ -13,61 +16,66 @@ import { CartOrderSummary } from "../../components/user/CartOrderSummary";
 import { useEffect, useState } from "react";
 import { URL_API } from "../../helpers";
 import axios from "axios";
-
-// export const cartData = [
-//   {
-//     id: "1",
-//     price: 39.99,
-//     currency: "IDR",
-//     name: "Ferragamo bag",
-//     description: "Tan, 40mm",
-//     quantity: 3,
-//     imageUrl:
-//       "https://images.unsplash.com/photo-1584917865442-de89df76afd3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=870&q=80",
-//   },
-//   {
-//     id: "2",
-//     price: 39.99,
-//     currency: "GBP",
-//     name: "Bamboo Tan",
-//     description: "Tan, 40mm",
-//     quantity: 3,
-//     imageUrl:
-//       "https://images.unsplash.com/photo-1591561954557-26941169b49e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=774&q=80",
-//   },
-//   {
-//     id: "3",
-//     price: 39.99,
-//     currency: "GBP",
-//     name: "Yeezy Sneakers",
-//     description: "Tan, 40mm",
-//     quantity: 3,
-//     imageUrl:
-//       "https://images.unsplash.com/photo-1604671801908-6f0c6a092c05?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1770&q=80",
-//   },
-// ];
-
-// export const cartData =
+import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
+import { useSelector } from "react-redux";
+import { Link as RRLink } from "react-router-dom";
 
 const UserCart = () => {
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
   const [totalData, setTotalData] = useState(0);
+  const [updateCart, setUpdateCart] = useState(false);
+
+  const { email, username, id: userId } = useSelector((state) => state.user);
+  console.log(userId);
 
   useEffect(() => {
-    let fetchCart = `${URL_API}/user/cart/1?page=${page}`;
+    if (userId) {
+      let fetchCart = `${URL_API}/user/cart/${userId}?page=${page}`;
+
+      axios
+        .get(fetchCart)
+        .then((res) => {
+          setData(() => res.data.content);
+          setTotalData(res.data.details);
+          setUpdateCart(false);
+          // console.log(res);
+        })
+        .catch((err) => {
+          // console.log("error");
+          console.log(err);
+          setUpdateCart(false);
+        });
+    }
+  }, [page, updateCart, userId]);
+
+  let maxPage;
+  let productsPerPage = 5;
+
+  if (totalData < productsPerPage) {
+    maxPage = 1;
+  } else if (totalData % productsPerPage > 0) {
+    maxPage = Math.ceil(totalData / productsPerPage);
+  } else {
+    maxPage = totalData / productsPerPage;
+  }
+
+  const deleteCartItem = (productId) => {
+    console.log(productId);
+    let fetchCart = `${URL_API}/user/cart/${userId}/delete/${productId}`;
 
     axios
-      .get(fetchCart)
+      .delete(fetchCart)
       .then((res) => {
-        setData(() => res.data.content);
-        setTotalData(res.data.details);
-        console.log(res);
+        setUpdateCart(true);
+        // console.log(res);
+        setPage(1);
       })
       .catch((err) => {
         console.log(err);
+        setUpdateCart(true);
       });
-  }, [page]);
+  };
 
   return (
     <Box
@@ -108,19 +116,107 @@ const UserCart = () => {
           flex="2"
         >
           <Heading fontSize="2xl" fontWeight="extrabold">
-            Shopping User (3 items)
+            Shopping Cart ({totalData} item(s))
           </Heading>
 
           <Stack spacing="6">
-            {data && data.map((item) => <CartItem key={item.id} {...item} />)}
+            {data &&
+              data.map((item) => (
+                <CartItem
+                  updateCart={updateCart}
+                  setUpdateCart={setUpdateCart}
+                  key={item.id}
+                  {...item}
+                  onClickDelete={() => deleteCartItem(item.product_id)}
+                />
+              ))}
+
+            {data.length ? (
+              <Box
+                display="flex"
+                flexDirection="row"
+                textAlign="center"
+                alignItems="center"
+                justifyContent="center"
+                pb={10}
+              >
+                {page != 1 ? (
+                  <Button p={1}>
+                    <MdNavigateBefore
+                      style={{ fontSize: "1.5em" }}
+                      onClick={() => {
+                        setPage(page - 1);
+                      }}
+                    />
+                  </Button>
+                ) : (
+                  <Button p={1} disabled>
+                    <MdNavigateBefore style={{ fontSize: "1.5em" }} />
+                  </Button>
+                )}
+                <Box
+                  // border="1px solid black"
+                  height="100%"
+                  p={2}
+                  px={3}
+                  backgroundColor="gray.100"
+                  mx={3}
+                  borderRadius="md"
+                >
+                  Page {page} of {maxPage}
+                </Box>
+                {page < maxPage ? (
+                  <Button
+                    p={1}
+                    onClick={() => {
+                      setPage(page + 1);
+                    }}
+                  >
+                    <MdNavigateNext style={{ fontSize: "1.5em" }} />
+                  </Button>
+                ) : (
+                  <Button
+                    p={1}
+                    onClick={() => {
+                      setPage(page + 1);
+                    }}
+                    disabled
+                  >
+                    <MdNavigateNext style={{ fontSize: "1.5em" }} />
+                  </Button>
+                )}
+              </Box>
+            ) : (
+              <Box
+                textAlign="center"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                m="auto"
+                w="100%"
+              >
+                <Alert
+                  status="warning"
+                  maxW="md"
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <AlertIcon />
+                  You don't have any items in your cart!
+                </Alert>
+              </Box>
+            )}
           </Stack>
         </Stack>
 
         <Flex direction="column" align="center" flex="1">
-          <CartOrderSummary />
+          <CartOrderSummary updateCart={updateCart} />
           <HStack mt="6" fontWeight="semibold">
             <p>or</p>
-            <Link color={mode("red.500", "red.200")}>Continue shopping</Link>
+            <RRLink to="/shop" style={{ color: "red" }}>
+              Continue shopping
+            </RRLink>
           </HStack>
         </Flex>
       </Stack>
