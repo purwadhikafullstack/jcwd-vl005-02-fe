@@ -21,7 +21,7 @@ import {
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { AiFillMedicineBox } from "react-icons/ai";
-// import { Link } from "react-router-dom";
+import { Link as RRLink } from "react-router-dom";
 import { BiLogIn } from "react-icons/bi";
 
 const Links = [
@@ -70,7 +70,6 @@ export default function Navbar(props) {
     navigate("/login");
   };
 
-  
   const color = useColorModeValue;
 
   return (
@@ -123,33 +122,35 @@ export default function Navbar(props) {
             </HStack>
             <Flex alignItems={"center"} justify={"flex-end"}>
               <Menu>
-              <Stack
-                // flex={{ base: 1, md: 0 }}
-                justify={"flex-end"}
-                direction={"row"}
-                alignItems={'center'}
-                // spacing={6}
-              >
-                <Text fontWeight="600" fontSize='lg' color={'white'}>Hi,{username}</Text>
-                <MenuButton
-                  as={Button}
-                  rounded={"full"}
-                  variant={"link"}
-                  cursor={"pointer"}
-                  minW={0}
+                <Stack
+                  // flex={{ base: 1, md: 0 }}
+                  justify={"flex-end"}
+                  direction={"row"}
+                  alignItems={"center"}
+                  // spacing={6}
                 >
-                  <Avatar
-                    size={"sm"}
-                    src={
-                      "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
-                    }
-                  />
-                </MenuButton>
-              
-              </Stack>
-                
+                  <Text fontWeight="600" fontSize="lg" color={"white"}>
+                    Hi, {username}
+                  </Text>
+                  <MenuButton
+                    as={Button}
+                    rounded={"full"}
+                    variant={"link"}
+                    cursor={"pointer"}
+                    minW={0}
+                  >
+                    <Avatar size={"sm"} name={username} />
+                  </MenuButton>
+                </Stack>
+
                 <MenuList>
                   <MenuItem>My Account</MenuItem>
+
+                  <RRLink to="/cart">
+                    <MenuItem>My Cart</MenuItem>
+                  </RRLink>
+
+
                   <MenuItem>My Purchase</MenuItem>
                   <MenuDivider />
                   <MenuItem onClick={onButtonLogout}>Logout</MenuItem>
@@ -215,46 +216,47 @@ export default function Navbar(props) {
               </HStack>
             </HStack>
             <Flex alignItems={"center"}>
-            <Menu>
-              {/* <Button onClick={onButtonLogin} size={'md'} leftIcon={<BiLogIn/>}>Login</Button> */}
-              <Stack
-                // flex={{ base: 1, md: 0 }}
-                justify={"flex-end"}
-                direction={"row"}
-                alignItems={'center'}
-                spacing={3}
-              >
-                <Button
-                  onClick={onButtonLogin}
-                  as={"a"}
-                  fontSize={'md'}
-                  fontWeight={600}
-                  variant={"link"}
-                  color={'white'}
-                  cursor='pointer'
+              <Menu>
+                {/* <Button onClick={onButtonLogin} size={'md'} leftIcon={<BiLogIn/>}>Login</Button> */}
+                <Stack
+                  // flex={{ base: 1, md: 0 }}
+                  justify={"flex-end"}
+                  direction={"row"}
+                  alignItems={"center"}
+                  spacing={3}
                 >
-                  Login
-                </Button>
-                <Button
-                  onClick={onButtonRegister}
-                  // display={{ base: "none", md: "inline-flex" }}
-                  fontSize={"sm"}
-                  fontWeight={600}
-                  // bgGradient="linear(to-r, white,white)"
-                  colorScheme={"red"}
-                  color={'black'}
-                  bg={"white"}
-                  _hover={{
-                    bgGradient: "linear(to-r, red.400,red.400)",
-                    boxShadow: "xl",
-                    color:'white'
-                  }}
-                >
-                  Register
-                </Button>
-              </Stack>
-            </Menu>
-          </Flex>
+                  <Button
+                    onClick={onButtonLogin}
+                    as={"a"}
+                    fontSize={"md"}
+                    fontWeight={600}
+                    variant={"link"}
+                    color={"white"}
+                    cursor="pointer"
+                    paddingRight={4}
+                  >
+                    Login
+                  </Button>
+                  <Button
+                    onClick={onButtonRegister}
+                    // display={{ base: "none", md: "inline-flex" }}
+                    fontSize={"sm"}
+                    fontWeight={600}
+                    // bgGradient="linear(to-r, white,white)"
+                    colorScheme={"red"}
+                    color={"black"}
+                    bg={"white"}
+                    _hover={{
+                      bgGradient: "linear(to-r, red.400,red.400)",
+                      boxShadow: "xl",
+                      color: "white",
+                    }}
+                  >
+                    Register
+                  </Button>
+                </Stack>
+              </Menu>
+            </Flex>
           </Flex>
 
           {isOpen ? (
