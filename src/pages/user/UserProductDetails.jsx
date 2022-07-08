@@ -17,6 +17,17 @@ import {
   ListItem,
   Badge,
   Tag,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
@@ -34,8 +45,37 @@ import { GiMedicinePills } from "react-icons/gi";
 import { MdPayments } from "react-icons/md";
 import { FaHandHoldingMedical } from "react-icons/fa";
 import { BiSupport } from "react-icons/bi";
+import { useSelector } from "react-redux";
+
+function ModalMessage({ isOpen, onClose, status, subject, message }) {
+  return (
+    <>
+      <Modal
+        isCentered
+        onClose={onClose}
+        isOpen={isOpen}
+        motionPreset="slideInBottom"
+      >
+        <ModalOverlay
+          backgroundColor="rgba(211, 211, 211, 0.7)"
+          opacity="0.4"
+        />
+        <ModalContent
+          p={3}
+          backgroundColor={status == "success" ? "green.100" : "red.100"}
+        >
+          <ModalHeader>{subject}</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>{message}</ModalBody>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+}
 
 export default function UserProductDetails() {
+  const [currentAmount, setCurentAmount] = useState(1);
+
   const [product, setProduct] = useState({
     id: 0,
     name: "",
@@ -47,6 +87,15 @@ export default function UserProductDetails() {
     volume: 0,
     unit: "",
   });
+
+  const [isOpen, setIsOpen] = useState({
+    open: false,
+    status: "",
+    subject: "",
+    message: "",
+  });
+
+  const { email, username, id: userId } = useSelector((state) => state.user);
 
   const productId = useParams().productId;
   console.log(productId);
@@ -63,8 +112,74 @@ export default function UserProductDetails() {
 
   console.log(product);
 
+  const increaseQuantity = () => {
+    if (currentAmount < product.stock) {
+      setCurentAmount((currentAmount) => currentAmount + 1);
+    } else {
+      setCurentAmount(product.stock);
+    }
+  };
+
+  const decreaseQuantity = () => {
+    if (currentAmount > 0) {
+      setCurentAmount((currentAmount) => currentAmount - 1);
+    }
+  };
+
+  const changeQuantity = (event) => {
+    if (event.target.value < product.stock) {
+      setCurentAmount(event.target.value);
+    } else {
+      setCurentAmount(product.stock);
+    }
+  };
+
+  const addToCart = () => {
+    console.log(currentAmount);
+    axios
+      .post(
+        URL_API + `/user/cart/${userId}/add/${productId}/${currentAmount}`,
+        product
+      )
+      .then((res) => {
+        console.log(res);
+        setIsOpen({
+          ...isOpen,
+          open: true,
+          status: "success",
+          subject: res.data.subject,
+          message: res.data.message,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsOpen({
+          ...isOpen,
+          open: true,
+          status: "error",
+          subject: err.data.subject,
+          message: err.data.message,
+        });
+      });
+  };
+
   return (
     <Container maxW={"7xl"}>
+      <ModalMessage
+        isOpen={isOpen.open}
+        onClose={() => {
+          setIsOpen({
+            ...isOpen,
+            open: false,
+            status: "",
+            subject: "",
+            message: "",
+          });
+        }}
+        status={isOpen.status}
+        subject={isOpen.subject}
+        message={isOpen.message}
+      ></ModalMessage>
       <SimpleGrid
         columns={{ base: 1, lg: 2 }}
         spacing={{ base: 8, md: 10 }}
@@ -233,22 +348,50 @@ export default function UserProductDetails() {
             </Box>
           </Stack>
           {product.stock > 0 ? (
-            <Button
-              rounded={"lg"}
-              w={"full"}
-              mt={8}
-              size={"lg"}
-              py={"7"}
-              bg="red.500"
-              color="white"
-              textTransform={"uppercase"}
-              _hover={{
-                transform: "translateY(2px)",
-                boxShadow: "lg",
-              }}
+            <Box
+              display="flex"
+              flexDirection="row"
+              justifyContent="center"
+              alignItenms="center"
             >
-              Add to cart
-            </Button>
+              <NumberInput
+                size="lg"
+                w={"20%"}
+                value={currentAmount}
+                min={1}
+                max={product.stock}
+              >
+                <NumberInputField onChange={changeQuantity} />
+                <NumberInputStepper>
+                  <NumberIncrementStepper
+                    onClick={
+                      currentAmount < product.stock ? increaseQuantity : null
+                    }
+                  />
+                  <NumberDecrementStepper
+                    onClick={currentAmount > 1 ? decreaseQuantity : null}
+                  />
+                </NumberInputStepper>
+              </NumberInput>
+              <Button
+                rounded={"lg"}
+                w={"80%"}
+                // mt={8}
+                size={"lg"}
+                // py={"7"}
+                bg="red.500"
+                color="white"
+                textTransform={"uppercase"}
+                _hover={{
+                  transform: "translateY(2px)",
+                  boxShadow: "lg",
+                }}
+                marginLeft={2}
+                onClick={addToCart}
+              >
+                Add to cart
+              </Button>
+            </Box>
           ) : (
             <Button
               rounded={"lg"}

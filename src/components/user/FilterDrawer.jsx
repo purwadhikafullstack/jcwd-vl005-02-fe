@@ -117,7 +117,7 @@ function FilterDrawer({ sendDataFilter }) {
             value={sequence}
             defaultValue="asc"
           >
-            <Stack spacing={5} direction={{ base: "column", xl: "row" }}>
+            <Stack spacing={4} direction={{ base: "column", xl: "row" }}>
               <Radio colorScheme="red" value="asc">
                 Ascending
               </Radio>
