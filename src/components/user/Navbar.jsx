@@ -216,29 +216,6 @@ export default function Navbar(props) {
               </HStack>
             </HStack>
             <Flex alignItems={"center"}>
-<<<<<<< HEAD
-            <Menu>
-              {/* <Button onClick={onButtonLogin} size={'md'} leftIcon={<BiLogIn/>}>Login</Button> */}
-              <Stack
-                // flex={{ base: 1, md: 0 }}
-                justify={"flex-end"}
-                direction={"row"}
-                alignItems={'center'}
-                spacing={3}
-              >
-                <Button
-                  onClick={onButtonLogin}
-                  // as={"a"}
-                  fontSize={'md'}
-                  fontWeight={600}
-                  variant={"link"}
-                  color={'white'}
-                  cursor='pointer'
-                  _hover={{
-                  
-                    color:'gray.300',
-                  }}
-=======
               <Menu>
                 {/* <Button onClick={onButtonLogin} size={'md'} leftIcon={<BiLogIn/>}>Login</Button> */}
                 <Stack
@@ -247,7 +224,6 @@ export default function Navbar(props) {
                   direction={"row"}
                   alignItems={"center"}
                   spacing={3}
->>>>>>> b47f172ba21c39a83b7d3769a8b8a02cccda192c
                 >
                   <Button
                     onClick={onButtonLogin}
