@@ -35,6 +35,7 @@ import {
 import { MdDashboard } from "react-icons/md";
 import { AiFillMedicineBox } from "react-icons/ai";
 import { GiMedicines } from "react-icons/gi";
+import { FaDollarSign } from "react-icons/fa";
 import { IconType } from "react-icons";
 import { ReactText } from "react";
 
@@ -42,6 +43,7 @@ const LinkItems = [
   { name: "Dashboard", icon: MdDashboard, url: "/admin" },
   { name: "Products", icon: GiMedicines, url: "/admin/products" },
   { name: "Categories", icon: AiFillMedicineBox, url: "/admin/categories" },
+  { name: "Transaction", icon: FaDollarSign, url: "/admin/transaction" },
   { name: "Favourites", icon: FiStar, url: "/admin" },
   { name: "Settings", icon: FiSettings, url: "/admin" },
 ];

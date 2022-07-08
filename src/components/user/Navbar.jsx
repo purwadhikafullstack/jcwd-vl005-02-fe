@@ -226,12 +226,16 @@ export default function Navbar(props) {
               >
                 <Button
                   onClick={onButtonLogin}
-                  as={"a"}
+                  // as={"a"}
                   fontSize={'md'}
                   fontWeight={600}
                   variant={"link"}
                   color={'white'}
                   cursor='pointer'
+                  _hover={{
+                  
+                    color:'gray.300',
+                  }}
                 >
                   Login
                 </Button>

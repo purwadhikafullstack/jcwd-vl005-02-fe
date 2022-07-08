@@ -8,7 +8,7 @@ import AdminRouter from "./AdminRouter";
 import UserRouter from "./UserRouter";
 
 
-const API_URL = "http://localhost:5000";
+const API_URL = "http://localhost:2000";
 function App() {
   // global state
   const global = useSelector((state) => state);
@@ -20,7 +20,7 @@ function App() {
   useEffect(() => {
     const id = localStorage.getItem("token");
 
-    // console.log('myToken:', id)
+    console.log('myToken:', id)
 
     Axios.get(API_URL + `/users/keeplogin`, {
       headers: {
@@ -29,7 +29,7 @@ function App() {
     })
       .then(respond => {
         dispatch({ type: "LOGIN", payload: respond.data });
-        console.log("User Status:", respond.data.status);
+        console.log("User Status:", respond.data.is_verified);
       })
       .catch(error => {
         console.log(error);
