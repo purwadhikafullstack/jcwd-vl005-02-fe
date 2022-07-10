@@ -19,6 +19,7 @@ import axios from "axios";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { Link as RRLink } from "react-router-dom";
+import api from "../../services/api";
 
 const UserCart = () => {
   const [page, setPage] = useState(1);
@@ -27,27 +28,45 @@ const UserCart = () => {
   const [updateCart, setUpdateCart] = useState(false);
 
   const { email, username, id: userId } = useSelector((state) => state.user);
-  console.log(userId);
+  // console.log(userId);
+
+  // useEffect(() => {
+  // if (userId) {
+  //   let fetchCart = `${URL_API}/user/cart/${userId}?page=${page}`;
+
+  //   axios
+  //     .get(fetchCart)
+  //     .then((res) => {
+  //       setData(() => res.data.content);
+  //       setTotalData(res.data.details);
+  //       setUpdateCart(false);
+  //       // console.log(res);
+  //     })
+  //     .catch((err) => {
+  //       // console.log("error");
+  //       console.log(err);
+  //       setUpdateCart(false);
+  //     });
+  // }
+  // }, [page, updateCart, userId]);
 
   useEffect(() => {
-    if (userId) {
-      let fetchCart = `${URL_API}/user/cart/${userId}?page=${page}`;
+    let fetchCart = `/user/cart?page=${page}`;
 
-      axios
-        .get(fetchCart)
-        .then((res) => {
-          setData(() => res.data.content);
-          setTotalData(res.data.details);
-          setUpdateCart(false);
-          // console.log(res);
-        })
-        .catch((err) => {
-          // console.log("error");
-          console.log(err);
-          setUpdateCart(false);
-        });
-    }
-  }, [page, updateCart, userId]);
+    api
+      .get(fetchCart)
+      .then((res) => {
+        setData(() => res.data.content);
+        setTotalData(res.data.details);
+        setUpdateCart(false);
+        // console.log(res);
+      })
+      .catch((err) => {
+        // console.log("error");
+        console.log(err);
+        setUpdateCart(false);
+      });
+  }, [page, updateCart]);
 
   let maxPage;
   let productsPerPage = 5;
@@ -120,7 +139,7 @@ const UserCart = () => {
           </Heading>
 
           <Stack spacing="6">
-            {data &&
+            {data.length &&
               data.map((item) => (
                 <CartItem
                   updateCart={updateCart}

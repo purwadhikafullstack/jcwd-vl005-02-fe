@@ -143,7 +143,7 @@ export default function Navbar(props) {
                   </MenuButton>
                 </Stack>
 
-                <MenuList>
+                <MenuList zIndex="999999999">
                   <MenuItem>My Account</MenuItem>
 
                   <RRLink to="/cart">

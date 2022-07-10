@@ -14,6 +14,7 @@ import { URL_API } from "../../helpers";
 import { formatPrice } from "./PriceTag";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { Link as RRLink } from "react-router-dom";
 
 const OrderSummaryItem = (props) => {
   const { label, value, children } = props;
@@ -64,27 +65,32 @@ export const CartOrderSummary = ({ updateCart }) => {
       <Heading size="md">Order Summary</Heading>
 
       <Stack spacing="6">
-        <OrderSummaryItem label="Subtotal" value={`Rp ${subtotal}`} />
+        {/* <OrderSummaryItem label="Subtotal" value={`Rp ${subtotal}`} />
         <OrderSummaryItem label="Tax (10%)">
           Rp {(subtotal * 10) / 100}
-        </OrderSummaryItem>
+        </OrderSummaryItem> */}
         <Flex justify="space-between">
           <Text fontSize="lg" fontWeight="semibold">
             Total
           </Text>
           <Text fontSize="xl" fontWeight="extrabold">
-            Rp {(subtotal * 110) / 100}
+            {/* Rp {(subtotal * 110) / 100} */}
+            Rp {subtotal}
           </Text>
         </Flex>
       </Stack>
-      <Button
-        colorScheme="red"
-        size="lg"
-        fontSize="md"
-        rightIcon={<FaArrowRight />}
-      >
-        Checkout
-      </Button>
+
+      <RRLink to="/checkout" style={{ width: "100%" }}>
+        <Button
+          colorScheme="red"
+          size="lg"
+          fontSize="md"
+          rightIcon={<FaArrowRight />}
+          width="100%"
+        >
+          Checkout
+        </Button>
+      </RRLink>
     </Stack>
   );
 };
