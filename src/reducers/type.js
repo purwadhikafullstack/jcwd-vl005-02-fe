@@ -1,2 +1,5 @@
 export const LOGIN = "LOGIN";
 export const LOGOUT = "LOGOUT";
+export const STATUS = "STATUS";
+export const DATA_TRANSACTIONS = "DATA_TRANSACTIONS";
+export const DATA_TRANSACTIONS_MONTH = "ALL_DATA_TRANSACTIONS_MONTH";

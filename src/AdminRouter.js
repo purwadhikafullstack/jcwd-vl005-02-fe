@@ -7,6 +7,8 @@ import AdminCategories from "./pages/admin/AdminCategories";
 import AdminProductDetails from "./pages/admin/AdminProductDetails";
 import NavbarDrawer from "./components/admin/NavbarDrawer";
 import { ChakraProvider } from "@chakra-ui/react";
+import AdminTransaction from "./pages/admin/AdminTransaction";
+import TransactionProof from "./pages/admin/TransactionProof"
 
 const theme = createTheme({
   typography: {
@@ -33,6 +35,8 @@ const Content = () => {
         />
         <Route path="/products/:productId" element={<AdminProductDetails />} />
         <Route path="/categories" element={<AdminCategories />} />
+        <Route path="/transaction" element={<AdminTransaction/>} />
+        <Route path="/transaction/:id" element={<TransactionProof/>} />
       </Routes>
     </ThemeProvider>
   );
