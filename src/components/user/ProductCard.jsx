@@ -207,12 +207,19 @@ export default function UserProductCard({ productData }) {
           justifyContent="space-between"
           alignItems="flex-start"
         >
-          <Text fontSize="xl" fontWeight="600" pb={2}>
+          {/* <Text fontSize="xl" fontWeight="600" pb={2}>
             Rp {parseInt(productData.price).toLocaleString("id-ID")}
+          </Text> */}
+          <Text fontSize="xl" fontWeight="600" pb={2}>
+            Rp {parseInt(productData.price).toLocaleString("id-ID")}/
+            {productData.unit}
           </Text>
           {productData.stock ? (
+            // <Badge colorScheme="green" textTransform="unset">
+            //   In stock: {productData.stock} unit(s)
+            // </Badge>
             <Badge colorScheme="green" textTransform="unset">
-              In stock: {productData.stock} unit(s)
+              In stock: {productData.stock_in_unit} {productData.unit}
             </Badge>
           ) : (
             <Badge colorScheme="gray" textTransform="unset">

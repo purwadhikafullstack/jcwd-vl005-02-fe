@@ -24,7 +24,6 @@ export const CheckoutItem = (props) => {
   const { name, product_id, category, picture, price, amount, unit } = props;
   const [currentAmount, setCurentAmount] = useState(amount);
 
-  console.log(unit);
   return (
     <>
       <Flex direction="row" justify="space-between" align="center">

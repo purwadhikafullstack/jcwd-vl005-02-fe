@@ -168,7 +168,6 @@ export default function CheckoutShipping({ onShippingInfo }) {
     api
       .post(url, addressData)
       .then((res) => {
-        console.log(res);
         setIsOpen({
           ...isOpen,
           open: true,
@@ -209,7 +208,7 @@ export default function CheckoutShipping({ onShippingInfo }) {
       .catch((err) => {
         console.log("error");
       });
-  }, []);
+  }, [loading]);
 
   const submitAddress = () => {
     let url = `/user/checkout/addresses/${addressLabel.value}`;
@@ -620,7 +619,6 @@ export default function CheckoutShipping({ onShippingInfo }) {
     );
   };
 
-  console.log(shipmentAddress);
   return (
     <Flex
       align={"center"}

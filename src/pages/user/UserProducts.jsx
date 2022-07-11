@@ -45,26 +45,11 @@ export default function UserProducts() {
   const [page, setPage] = useState(1);
   const [productsPerPage, setProductsPerPage] = useState(6);
 
-  const { email, username, id: userId } = useSelector((state) => state.user);
-
-  const [showSuccess, setShowSuccess] = useState({
-    open: false,
-    title: "",
-    description: "",
-  });
-  const [showError, setShowError] = useState({
-    open: false,
-    title: "",
-    description: "",
-  });
-
   const [searchQuery, setSearchQuery] = useState("");
   const [priceFilter, setPriceFilter] = useState(1);
   const [sortProperty, setSortProperty] = useState("");
   const [sortOrder, setSortOrder] = useState("");
   const [categoryFilterSelected, setCategoryFilterSelected] = useState("");
-
-  console.log("test");
 
   // Make axios request
   useEffect(() => {
@@ -80,13 +65,12 @@ export default function UserProducts() {
     } else {
       fetchUrl = `/user/products?page=${page}&limit=${productsPerPage}&sortBy=${sortProperty}&order=${sortOrder}&name=${searchQuery}&price=${priceFilter}&category=${categoryFilterSelected}`;
     }
-    console.log(fetchUrl);
     api
       .get(fetchUrl)
       .then((res) => {
         setData(() => res.data.content);
         setTotalData(res.data.details);
-        console.log(res);
+        // console.log(res);
       })
       .catch((err) => {
         console.log(err);
@@ -94,15 +78,12 @@ export default function UserProducts() {
   }, [
     page,
     productsPerPage,
-    showSuccess,
     searchQuery,
     priceFilter,
     sortProperty,
     sortOrder,
     categoryFilterSelected,
   ]);
-
-  console.log(data);
 
   const sendDataFilter = (name, price, sortBy, sequence, category) => {
     setSearchQuery(name);
@@ -111,11 +92,11 @@ export default function UserProducts() {
     setSortOrder(sequence);
     setCategoryFilterSelected(category);
     setPage(1);
-    console.log("name: ", searchQuery);
-    console.log("price: ", priceFilter);
-    console.log("sortBy: ", sortProperty);
-    console.log("sequence: ", sortOrder);
-    console.log("category: ", categoryFilterSelected);
+    // console.log("name: ", searchQuery);
+    // console.log("price: ", priceFilter);
+    // console.log("sortBy: ", sortProperty);
+    // console.log("sequence: ", sortOrder);
+    // console.log("category: ", categoryFilterSelected);
   };
 
   let maxPage;
@@ -127,8 +108,6 @@ export default function UserProducts() {
   } else {
     maxPage = totalData / productsPerPage;
   }
-
-  console.log(page, maxPage);
 
   return (
     <Box>

@@ -18,14 +18,91 @@ import {
   RadioGroup,
   Radio,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function CheckoutPayment({ subtotal, onSelectPaymentMethod }) {
+const group1 = [
+  "Aceh",
+  "Bangka Belitung Islands",
+  "Bengkulu",
+  "Jambi",
+  "Lampung",
+  "North Sumatra",
+  "Riau",
+  "Riau Islands",
+  "South Sumatra",
+  "West Sumatra",
+];
+
+const group2 = [
+  "Banten",
+  "Central Java",
+  "East Java",
+  "Special Capital Region of Jakarta",
+  "Special Region of Yogyakarta",
+  "West Java",
+];
+
+const group3 = [
+  "Central Kalimantan",
+  "East Kalimantan",
+  "North Kalimantan",
+  "South Kalimantan",
+  "West Kalimantan",
+];
+
+const group4 = [
+  "Central Papua",
+  "Highland Papua",
+  "Papua",
+  "South Papua",
+  "West Papua",
+];
+
+const group5 = ["Bali", "East Nusa Tenggara", "West Nusa Tenggara"];
+
+const group6 = [
+  "Central Sulawesi",
+  "Gorontalo",
+  "Maluku",
+  "North Maluku",
+  "North Sulawesi",
+  "Southeast Sulawesi",
+  "South Sulawesi",
+  "West Sulawesi",
+];
+
+export default function CheckoutPayment({
+  subtotal,
+  onSelectPaymentMethod,
+  address,
+  shipping,
+}) {
   const [method, setMethod] = useState("");
 
   onSelectPaymentMethod(method);
 
-  let shippingCost = 10000;
+  let shippingCost;
+
+  if (group1.includes(address.province)) {
+    shippingCost = 15000;
+  } else if (group2.includes(address.province)) {
+    shippingCost = 10000;
+  } else if (group3.includes(address.province)) {
+    shippingCost = 20000;
+  } else if (group4.includes(address.province)) {
+    shippingCost = 50000;
+  } else if (group5.includes(address.province)) {
+    shippingCost = 35000;
+  } else if (group6.includes(address.province)) {
+    shippingCost = 40000;
+  } else {
+    shippingCost = 0;
+  }
+
+  useEffect(() => {
+    shipping(shippingCost);
+  }, [shippingCost]);
+
   let totalPayment = subtotal + shippingCost;
 
   return (

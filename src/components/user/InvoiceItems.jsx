@@ -49,8 +49,12 @@ const InvoiceItems = ({ data }) => {
           <Tr key="shipping">
             <Td>Shipping Cost</Td>
             <Td>1</Td>
-            <Td textAlign="right">Rp 10.000</Td>
-            <Td textAlign="right">Rp 10.000</Td>
+            <Td textAlign="right">
+              Rp {parseInt(data[0].shipping_cost).toLocaleString("id-ID")}
+            </Td>
+            <Td textAlign="right">
+              Rp {parseInt(data[0].shipping_cost).toLocaleString("id-ID")}
+            </Td>
           </Tr>
         </Tbody>
         <Tfoot>
@@ -59,10 +63,7 @@ const InvoiceItems = ({ data }) => {
               GRAND TOTAL
             </Th>
             <Th fontSize="md" textAlign="right">
-              Rp{" "}
-              {(parseInt(data[0].total_payment) + 10000).toLocaleString(
-                "id-ID"
-              )}
+              Rp {parseInt(data[0].total_payment).toLocaleString("id-ID")}
             </Th>
           </Tr>
         </Tfoot>

@@ -6,7 +6,6 @@ import {
   Flex,
   Heading,
   HStack,
-  Link,
   Stack,
   useColorModeValue as mode,
 } from "@chakra-ui/react";
@@ -15,7 +14,6 @@ import { CartItem } from "../../components/user/CartItem";
 import { CartOrderSummary } from "../../components/user/CartOrderSummary";
 import { useEffect, useState } from "react";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
-import { useSelector } from "react-redux";
 import { Link as RRLink } from "react-router-dom";
 import api from "../../services/api";
 
@@ -24,9 +22,6 @@ const UserCart = () => {
   const [data, setData] = useState([]);
   const [totalData, setTotalData] = useState(0);
   const [updateCart, setUpdateCart] = useState(false);
-
-  // const { email, username, id: userId } = useSelector((state) => state.user);
-  // console.log(userId);
 
   useEffect(() => {
     let fetchCart = `/user/cart?page=${page}`;
@@ -58,7 +53,6 @@ const UserCart = () => {
   }
 
   const deleteCartItem = (productId) => {
-    console.log(productId);
     let url = `/user/cart/delete/${productId}`;
 
     api

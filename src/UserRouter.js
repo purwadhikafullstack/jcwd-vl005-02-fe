@@ -14,6 +14,8 @@ import VerificationPage from "./pages/user/VerificationPage";
 import { useSelector } from "react-redux";
 import UserCheckout from "./pages/user/UserCheckout";
 import UserInvoice from "./pages/user/UserInvoice";
+import UserPurchases from "./pages/user/UserPurchases";
+// import UserPurchaseDetails from "./pages/user/UserPurchaseDetails";
 
 function UserRouter() {
   const { email, username, id: userId } = useSelector((state) => state.user);
@@ -35,7 +37,11 @@ function UserRouter() {
           <Route path="/checkout" element={<Navigate to="/" replace />} />
         )} */}
         <Route path="/checkout" element={<UserCheckout />}></Route>
-        <Route path="/invoice" element={<UserInvoice />}></Route>
+        {/* <Route path="/invoice" element={<UserInvoice />}></Route> */}
+        <Route path="/purchases">
+          <Route index element={<UserPurchases />} />
+          <Route path=":invoiceCode" element={<UserInvoice />} />
+        </Route>
 
         <Route path="/products">
           <Route index element={<UserProducts />} />

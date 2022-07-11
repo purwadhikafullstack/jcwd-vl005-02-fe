@@ -28,24 +28,17 @@ import {
   ModalHeader,
   ModalCloseButton,
   ModalBody,
+  InputRightAddon,
+  InputGroup,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 import { MdLocalShipping } from "react-icons/md";
-import axios from "axios";
 import { useParams } from "react-router-dom";
 import { URL_API } from "../../helpers";
-import GppGoodIcon from "@mui/icons-material/GppGood";
-import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
-import PaymentsIcon from "@mui/icons-material/Payments";
-import SupportAgentIcon from "@mui/icons-material/SupportAgent";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import MedicationIcon from "@mui/icons-material/Medication";
 import { GiMedicinePills } from "react-icons/gi";
 import { MdPayments } from "react-icons/md";
 import { FaHandHoldingMedical } from "react-icons/fa";
 import { BiSupport } from "react-icons/bi";
-import { useSelector } from "react-redux";
 import api from "../../services/api";
 
 function ModalMessage({ isOpen, onClose, status, subject, message }) {
@@ -85,6 +78,7 @@ export default function UserProductDetails() {
     picture: "",
     price: 0,
     stock: 0,
+    stock_in_unit: 0,
     volume: 0,
     unit: "",
   });
@@ -96,10 +90,7 @@ export default function UserProductDetails() {
     message: "",
   });
 
-  const { email, username, id: userId } = useSelector((state) => state.user);
-
   const productId = useParams().productId;
-  console.log(productId);
   useEffect(() => {
     let url = `/user/products/${productId}`;
     api
@@ -112,13 +103,11 @@ export default function UserProductDetails() {
       });
   }, []);
 
-  console.log(product);
-
   const increaseQuantity = () => {
-    if (currentAmount < product.stock) {
+    if (currentAmount < product.stock_in_unit) {
       setCurentAmount((currentAmount) => currentAmount + 1);
     } else {
-      setCurentAmount(product.stock);
+      setCurentAmount(product.stock_in_unit);
     }
   };
 
@@ -129,20 +118,18 @@ export default function UserProductDetails() {
   };
 
   const changeQuantity = (event) => {
-    if (event.target.value < product.stock) {
+    if (event.target.value < product.stock_in_unit) {
       setCurentAmount(event.target.value);
     } else {
-      setCurentAmount(product.stock);
+      setCurentAmount(product.stock_in_unit);
     }
   };
 
   const addToCart = () => {
-    console.log(currentAmount);
     let url = `/user/cart/add/${productId}/${currentAmount}`;
     api
       .post(url, product)
       .then((res) => {
-        console.log(res);
         setIsOpen({
           ...isOpen,
           open: true,
@@ -210,7 +197,9 @@ export default function UserProductDetails() {
               fontWeight={300}
               fontSize={"3xl"}
             >
-              Rp {parseInt(product.price).toLocaleString("id-ID")}
+              {/* Rp {parseInt(product.price).toLocaleString("id-ID")} */}
+              Rp {parseInt(product.price).toLocaleString("id-ID")}/
+              {product.unit}
             </Text>
           </Box>
 
@@ -256,9 +245,10 @@ export default function UserProductDetails() {
                   <Text as={"span"} fontWeight={"bold"}>
                     Stock:
                   </Text>{" "}
-                  {product.stock > 0 ? (
+                  {product.stock_in_unit > 0 ? (
                     <Tag size="md" variant="solid" colorScheme="teal">
-                      In stock - {product.stock} unit(s)
+                      {/* In stock - {product.stock} unit(s) */}
+                      In stock - {product.stock_in_unit} {product.unit}
                     </Tag>
                   ) : (
                     <Tag size="md" variant="solid" colorScheme="red">
@@ -266,12 +256,12 @@ export default function UserProductDetails() {
                     </Tag>
                   )}
                 </ListItem>
-                <ListItem>
+                {/* <ListItem>
                   <Text as={"span"} fontWeight={"bold"}>
                     Volume per unit:
                   </Text>{" "}
                   {product.volume} {product.unit}
-                </ListItem>
+                </ListItem> */}
                 <ListItem>
                   <Text as={"span"} fontWeight={"bold"}>
                     Sold:
@@ -347,32 +337,43 @@ export default function UserProductDetails() {
               </SimpleGrid>
             </Box>
           </Stack>
-          {product.stock > 0 ? (
+          {product.stock_in_unit > 0 ? (
             <Box
               display="flex"
               flexDirection="row"
               justifyContent="center"
-              alignItenms="center"
+              alignItems="center"
             >
-              <NumberInput
-                size="lg"
-                w={"20%"}
-                value={currentAmount}
-                min={1}
-                max={product.stock}
-              >
-                <NumberInputField onChange={changeQuantity} />
-                <NumberInputStepper>
-                  <NumberIncrementStepper
-                    onClick={
-                      currentAmount < product.stock ? increaseQuantity : null
-                    }
-                  />
-                  <NumberDecrementStepper
-                    onClick={currentAmount > 1 ? decreaseQuantity : null}
-                  />
-                </NumberInputStepper>
-              </NumberInput>
+              <InputGroup size="lg " w={"30%"}>
+                <NumberInput
+                  size="lg"
+                  value={currentAmount}
+                  min={1}
+                  max={product.stock_in_unit}
+                >
+                  <NumberInputField onChange={changeQuantity} />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper
+                      onClick={
+                        currentAmount < product.stock_in_unit
+                          ? increaseQuantity
+                          : null
+                      }
+                    />
+                    <NumberDecrementStepper
+                      onClick={currentAmount > 1 ? decreaseQuantity : null}
+                    />
+                  </NumberInputStepper>
+                </NumberInput>
+                <InputRightAddon
+                  children={product.unit}
+                  w={"50px"}
+                  textAlign="center"
+                  display="flex"
+                  justifyContent="center"
+                  rounded="lg"
+                />
+              </InputGroup>
               <Button
                 rounded={"lg"}
                 w={"80%"}
@@ -412,10 +413,10 @@ export default function UserProductDetails() {
             </Button>
           )}
 
-          <Stack direction="row" alignItems="center" justifyContent={"center"}>
+          {/* <Stack direction="row" justifyContent={"center"}>
             <MdLocalShipping />
             <Text>2-3 business days delivery</Text>
-          </Stack>
+          </Stack> */}
         </Stack>
       </SimpleGrid>
     </Container>

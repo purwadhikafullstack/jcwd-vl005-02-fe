@@ -34,7 +34,7 @@ import api from "../../services/api";
 import { useSelector } from "react-redux";
 import { URL_API } from "../../helpers";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   getBraintreeClientToken,
   processPayment,
@@ -102,6 +102,8 @@ export default function UserInvoice() {
     address: "",
   });
 
+  const { invoiceCode } = useParams();
+
   const [isOpen, setIsOpen] = useState({
     open: false,
     status: "",
@@ -114,7 +116,6 @@ export default function UserInvoice() {
 
   const getToken = () => {
     getBraintreeClientToken().then((dataResponse) => {
-      console.log(dataResponse);
       if (dataResponse.status != 200) {
         setPaymentData({
           ...paymentData,
@@ -130,10 +131,8 @@ export default function UserInvoice() {
     });
   };
 
-  console.log(paymentData);
-
   useEffect(() => {
-    let url = `/user/checkout/get-invoice`;
+    let url = `/user/checkout/get-invoice/${invoiceCode}`;
 
     api
       .get(url)
@@ -146,34 +145,15 @@ export default function UserInvoice() {
         // console.log("error");
         console.log(err);
       });
-  }, []);
+  }, [invoiceCode]);
 
   useEffect(() => {
     getToken();
   }, []);
 
-  console.log(data);
-
   // IMAGE HANDLING //
-  // let preview = document.getElementById("imgpreview");
   const onBtnAddFile = (e) => {
-    console.log(e);
-    console.log(e.target.files[0]);
     setAddFile(e.target.files);
-    // if (e.target.files[0]) {
-    //   function createImageItem(i) {
-    //     let image = document.createElement("img");
-    //     image.src = URL.createObjectURL(e.target.files[i]);
-    //     image.classList.add(`${styles["img-preview"]}`);
-
-    //     return image;
-    //   }
-
-    //   preview.replaceChildren();
-    //   for (var j = 0; j < e.target.files.length; j++) {
-    //     preview.appendChild(createImageItem(j));
-    //   }
-    // }
   };
 
   let invoiceId = data.length && data[0].id;
@@ -201,18 +181,16 @@ export default function UserInvoice() {
       formData.append("file", file);
     }
 
-    for (var pair of formData.entries()) {
-      console.log(pair[0] + ", " + pair[1]);
-    }
+    // for (var pair of formData.entries()) {
+    //   console.log(pair[0] + ", " + pair[1]);
+    // }
 
     let url = `/user/checkout/upload/${invoiceId}`;
 
     //buat requestnya
-    console.log("masuk axios");
     api
       .post(url, formData)
       .then((res) => {
-        console.log(res);
         setLoading(false);
         setAddFile(null);
         setIsOpen({
@@ -241,7 +219,6 @@ export default function UserInvoice() {
   ////////////////////////
   const paymentHandler = () => {
     // setLoading(true);
-    console.log("nonce");
     let nonce;
     let getNonce = paymentData.instance
       .requestPaymentMethod()
@@ -251,10 +228,8 @@ export default function UserInvoice() {
           paymentMethodNonce: nonce,
           amount: parseInt(data[0].total_payment),
         };
-        console.log("Bayar");
         processPayment(noncePaymentData)
           .then((res) => {
-            console.log(res);
             setIsOpen({
               ...isOpen,
               open: true,
@@ -279,9 +254,6 @@ export default function UserInvoice() {
         setPaymentData({ ...paymentData, error: error });
       });
   };
-
-  // console.log(parseInt(data[0].total_payment));
-  // console.log(paymentData);
 
   return (
     <>
@@ -355,8 +327,8 @@ export default function UserInvoice() {
                 {data.length &&
                   parseInt(data[0].total_payment).toLocaleString("id-ID")}
               </Text>
-              <Text pt={2}>DUE DATE</Text>
-              <Text fontWeight="400">19 Januari 2021</Text>
+              {/* <Text pt={2}>DUE DATE</Text>
+              <Text fontWeight="400">19 Januari 2021</Text> */}
             </GridItem>
           </Grid>
 
@@ -367,7 +339,9 @@ export default function UserInvoice() {
           </Stack>
           {data.length && <InvoiceItems data={data}></InvoiceItems>}
 
-          {data.length && data[0].payment_method == "Bank Transfer" ? (
+          {data.length &&
+          data[0].payment_method == "Bank Transfer" &&
+          data[0].status == "Waiting for payment" ? (
             <>
               <Stack spacing={{ base: 6, md: 10 }}>
                 <Heading
@@ -389,7 +363,8 @@ export default function UserInvoice() {
               </Stack>
             </>
           ) : (
-            paymentData.clientToken && (
+            paymentData.clientToken &&
+            data[0].status == "Waiting for payment" && (
               <Box
                 maxW="500px"
                 display="flex"
@@ -412,9 +387,22 @@ export default function UserInvoice() {
               </Box>
             )
           )}
+
+          {data.length && data[0].status != "Waiting for payment" && (
+            <Stack pb={10}>
+              <Heading lineHeight={1.1} fontWeight={600} fontSize="xl" pl={10}>
+                Status
+              </Heading>
+              <Text fontWeight={400} pl={10}>
+                {data[0].status}
+              </Text>
+            </Stack>
+          )}
         </Box>
 
-        {data.length && data[0].payment_method == "Bank Transfer" ? (
+        {data.length &&
+        data[0].payment_method == "Bank Transfer" &&
+        data[0].status == "Waiting for payment" ? (
           <Button
             rounded={"none"}
             w={"full"}
@@ -433,23 +421,26 @@ export default function UserInvoice() {
             Upload Proof of Payment
           </Button>
         ) : (
-          <Button
-            rounded={"none"}
-            w={"full"}
-            mt={8}
-            size={"lg"}
-            py={"7"}
-            bg={"red.500"}
-            color={"white"}
-            textTransform={"uppercase"}
-            _hover={{
-              transform: "translateY(2px)",
-              boxShadow: "lg",
-            }}
-            onClick={paymentHandler}
-          >
-            Pay
-          </Button>
+          data.length &&
+          data[0].status == "Waiting for payment" && (
+            <Button
+              rounded={"none"}
+              w={"full"}
+              mt={8}
+              size={"lg"}
+              py={"7"}
+              bg={"red.500"}
+              color={"white"}
+              textTransform={"uppercase"}
+              _hover={{
+                transform: "translateY(2px)",
+                boxShadow: "lg",
+              }}
+              onClick={paymentHandler}
+            >
+              Pay
+            </Button>
+          )
         )}
       </Container>
     </>

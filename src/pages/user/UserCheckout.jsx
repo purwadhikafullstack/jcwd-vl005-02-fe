@@ -3,13 +3,9 @@ import React, { useEffect, useState } from "react";
 import {
   Container,
   SimpleGrid,
-  Image,
-  Flex,
   Heading,
   Text,
   Stack,
-  StackDivider,
-  Icon,
   useColorModeValue,
   Box,
   Button,
@@ -23,10 +19,7 @@ import {
 } from "@chakra-ui/react";
 import CheckoutShipping from "../../components/user/CheckoutShipping";
 import { CheckoutItem } from "../../components/user/CheckoutItem";
-import { useSelector } from "react-redux";
-import { URL_API } from "../../helpers";
-import axios from "axios";
-import { CartItem } from "../../components/user/CartItem";
+
 import CheckoutPayment from "../../components/user/CheckoutPayment";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
@@ -87,9 +80,8 @@ export default function UserCheckout() {
   const [userShippingInfo, setUserShippingInfo] = useState({});
   const [userPaymentMethod, setUserPaymentMethod] = useState("");
   let navigate = useNavigate();
-
-  const { email, username, id: userId } = useSelector((state) => state.user);
-  console.log(userId);
+  const [shippingCost, setShippingCost] = useState(0);
+  const [invoiceId, setInvoiceId] = useState(0);
 
   const [isOpen, setIsOpen] = useState({
     open: false,
@@ -111,7 +103,6 @@ export default function UserCheckout() {
         // console.log(res);
       })
       .catch((err) => {
-        // console.log("error");
         console.log(err);
         setUpdateCart(false);
       });
@@ -122,25 +113,19 @@ export default function UserCheckout() {
     subtotal = 0;
   } else {
     for (let i = 0; i < data.length; i++) {
-      console.log(data[i]);
       subtotal += data[i].amount * data[i].price;
-      console.log(subtotal);
     }
   }
-
-  console.log(userShippingInfo);
-  console.log(userPaymentMethod);
 
   const submitOrder = () => {
     let data = {
       userId: userShippingInfo.user_id,
       addressId: userShippingInfo.id,
-      total_payment: subtotal,
+      shopping_amount: subtotal,
+      shipping_cost: shippingCost,
       payment_method: userPaymentMethod,
-      status: "Waiting for verification",
+      status: "Waiting for payment",
     };
-
-    console.log(data);
 
     setLoading(true);
 
@@ -148,6 +133,7 @@ export default function UserCheckout() {
     api
       .post(url, data)
       .then((res) => {
+        setInvoiceId(res.data.content);
         setLoading(false);
         setIsOpen({
           ...isOpen,
@@ -170,8 +156,6 @@ export default function UserCheckout() {
       });
   };
 
-  console.log(userPaymentMethod);
-
   return (
     <Container maxW={"8xl"} py={12}>
       <Spinner isOpen={loading}></Spinner>
@@ -185,7 +169,7 @@ export default function UserCheckout() {
             subject: "",
             message: "",
           });
-          navigate("/invoice", { replace: true });
+          navigate(`/purchases/${invoiceId}`, { replace: true });
         }}
         status={isOpen.status}
         subject={isOpen.subject}
@@ -231,6 +215,8 @@ export default function UserCheckout() {
               <CheckoutPayment
                 subtotal={subtotal}
                 onSelectPaymentMethod={setUserPaymentMethod}
+                address={userShippingInfo}
+                shipping={setShippingCost}
               />
               <Stack spacing={10} pt={2}>
                 {Object.keys(userShippingInfo).length !== 0 &&
