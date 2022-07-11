@@ -1,0 +1,307 @@
+.user {
+    flex: 4;
+    padding: 20px;
+  }
+  
+  .userTitleContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* justify-content: space-between; */
+  }
+  
+  .userAddButton {
+    width: 80px;
+    border: none;
+    padding: 5px;
+    background-color: teal;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    font-size: 16px;
+  }
+  
+  .userContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .userShow {
+    flex: 1;
+    padding: 20px;
+    -webkit-box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
+  }
+  
+  .userUpdate {
+    width: 400px;
+    height: 450px;
+    align-items: center;
+    /* flex: 2;
+    padding: 20px; */
+    -webkit-box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
+    margin-left: 20px;
+  }
+  
+  .userShowTop {
+    display: flex;
+    align-items: center;
+  }
+  
+  .userShowImg {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .userShowTopTitle {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+  }
+  
+  .userShowUsername {
+    font-weight: 600;
+  }
+  
+  .UserTitle {
+    font-weight: 300;
+  }
+  
+  .userShowBottom{
+      margin-top: 20px;
+  }
+  
+  .userShowTitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgb(175, 170, 170);
+  }
+  
+  .userShowInfo{
+      display: flex;
+      align-items: center;
+      margin: 20px 0px;
+      color: #444;
+  }
+  
+  .userShowIcon{
+      font-size: 16px !important;
+  }
+  
+  .userShowInfoTitle{
+      margin-left: 10px;
+  }
+  
+  .userUpdateTitle{
+      font-size: 24px;
+      font-weight: 600;
+  }
+  
+  .userUpdateForm{
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+  }
+  
+  .userUpdateItem{
+      display: flex;
+      flex-direction: column;
+      margin-top: 10px;
+  }
+  
+  .userUpdateItem>label{
+      margin-bottom: 5px;
+      font-size: 14px;
+  }
+  
+  .userUpdateInput{
+      border: none;
+      width: 250px;
+      height: 30px;
+      border-bottom: 1px solid gray;
+  }
+  
+  .userUpdateRight{
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+  }
+  
+  .userUpdateUpload{
+      display: flex;
+      align-items: center;
+  }
+  
+  .userUpdateImg{
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+      /* object-fit: cover; */
+      margin-right: 20px;
+  }
+  
+  .userUpdateIcon{
+      cursor: pointer;
+  }
+  
+  .userUpdateButton{
+      border-radius: 5px;
+      border: none;
+      padding: 5px;
+      cursor: pointer;
+      background-color: darkblue;
+      color: white;
+      font-weight: 600;
+  }
+
+  .back{
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row-reverse;
+  }
+  .backButton {
+    width: 80px;
+    border: none;
+    padding: 5px;
+    background-color: #3498db;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    font-size: 16px;
+  }
+  .widgetLg {
+    flex: 2;
+    -webkit-box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
+    padding: 20px;
+  }
+  
+  .widgetLgTitle {
+    font-size: 22px;
+    font-weight: 600;
+  }
+  
+  .widgetLgTable{
+    width: 100%;
+    border-spacing: 20px;
+  }
+  
+  .widgetLgTh{
+    text-align: center;
+  }
+  
+  .widgetLgUser{
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+  }
+  
+  .widgetLgImg {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+  }
+  
+  .widgetLgDate,.widgetLgAmount{
+    font-weight: 300;
+  }
+  
+  .widgetLgButton {
+    padding: 5px 7px;
+    border: none;
+    border-radius: 10px;
+  }
+  
+  .widgetLgButton.Approved{
+      background-color: #e5faf2;
+      color: #3bb077;
+  }
+  .widgetLgButton.Rejected{
+      background-color: #fff0f1;
+      color: #d95087;
+  
+  }
+  .widgetLgButton.Pending{
+      background-color: #ebf1fe;
+      color: #2a7ade;
+  
+  }
+  .widgetSmButton{
+    display: flex;
+    align-items: center;
+    border: none;
+    border-radius: 10px;
+    padding: 7px 10px;
+    background-color: #eeeef7;
+    color: #555;
+    cursor: pointer;
+}
+
+.widgetSmIcon{
+    font-size: 16px !important;
+    margin-right: 5px;
+}
+
+/* .actionButton{
+  background-color: #2a7ade;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  border: none;
+  border-radius: 10px;
+  padding: 7px 10px;
+  background-color: #eeeef7;
+  color: red;
+  cursor: pointer;
+}  */
+
+/* .action {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 2px;
+} */
+.App {
+  padding: 20px;
+}
+
+
+.productList{
+  flex: 4;
+}
+
+.productListItem{
+  display: flex;
+  align-items: center;
+}
+
+.productListImg {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.productListEdit{
+  border: none;
+  border-radius: 10px;
+  padding: 5px 10px;
+  background-color: #3bb077;
+  color: white;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+.productListDelete{
+  color: red;
+  cursor: pointer;
+}
