@@ -15,6 +15,18 @@ class API {
     });
   }
 
+  patch(url, data) {
+    return axios.patch(`${BASE_URL}${url}`, data, {
+      headers: this._createAuthHeaders(),
+    });
+  }
+
+  delete(url) {
+    return axios.delete(`${BASE_URL}${url}`, {
+      headers: this._createAuthHeaders(),
+    });
+  }
+
   _createAuthHeaders() {
     return {
       "Auth-Token": localStorage.getItem("token"),

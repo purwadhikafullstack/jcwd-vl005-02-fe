@@ -40,7 +40,7 @@ export const CheckoutItem = (props) => {
         </Box>
 
         <Text my="auto" fontWeight="500" width="25%" textAlign="end">
-          Rp {price * currentAmount}
+          Rp {parseInt(price * currentAmount).toLocaleString("id-ID")}
         </Text>
       </Flex>
       <Divider></Divider>

@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { URL_API } from "../../helpers";
 import axios from "axios";
+import api from "../../services/api";
 
 function FilterDrawer({ sendDataFilter }) {
   const [productCategories, setProductCategories] = useState([]);
@@ -22,10 +23,10 @@ function FilterDrawer({ sendDataFilter }) {
   const [category, setCategory] = useState("");
 
   useEffect(() => {
-    let fetchUrl = `${URL_API}/admin/categories`;
+    let url = `/admin/categories`;
 
-    axios
-      .get(fetchUrl)
+    api
+      .get(url)
       .then((res) => {
         setProductCategories(() => res.data.content);
       })

@@ -555,8 +555,8 @@ const AdminNewProduct = () => {
                     onBlur={() => setUnitIsFocused(false)}
                     value={enteredUnit}
                   >
-                    <MenuItem value="tablet">tablet</MenuItem>
-                    <MenuItem value="pill">pill</MenuItem>
+                    <MenuItem value="liter">liter</MenuItem>
+                    <MenuItem value="gram">gram</MenuItem>
                     <MenuItem value="ml">ml</MenuItem>
                     <MenuItem value="gr">gr</MenuItem>
                   </Select>

@@ -46,6 +46,7 @@ import { MdPayments } from "react-icons/md";
 import { FaHandHoldingMedical } from "react-icons/fa";
 import { BiSupport } from "react-icons/bi";
 import { useSelector } from "react-redux";
+import api from "../../services/api";
 
 function ModalMessage({ isOpen, onClose, status, subject, message }) {
   return (
@@ -100,8 +101,9 @@ export default function UserProductDetails() {
   const productId = useParams().productId;
   console.log(productId);
   useEffect(() => {
-    axios
-      .get(URL_API + `/user/products/${productId}`)
+    let url = `/user/products/${productId}`;
+    api
+      .get(url)
       .then((res) => {
         setProduct({ ...product, ...res.data.content });
       })
@@ -136,11 +138,9 @@ export default function UserProductDetails() {
 
   const addToCart = () => {
     console.log(currentAmount);
-    axios
-      .post(
-        URL_API + `/user/cart/${userId}/add/${productId}/${currentAmount}`,
-        product
-      )
+    let url = `/user/cart/add/${productId}/${currentAmount}`;
+    api
+      .post(url, product)
       .then((res) => {
         console.log(res);
         setIsOpen({
@@ -210,7 +210,7 @@ export default function UserProductDetails() {
               fontWeight={300}
               fontSize={"3xl"}
             >
-              Rp {product.price.toLocaleString("de-DE")}
+              Rp {parseInt(product.price).toLocaleString("id-ID")}
             </Text>
           </Box>
 

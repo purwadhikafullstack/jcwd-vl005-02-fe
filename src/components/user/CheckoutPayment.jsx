@@ -22,23 +22,18 @@ import { useState } from "react";
 
 export default function CheckoutPayment({ subtotal, onSelectPaymentMethod }) {
   const [method, setMethod] = useState("");
-  const [methodDetails, setMethodDetails] = useState("");
+
+  onSelectPaymentMethod(method);
 
   let shippingCost = 10000;
+  let totalPayment = subtotal + shippingCost;
 
-  const paymentMethodHandler = (event) => {
-    setMethodDetails(event.target.value);
-    onSelectPaymentMethod({ method, methodDetails: event.target.value });
-  };
-
-  console.log(method);
-  console.log(methodDetails);
   return (
     <>
       <Flex direction="row" justify="space-between" align="center">
         <Text>Subtotal</Text>
         <Text my="auto" fontWeight="500">
-          Rp {subtotal}
+          Rp {parseInt(subtotal).toLocaleString("id-ID")}
         </Text>
       </Flex>
       {/* <Flex direction="row" justify="space-between" align="center">
@@ -50,7 +45,7 @@ export default function CheckoutPayment({ subtotal, onSelectPaymentMethod }) {
       <Flex direction="row" justify="space-between" align="center">
         <Text>Shipping cost</Text>
         <Text my="auto" fontWeight="500">
-          Rp {shippingCost}
+          Rp {parseInt(shippingCost).toLocaleString("id-ID")}
         </Text>
       </Flex>
       <Divider />
@@ -58,7 +53,7 @@ export default function CheckoutPayment({ subtotal, onSelectPaymentMethod }) {
         <Text fontWeight="500">ORDER TOTAL</Text>
         <Text my="auto" fontWeight="500" fontSize="1.2rem">
           {/* Rp {(subtotal * 110) / 100 + shippingCost} */}
-          Rp {subtotal + shippingCost}
+          Rp {parseInt(totalPayment).toLocaleString("id-ID")}
         </Text>
       </Flex>
       <Divider />
@@ -67,21 +62,14 @@ export default function CheckoutPayment({ subtotal, onSelectPaymentMethod }) {
         <Stack direction="column">
           <Radio value="Bank Transfer">Bank Transfer</Radio>
           {method == "Bank Transfer" ? (
-            <Select
-              placeholder="Select your bank account"
-              onChange={paymentMethodHandler}
-              value={methodDetails}
-            >
-              <option value="BCA">BCA</option>
-              <option value="BNI">BNI</option>
-              <option value="BRI">BRI</option>
-              <option value="Mandiri">Mandiri</option>
-            </Select>
+            <Text>
+              Please transfer to our bank account number: 123-456-78, and upload
+              your proof of payment.
+            </Text>
           ) : (
             ""
           )}
-          <Radio value="Credit Card">Credit Card</Radio>
-          <Radio value="Paypal">Paypal</Radio>
+          <Radio value="Credit Card or Paypal">Credit Card or Paypal</Radio>
         </Stack>
       </RadioGroup>
     </>

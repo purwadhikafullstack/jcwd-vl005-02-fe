@@ -37,12 +37,21 @@ const InvoiceItems = ({ data }) => {
               <Tr key={item.id}>
                 <Td>{item.name}</Td>
                 <Td>{item.amount}</Td>
-                <Td textAlign="right">Rp {item.price}</Td>
                 <Td textAlign="right">
-                  Rp {(item.price * item.amount).toFixed(2)}
+                  Rp {parseInt(item.price).toLocaleString("id-ID")}
+                </Td>
+                <Td textAlign="right">
+                  Rp{" "}
+                  {parseInt(item.price * item.amount).toLocaleString("id-ID")}
                 </Td>
               </Tr>
             ))}
+          <Tr key="shipping">
+            <Td>Shipping Cost</Td>
+            <Td>1</Td>
+            <Td textAlign="right">Rp 10.000</Td>
+            <Td textAlign="right">Rp 10.000</Td>
+          </Tr>
         </Tbody>
         <Tfoot>
           <Tr>
@@ -50,7 +59,10 @@ const InvoiceItems = ({ data }) => {
               GRAND TOTAL
             </Th>
             <Th fontSize="md" textAlign="right">
-              Rp {data[0].total_payment}
+              Rp{" "}
+              {(parseInt(data[0].total_payment) + 10000).toLocaleString(
+                "id-ID"
+              )}
             </Th>
           </Tr>
         </Tfoot>

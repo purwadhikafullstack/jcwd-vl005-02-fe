@@ -32,7 +32,8 @@ export const CheckoutProductMeta = (props) => {
             {description}
           </Text>
           <Text fontWeight="medium">
-            {amount} {unit} x Rp {price}/{unit}
+            {amount} {unit} x Rp {parseInt(price).toLocaleString("id-ID")}/
+            {unit}
           </Text>
         </Stack>
       </Box>

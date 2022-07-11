@@ -24,7 +24,7 @@ function UserRouter() {
         <Route exact path="/" element={<UserHome />} />
 
         <Route path="/shop" element={<UserProducts />}></Route>
-        {userId ? (
+        {localStorage.getItem("token") ? (
           <Route path="/cart" element={<UserCart />}></Route>
         ) : (
           <Route path="/cart" element={<Navigate to="/" replace />} />

@@ -15,8 +15,8 @@ import * as React from "react";
 import { CartProductMeta } from "./CartProductMeta";
 import { URL_API } from "../../helpers";
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { useSelector } from "react-redux";
+
+import api from "../../services/api";
 
 export const CartItem = (props) => {
   const [data, setData] = useState([]);
@@ -33,12 +33,6 @@ export const CartItem = (props) => {
     setUpdateCart,
   } = props;
   const [currentAmount, setCurentAmount] = useState(amount);
-
-  // console.log(props);
-
-  const { email, username, id: userId } = useSelector((state) => state.user);
-
-  // let userId = 2;
 
   const increaseQuantity = () => {
     if (currentAmount < stock) {
@@ -68,14 +62,14 @@ export const CartItem = (props) => {
   };
 
   useEffect(() => {
-    let fetchCart = `${URL_API}/user/cart/${userId}/update/${product_id}`;
+    let url = `/user/cart/update/${product_id}`;
 
     let obj = {
       qty: currentAmount,
     };
 
-    axios
-      .patch(fetchCart, obj)
+    api
+      .patch(url, obj)
       .then((res) => {
         setData(() => res.data.content);
         // console.log(res);
@@ -145,7 +139,7 @@ export const CartItem = (props) => {
 
         {/* <PriceTag price={price} currency={currency} /> */}
         <Text my="auto" fontWeight="500">
-          Rp {price * currentAmount}
+          Rp {parseInt(price * currentAmount).toLocaleString("id-ID")}
         </Text>
         <CloseButton
           aria-label={`Delete ${name} from cart`}

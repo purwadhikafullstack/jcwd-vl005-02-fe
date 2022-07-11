@@ -28,6 +28,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { URL_API } from "../../helpers";
+import api from "../../services/api";
 import UserAddressEdit from "./UserAddressEdit";
 
 function ModalMessage({ isOpen, onClose, status, subject, message }) {
@@ -162,8 +163,10 @@ export default function CheckoutShipping({ onShippingInfo }) {
     };
 
     setLoading(true);
-    axios
-      .post(URL_API + `/user/checkout/${userId}/add-address`, addressData)
+
+    let url = `/user/checkout/add-address`;
+    api
+      .post(url, addressData)
       .then((res) => {
         console.log(res);
         setIsOpen({
@@ -196,23 +199,22 @@ export default function CheckoutShipping({ onShippingInfo }) {
   };
 
   useEffect(() => {
-    if (userId) {
-      let fetchAddresses = `${URL_API}/user/checkout/${userId}/addresses`;
+    let url = `/user/checkout/addresses`;
 
-      axios
-        .get(fetchAddresses)
-        .then((res) => {
-          setAddresses(() => res.data.content);
-        })
-        .catch((err) => {
-          console.log("error");
-        });
-    }
-  }, [userId]);
+    api
+      .get(url)
+      .then((res) => {
+        setAddresses(() => res.data.content);
+      })
+      .catch((err) => {
+        console.log("error");
+      });
+  }, []);
 
   const submitAddress = () => {
-    axios
-      .get(URL_API + `/user/checkout/${userId}/addresses/${addressLabel.value}`)
+    let url = `/user/checkout/addresses/${addressLabel.value}`;
+    api
+      .get(url)
       .then((res) => {
         setShipmentAddress(res.data.content[0]);
         onShippingInfo({

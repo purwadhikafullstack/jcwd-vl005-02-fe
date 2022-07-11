@@ -29,6 +29,7 @@ import axios from "axios";
 import { CartItem } from "../../components/user/CartItem";
 import CheckoutPayment from "../../components/user/CheckoutPayment";
 import { useNavigate } from "react-router-dom";
+import api from "../../services/api";
 
 function ModalMessage({ isOpen, onClose, status, subject, message }) {
   return (
@@ -99,24 +100,22 @@ export default function UserCheckout() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (userId) {
-      let fetchCart = `${URL_API}/user/checkout/${userId}`;
+    let url = `/user/checkout`;
 
-      axios
-        .get(fetchCart)
-        .then((res) => {
-          setData(() => res.data.content);
-          setTotalData(res.data.details);
-          setUpdateCart(false);
-          // console.log(res);
-        })
-        .catch((err) => {
-          // console.log("error");
-          console.log(err);
-          setUpdateCart(false);
-        });
-    }
-  }, [page, updateCart, userId]);
+    api
+      .get(url)
+      .then((res) => {
+        setData(() => res.data.content);
+        setTotalData(res.data.details);
+        setUpdateCart(false);
+        // console.log(res);
+      })
+      .catch((err) => {
+        // console.log("error");
+        console.log(err);
+        setUpdateCart(false);
+      });
+  }, [page, updateCart]);
 
   let subtotal = 0;
   if (data.length == 0) {
@@ -137,16 +136,17 @@ export default function UserCheckout() {
       userId: userShippingInfo.user_id,
       addressId: userShippingInfo.id,
       total_payment: subtotal,
-      payment_method: userPaymentMethod.method,
-      payment_method_detail: userPaymentMethod.methodDetails,
+      payment_method: userPaymentMethod,
       status: "Waiting for verification",
     };
 
     console.log(data);
 
     setLoading(true);
-    axios
-      .post(URL_API + `/user/checkout/${userId}/invoice`, data)
+
+    let url = `/user/checkout/invoice`;
+    api
+      .post(url, data)
       .then((res) => {
         setLoading(false);
         setIsOpen({
@@ -170,11 +170,7 @@ export default function UserCheckout() {
       });
   };
 
-  console.log(userShippingInfo);
-  console.log(Object.keys(userShippingInfo).length !== 0);
-  console.log(
-    Object.keys(userShippingInfo).length !== 0 && userPaymentMethod != ""
-  );
+  console.log(userPaymentMethod);
 
   return (
     <Container maxW={"8xl"} py={12}>
