@@ -27,6 +27,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import api from "../../services/api";
 
 function ModalMessage({ isOpen, onClose, status, subject, message }) {
   return (
@@ -68,8 +69,9 @@ export default function UserProductCard({ productData }) {
     console.log(productData);
     let productId = productData.id;
 
-    axios
-      .post(URL_API + `/user/cart/${userId}/add/${productId}`, productData)
+    let url = `/user/cart/add/${productId}`;
+    api
+      .post(url, productData)
       .then((res) => {
         console.log(res);
         setIsOpen({
@@ -205,12 +207,19 @@ export default function UserProductCard({ productData }) {
           justifyContent="space-between"
           alignItems="flex-start"
         >
+          {/* <Text fontSize="xl" fontWeight="600" pb={2}>
+            Rp {parseInt(productData.price).toLocaleString("id-ID")}
+          </Text> */}
           <Text fontSize="xl" fontWeight="600" pb={2}>
-            Rp {productData.price}
+            Rp {parseInt(productData.price).toLocaleString("id-ID")}/
+            {productData.unit}
           </Text>
           {productData.stock ? (
+            // <Badge colorScheme="green" textTransform="unset">
+            //   In stock: {productData.stock} unit(s)
+            // </Badge>
             <Badge colorScheme="green" textTransform="unset">
-              In stock: {productData.stock} unit(s)
+              In stock: {productData.stock_in_unit} {productData.unit}
             </Badge>
           ) : (
             <Badge colorScheme="gray" textTransform="unset">

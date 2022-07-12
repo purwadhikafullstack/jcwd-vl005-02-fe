@@ -13,6 +13,10 @@ import UserCart from "./pages/user/UserCart";
 import VerificationPage from "./pages/user/VerificationPage";
 import ResendEmailVerification from "./pages/user/UserResendVerification";
 import { useSelector } from "react-redux";
+import UserCheckout from "./pages/user/UserCheckout";
+import UserInvoice from "./pages/user/UserInvoice";
+import UserPurchases from "./pages/user/UserPurchases";
+// import UserPurchaseDetails from "./pages/user/UserPurchaseDetails";
 
 function UserRouter() {
   const { email, username, id: userId } = useSelector((state) => state.user);
@@ -23,11 +27,22 @@ function UserRouter() {
         <Route exact path="/" element={<UserHome />} />
 
         <Route path="/shop" element={<UserProducts />}></Route>
-        {userId ? (
+        {localStorage.getItem("token") ? (
           <Route path="/cart" element={<UserCart />}></Route>
         ) : (
           <Route path="/cart" element={<Navigate to="/" replace />} />
         )}
+        {/* {userId ? (
+          <Route path="/checkout" element={<UserCheckout />}></Route>
+        ) : (
+          <Route path="/checkout" element={<Navigate to="/" replace />} />
+        )} */}
+        <Route path="/checkout" element={<UserCheckout />}></Route>
+        {/* <Route path="/invoice" element={<UserInvoice />}></Route> */}
+        <Route path="/purchases">
+          <Route index element={<UserPurchases />} />
+          <Route path=":invoiceCode" element={<UserInvoice />} />
+        </Route>
 
         <Route path="/products">
           <Route index element={<UserProducts />} />
