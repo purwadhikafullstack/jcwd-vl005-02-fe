@@ -1,7 +1,8 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Axios from "axios";
+import Cookies from "js-cookie";
 import {
   Box,
   Checkbox,
@@ -14,7 +15,8 @@ import {
   Button,
   SimpleGrid,
   useBreakpointValue,
-  IconProps,
+  Spinner,
+  // IconProps,
   Icon,
   FormControl,
   FormLabel,
@@ -22,12 +24,12 @@ import {
   InputRightElement,
   useToast,
   useColorModeValue,
-  Image,
+  // Image,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 import { Link as ReactLink } from "react-router-dom";
-import { color } from "@mui/system";
+// import { color } from "@mui/system";
 
 export default function UserLogin() {
   const API_URL = process.env.REACT_APP_URL_API;
@@ -35,10 +37,17 @@ export default function UserLogin() {
   const password = useRef("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [checked, setChecked] = useState(false);
+  const [cookie, setCookie] = useState(null);
 
   const toast = useToast();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const handleChange = () => {
+    setChecked(!checked);
+  };
+  console.log(checked);
 
   const onButtonLogin = () => {
     setLoading(true);
@@ -52,26 +61,22 @@ export default function UserLogin() {
         // if success =>
         toast({
           title: "Login Success",
-          // description:"Email & password doesn't found. ",
           status: "success",
           duration: 3000,
           isClosable: true,
         });
         console.log(respond.data.token);
         // save token to local storage
+
+        // document.cookie = "loginstatus=loggedin";
+        Cookies.set("loginstatus", "loggedin");
         localStorage.setItem("token", respond.data.token);
+        localStorage.setItem("isChecked", checked);
+
         console.log(respond.data.dataLogin);
 
         // save user data to global state
         dispatch({ type: "LOGIN", payload: respond.data.dataLogin });
-
-        //  redirect to home page
-        toast({
-          title: "Login Success",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
         navigate("/");
       })
       .catch((error) => {
@@ -87,6 +92,8 @@ export default function UserLogin() {
       });
   };
 
+  // const value = Cookies.get("loginstatus");
+  // console.log(value);
   const token = localStorage.getItem("token");
   if (token) return <Navigate to="/" />;
   const color = useColorModeValue;
@@ -178,21 +185,24 @@ export default function UserLogin() {
               align={"start"}
               justify={"space-between"}
             >
-              <Checkbox>Remember me</Checkbox>
+              <Checkbox onChange={handleChange}>Remember me</Checkbox>
               <Link as={ReactLink} to="/forgotpassword" color={"blue.400"}>
                 Forgot password?
               </Link>
             </Stack>
             <Button
+              leftIcon={loading ? <Spinner size="md" /> : null}
+              disabled={loading}
               fontFamily={"heading"}
               mt={8}
               w={"full"}
-              bg={"red.400"}
+              bg={"red.500"}
               color={"white"}
-              _hover={{ bg: "red.500" }}
+              _hover={{ bg: "red.400" }}
               onClick={onButtonLogin}
             >
               Login
+              {/* {loading ? "Login..." : "Login"} */}
             </Button>
           </Box>
           form

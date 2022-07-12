@@ -1,6 +1,8 @@
 import { ReactNode } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import Cookies from "js-cookie";
 import {
   Box,
   Flex,
@@ -18,17 +20,21 @@ import {
   useColorModeValue,
   Stack,
   Text,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { AiFillMedicineBox } from "react-icons/ai";
 import { Link as RRLink } from "react-router-dom";
-import { BiLogIn } from "react-icons/bi";
 
 const Links = [
   { menu: "Home", url: "/" },
   { menu: "Shop", url: "/shop" },
 ];
-
 const NavLink = ({ menu, url }) => (
   <Link
     px={3}
@@ -46,6 +52,7 @@ const NavLink = ({ menu, url }) => (
 
 export default function Navbar(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [confirm, setConfirm] = useState(false);
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -64,9 +71,20 @@ export default function Navbar(props) {
   const onButtonRegister = () => {
     navigate("/register");
   };
+
   const onButtonLogout = () => {
+    setConfirm(true);
+  };
+  const onBtnCancelConfirm = () => {
+    setConfirm(false);
+  };
+  // console.log(confirm);
+  const onConfirmButtonLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("isChecked");
+    Cookies.remove("loginstatus");
     dispatch({ type: "LOGOUT" });
+    setConfirm(false);
     navigate("/login");
   };
 
@@ -150,10 +168,37 @@ export default function Navbar(props) {
                     <MenuItem>My Cart</MenuItem>
                   </RRLink>
 
-
                   <MenuItem>My Purchase</MenuItem>
                   <MenuDivider />
                   <MenuItem onClick={onButtonLogout}>Logout</MenuItem>
+
+                  <AlertDialog isOpen={confirm}>
+                    <AlertDialogOverlay>
+                      <AlertDialogContent>
+                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                          Confirm Logout
+                        </AlertDialogHeader>
+
+                        <AlertDialogBody>
+                          Are you sure you want to Logout?
+                        </AlertDialogBody>
+
+                        <AlertDialogFooter>
+                          <Button onClick={onBtnCancelConfirm}>Cancel</Button>
+                          <Button
+                            onClick={onConfirmButtonLogout}
+                            w={"100px"}
+                            bg={"red.500"}
+                            color={"white"}
+                            _hover={{ bg: "red.600" }}
+                            ml={3}
+                          >
+                            Yes
+                          </Button>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialogOverlay>
+                  </AlertDialog>
                 </MenuList>
               </Menu>
             </Flex>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 // import { useDispatch } from "react-redux";
 import { useSelector, useDispatch } from "react-redux";
+import ThemeProvider from "../../theme";
 import Axios from "axios";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
@@ -12,12 +13,7 @@ import CancelSharpIcon from "@mui/icons-material/CancelSharp";
 import { Button as Tombol, DatePicker, version, Typography } from "antd";
 import { Link } from "react-router-dom";
 import "antd/dist/antd.css";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
+import Page from "../../components/admin/Page";
 const { RangePicker } = DatePicker;
 const { Title } = Typography;
 
@@ -31,14 +27,6 @@ const AdminTransaction = () => {
   const dispatch = useDispatch();
   const selector = useSelector;
   const [open, setOpen] = useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const onHandleMonth = (date, monthPicked) => {
     setMonth(monthPicked);
@@ -66,6 +54,7 @@ const AdminTransaction = () => {
         dispatch({ type: "DATA_TRANSACTIONS", payload: respond.data });
         setDataTransaction(respond.data);
         console.log("data:", respond.data);
+        setMonth("");
       })
       .catch((error) => {
         console.log(error);
@@ -84,6 +73,8 @@ const AdminTransaction = () => {
         // console.log(respond.data);
         setDataTransaction(respond.data);
         // console.log("data:", respond.data);
+        // RESET STATE
+        // month.current.value = "";
       })
       .catch((error) => {
         console.log(error);
@@ -94,11 +85,15 @@ const AdminTransaction = () => {
     Axios.get(API_URL + `/admin/transaction`)
       .then((respond) => {
         // save user data to global state
-        // dispatch({ type: "DATA_TRANSACTIONS", payload: respond.data });
+        dispatch({ type: "DATA_TRANSACTIONS", payload: respond.data });
 
         console.log(respond.data);
         setDataTransaction(respond.data);
         console.log("data:", respond.data);
+
+        setMonth("");
+        setstartDate("");
+        setendtDate("");
       })
       .catch((error) => {
         console.log(error);
@@ -126,7 +121,7 @@ const AdminTransaction = () => {
       Axios.patch(API_URL + `/admin/changetransactionstatus`, newStatus)
         .then((respond) => {
           // save user data to global state
-          // dispatch({ type: "STATUS", payload: respond.data });
+          dispatch({ type: "DATA_TRANSACTIONS", payload: respond.data });
 
           console.log(respond.data);
           setDataTransaction(respond.data);
@@ -159,7 +154,7 @@ const AdminTransaction = () => {
       Axios.patch(API_URL + `/admin/changetransactionstatus`, newStatus)
         .then((respond) => {
           // save user data to global state
-          // dispatch({ type: "STATUS", payload: respond.data });
+          dispatch({ type: "DATA_TRANSACTIONS", payload: respond.data });
 
           console.log(respond.data);
           setDataTransaction(respond.data);
@@ -177,24 +172,31 @@ const AdminTransaction = () => {
     {
       field: "id",
       identity: true,
-      headerName: "Payment ID",
+      headerName: "ID",
+      width: 50,
+      // headerAlign: "center",
+    },
+    {
+      field: "code",
+      identity: true,
+      headerName: "Code",
       width: 90,
-      headerAlign: "center",
+      // headerAlign: "center",
     },
     {
       field: "customer_name",
       headerName: "Customer Name",
-      width: 200,
+      width: 150,
       editable: false,
-      headerAlign: "center",
+      // headerAlign: "center",
     },
 
     {
       field: "status",
       headerName: "Status",
-      width: 100,
+      width: 170,
       editable: false,
-      headerAlign: "center",
+      // headerAlign: "center",
       renderCell: (params) => {
         return (
           <>
@@ -206,26 +208,26 @@ const AdminTransaction = () => {
       },
     },
     {
-      field: "amount",
-      headerName: "Amount",
-      width: 150,
+      field: "total_payment",
+      headerName: "Total Payment",
+      width: 130,
       editable: false,
-      headerAlign: "center",
+      // headerAlign: "center",
     },
     {
-      field: "payment_date",
+      field: "date",
       headerName: "Payment Date",
       width: 200,
       editable: false,
-      headerAlign: "center",
+      // headerAlign: "center",
       type: "dateTime",
     },
     {
       field: "picture",
       headerName: "Payment Proof",
-      width: 120,
+      width: 100,
       editable: false,
-      headerAlign: "center",
+      // headerAlign: "center",
       renderCell: (params) => {
         return (
           <>
@@ -242,9 +244,9 @@ const AdminTransaction = () => {
     {
       field: "action",
       headerName: "Action",
-      width: 100,
+      width: 80,
       editable: false,
-      headerAlign: "center",
+      // headerAlign: "center",
       renderCell: (params) => {
         return (
           <div className="action">
@@ -252,29 +254,7 @@ const AdminTransaction = () => {
               {/* <IconButton onClick={() => handleClickOpen(params.row.id)}> */}
               <CheckCircleSharpIcon style={{ color: "green" }} />
             </IconButton>
-            {/* <Dialog
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-            >
-              <DialogTitle id="alert-dialog-title">
-                {"Use Google's location service?"}
-              </DialogTitle>
-              <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                  Let Google help apps determine location. This means sending
-                  anonymous location data to Google, even when no apps are
-                  running.
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleClose}>Disagree</Button>
-                <Button onClick={() => handleApprove(params.row.id)} autoFocus>
-                  Agree
-                </Button>
-              </DialogActions>
-            </Dialog> */}
+
             <IconButton onClick={() => handleReject(params.row.id)}>
               <CancelSharpIcon style={{ color: "red" }} />
             </IconButton>
@@ -301,54 +281,54 @@ const AdminTransaction = () => {
       });
   }, []);
   const data = selector((state) => state.transactionsReducer);
-  // console.log("data globalku:", data);
-  // setDataTransaction(data)
 
   return (
-    <>
-      <div className="App">
-        <Title level={3}>Transactions</Title>
-        <DatePicker
-          onChange={onHandleMonth}
-          style={{ margin: 8 }}
-          picker="month"
-        />
-        <Tombol
-          onClick={ondMonthPickedSubmit}
-          type="primary"
-          style={{ marginLeft: 8 }}
-        >
-          Submit
-        </Tombol>
-        <RangePicker onChange={onHandleDateRange} style={{ marginLeft: 8 }} />
-        <Tombol
-          onClick={ondateRangeSubmit}
-          type="primary"
-          style={{ marginLeft: 8 }}
-        >
-          Submit
-        </Tombol>
-        <Tombol
-          onClick={onButtonReset}
-          type="primary"
-          style={{ marginLeft: 8 }}
-        >
-          Reset
-        </Tombol>
-      </div>
-      <Box sx={{ height: 400, width: "100%" }}>
-        <DataGrid
-          getRowId={(dataTransaction) => dataTransaction.id}
-          rows={dataTransaction}
-          columns={columns}
-          autoHeight={true}
-          pageSize={5}
-          rowsPerPageOptions={[10]}
-          // checkboxSelection
-          disableSelectionOnClick
-        />
-      </Box>
-    </>
+    <ThemeProvider>
+      <Page title="Transactions">
+        <div className="App">
+          <Title level={3}>Transactions</Title>
+          <DatePicker
+            onChange={onHandleMonth}
+            style={{ margin: 8 }}
+            picker="month"
+          />
+          <Tombol
+            onClick={ondMonthPickedSubmit}
+            type="primary"
+            style={{ marginLeft: 8 }}
+          >
+            Submit
+          </Tombol>
+          <RangePicker onChange={onHandleDateRange} style={{ marginLeft: 8 }} />
+          <Tombol
+            onClick={ondateRangeSubmit}
+            type="primary"
+            style={{ marginLeft: 8 }}
+          >
+            Submit
+          </Tombol>
+          <Tombol
+            onClick={onButtonReset}
+            type="primary"
+            style={{ marginLeft: 8 }}
+          >
+            Reset
+          </Tombol>
+        </div>
+        <Box sx={{ height: 400, width: "100%" }}>
+          <DataGrid
+            getRowId={(dataTransaction) => dataTransaction.id}
+            rows={data}
+            columns={columns}
+            autoHeight={true}
+            pageSize={5}
+            rowsPerPageOptions={[10]}
+            // checkboxSelection
+            disableSelectionOnClick
+          />
+        </Box>
+      </Page>
+    </ThemeProvider>
   );
 };
 

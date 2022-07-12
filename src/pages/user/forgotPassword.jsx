@@ -22,7 +22,7 @@ export default function ForgotPassword() {
   const onButtonRequest = () => {
     setLoading(true);
     Axios.post(API_URL + `/users/forgotpassword`, {
-      emailUser: emailUser.current.value,
+      Email: emailUser.current.value,
     }).then((respond) => {
       console.log("Respond:", respond.data);
 
@@ -39,7 +39,21 @@ export default function ForgotPassword() {
       });
 
       setLoading(false);
+    })
+    .catch((error) => {
+      if (error.response) {
+        console.log(error.response.data);
+        toast({
+          title: "Error",
+          description: error.response.data,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+      setLoading(false);
     });
+    
   };
   return (
     <Flex
@@ -78,12 +92,12 @@ export default function ForgotPassword() {
         <Stack spacing={6}>
           <Button
             onClick={onButtonRequest}
-            bgGradient="linear(to-r, red.400,pink.400)"
+            fontFamily={"heading"}
+            mt={8}
+            w={"full"}
+            bg={"red.500"}
             color={"white"}
-            _hover={{
-              bgGradient: "linear(to-r, red.400,pink.400)",
-              boxShadow: "xl",
-            }}
+            _hover={{ bg: "red.400" }}
           >
             Request Reset
           </Button>

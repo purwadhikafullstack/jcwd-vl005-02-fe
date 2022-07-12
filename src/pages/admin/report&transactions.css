@@ -228,7 +228,7 @@
       color: #d95087;
   
   }
-  .widgetLgButton.Pending{
+  .widgetLgButton.Waiting.for.verification{
       background-color: #ebf1fe;
       color: #2a7ade;
   
@@ -304,4 +304,10 @@
 .productListDelete{
   color: red;
   cursor: pointer;
+}
+
+/* admin reports */
+.title{
+  display: flex;
+  justify-content: center;
 }
