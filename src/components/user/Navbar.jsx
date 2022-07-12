@@ -143,15 +143,16 @@ export default function Navbar(props) {
                   </MenuButton>
                 </Stack>
 
-                <MenuList>
+                <MenuList zIndex="999999999">
                   <MenuItem>My Account</MenuItem>
 
                   <RRLink to="/cart">
                     <MenuItem>My Cart</MenuItem>
                   </RRLink>
+                  <RRLink to="/purchases">
+                    <MenuItem>My Purchase</MenuItem>
+                  </RRLink>
 
-
-                  <MenuItem>My Purchase</MenuItem>
                   <MenuDivider />
                   <MenuItem onClick={onButtonLogout}>Logout</MenuItem>
                 </MenuList>

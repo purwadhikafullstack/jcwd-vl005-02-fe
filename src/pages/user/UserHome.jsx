@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
-import Banner from "../../components/user/Banner.tsx";
+import Banner from "../../components/user/Banner";
 import BestSeller from "../../components/user/BestSeller";
-import Feature from "../../components/user/Feature";
+
 function UserHome() {
   return (
     <div>

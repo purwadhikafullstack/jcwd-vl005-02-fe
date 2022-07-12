@@ -10,13 +10,16 @@ import {
   Text,
   Box,
   Button,
+  InputGroup,
+  Input,
+  InputRightAddon,
 } from "@chakra-ui/react";
 import * as React from "react";
 import { CartProductMeta } from "./CartProductMeta";
 import { URL_API } from "../../helpers";
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { useSelector } from "react-redux";
+
+import api from "../../services/api";
 
 export const CartItem = (props) => {
   const [data, setData] = useState([]);
@@ -27,18 +30,14 @@ export const CartItem = (props) => {
     picture,
     price,
     amount,
+    unit,
     stock,
+    stock_in_unit,
     onClickDelete,
     updateCart,
     setUpdateCart,
   } = props;
   const [currentAmount, setCurentAmount] = useState(amount);
-
-  // console.log(props);
-
-  const { email, username, id: userId } = useSelector((state) => state.user);
-
-  // let userId = 2;
 
   const increaseQuantity = () => {
     if (currentAmount < stock) {
@@ -58,24 +57,24 @@ export const CartItem = (props) => {
   };
 
   const changeQuantity = (event) => {
-    if (event.target.value < stock) {
+    if (event.target.value < stock_in_unit) {
       setCurentAmount(event.target.value);
       setUpdateCart(true);
     } else {
-      setCurentAmount(stock);
+      setCurentAmount(stock_in_unit);
       setUpdateCart(true);
     }
   };
 
   useEffect(() => {
-    let fetchCart = `${URL_API}/user/cart/${userId}/update/${product_id}`;
+    let url = `/user/cart/update/${product_id}`;
 
     let obj = {
       qty: currentAmount,
     };
 
-    axios
-      .patch(fetchCart, obj)
+    api
+      .patch(url, obj)
       .then((res) => {
         setData(() => res.data.content);
         // console.log(res);
@@ -109,25 +108,40 @@ export const CartItem = (props) => {
           md: "flex",
         }}
       >
-        {stock ? (
-          <NumberInput
-            size="sm"
-            maxW={20}
-            defaultValue={currentAmount}
-            min={1}
-            max={stock}
-          >
-            <NumberInputField onChange={changeQuantity} />
-            <NumberInputStepper>
-              <NumberIncrementStepper
-                onClick={currentAmount < stock ? increaseQuantity : null}
-              />
-              <NumberDecrementStepper
-                onClick={currentAmount > 1 ? decreaseQuantity : null}
-              />
-            </NumberInputStepper>
-          </NumberInput>
+        {stock_in_unit ? (
+          <InputGroup size="sm">
+            <NumberInput
+              size="sm"
+              maxW="100px"
+              defaultValue={currentAmount}
+              min={1}
+              max={stock_in_unit}
+              type="number"
+              keepWithinRange={true}
+            >
+              <NumberInputField onChange={changeQuantity} />
+            </NumberInput>
+            <InputRightAddon children={unit} />
+          </InputGroup>
         ) : (
+          // <NumberInput
+          //   size="sm"
+          //   maxW={20}
+          //   defaultValue={currentAmount}
+          //   min={1}
+          //   max={stock}
+          // >
+          //   <NumberInputField onChange={changeQuantity} />
+
+          //   <NumberInputStepper>
+          //     <NumberIncrementStepper
+          //       onClick={currentAmount < stock ? increaseQuantity : null}
+          //     />
+          //     <NumberDecrementStepper
+          //       onClick={currentAmount > 1 ? decreaseQuantity : null}
+          //     />
+          //   </NumberInputStepper>
+          // </NumberInput>
           <Box>
             <Text
               bg="red.300"
@@ -144,8 +158,8 @@ export const CartItem = (props) => {
         )}
 
         {/* <PriceTag price={price} currency={currency} /> */}
-        <Text my="auto" fontWeight="500">
-          Rp {price * currentAmount}
+        <Text my="auto" fontWeight="500" width="100%">
+          Rp {parseInt(price * currentAmount).toLocaleString("id-ID")}
         </Text>
         <CloseButton
           aria-label={`Delete ${name} from cart`}
@@ -173,24 +187,45 @@ export const CartItem = (props) => {
         >
           Delete
         </Button>
-        {stock ? (
-          <NumberInput
-            size="sm"
-            maxW={20}
-            defaultValue={currentAmount}
-            min={1}
-            max={stock}
+        {stock_in_unit ? (
+          <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="center"
+            alignItems="center"
           >
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper
-                onClick={currentAmount < stock ? increaseQuantity : null}
-              />
-              <NumberDecrementStepper
-                onClick={currentAmount > 0 ? decreaseQuantity : null}
-              />
-            </NumberInputStepper>
-          </NumberInput>
+            <InputGroup size="sm">
+              <NumberInput
+                size="sm"
+                maxW="100px"
+                defaultValue={currentAmount}
+                min={1}
+                max={stock_in_unit}
+                type="number"
+                keepWithinRange={true}
+              >
+                <NumberInputField onChange={changeQuantity} />
+              </NumberInput>
+              <InputRightAddon children={unit} />
+            </InputGroup>
+            {/* <NumberInput
+              size="lg"
+              maxW={20}
+              value={currentAmount}
+              min={1}
+              max={stock}
+            >
+              <NumberInputField />
+              <NumberInputStepper>
+                <NumberIncrementStepper
+                  onClick={currentAmount < stock ? increaseQuantity : null}
+                />
+                <NumberDecrementStepper
+                  onClick={currentAmount > 0 ? decreaseQuantity : null}
+                />
+              </NumberInputStepper>
+            </NumberInput> */}
+          </Box>
         ) : (
           <Box>
             <Text
@@ -207,7 +242,7 @@ export const CartItem = (props) => {
           </Box>
         )}
         <Text my="auto" fontWeight="500">
-          Rp {price * currentAmount}
+          Rp {parseInt(price * currentAmount).toLocaleString("id-ID")}
         </Text>
       </Flex>
     </Flex>

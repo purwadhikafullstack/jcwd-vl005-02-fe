@@ -31,11 +31,13 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { URL_API } from "../../helpers";
 import { MdNavigateNext, MdNavigateBefore } from "react-icons/md";
 
 import UserProductCard from "../../components/user/ProductCard";
 import FilterDrawer from "../../components/user/FilterDrawer";
+import api from "../../services/api";
 
 export default function UserProducts() {
   const [data, setData] = useState([]);
@@ -43,24 +45,11 @@ export default function UserProducts() {
   const [page, setPage] = useState(1);
   const [productsPerPage, setProductsPerPage] = useState(6);
 
-  const [showSuccess, setShowSuccess] = useState({
-    open: false,
-    title: "",
-    description: "",
-  });
-  const [showError, setShowError] = useState({
-    open: false,
-    title: "",
-    description: "",
-  });
-
   const [searchQuery, setSearchQuery] = useState("");
   const [priceFilter, setPriceFilter] = useState(1);
   const [sortProperty, setSortProperty] = useState("");
   const [sortOrder, setSortOrder] = useState("");
   const [categoryFilterSelected, setCategoryFilterSelected] = useState("");
-
-  console.log("test");
 
   // Make axios request
   useEffect(() => {
@@ -72,17 +61,16 @@ export default function UserProducts() {
       sortOrder == "" &&
       categoryFilterSelected == ""
     ) {
-      fetchUrl = `${URL_API}/user/products?page=${page}&limit=${productsPerPage}`;
+      fetchUrl = `/user/products?page=${page}&limit=${productsPerPage}`;
     } else {
-      fetchUrl = `${URL_API}/user/products?page=${page}&limit=${productsPerPage}&sortBy=${sortProperty}&order=${sortOrder}&name=${searchQuery}&price=${priceFilter}&category=${categoryFilterSelected}`;
+      fetchUrl = `/user/products?page=${page}&limit=${productsPerPage}&sortBy=${sortProperty}&order=${sortOrder}&name=${searchQuery}&price=${priceFilter}&category=${categoryFilterSelected}`;
     }
-    console.log(fetchUrl);
-    axios
+    api
       .get(fetchUrl)
       .then((res) => {
         setData(() => res.data.content);
         setTotalData(res.data.details);
-        console.log(res);
+        // console.log(res);
       })
       .catch((err) => {
         console.log(err);
@@ -90,15 +78,12 @@ export default function UserProducts() {
   }, [
     page,
     productsPerPage,
-    showSuccess,
     searchQuery,
     priceFilter,
     sortProperty,
     sortOrder,
     categoryFilterSelected,
   ]);
-
-  console.log(data);
 
   const sendDataFilter = (name, price, sortBy, sequence, category) => {
     setSearchQuery(name);
@@ -107,11 +92,11 @@ export default function UserProducts() {
     setSortOrder(sequence);
     setCategoryFilterSelected(category);
     setPage(1);
-    console.log("name: ", searchQuery);
-    console.log("price: ", priceFilter);
-    console.log("sortBy: ", sortProperty);
-    console.log("sequence: ", sortOrder);
-    console.log("category: ", categoryFilterSelected);
+    // console.log("name: ", searchQuery);
+    // console.log("price: ", priceFilter);
+    // console.log("sortBy: ", sortProperty);
+    // console.log("sequence: ", sortOrder);
+    // console.log("category: ", categoryFilterSelected);
   };
 
   let maxPage;
@@ -123,8 +108,6 @@ export default function UserProducts() {
   } else {
     maxPage = totalData / productsPerPage;
   }
-
-  console.log(page, maxPage);
 
   return (
     <Box>

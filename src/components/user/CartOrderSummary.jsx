@@ -7,13 +7,11 @@ import {
   Text,
   useColorModeValue as mode,
 } from "@chakra-ui/react";
-import axios from "axios";
 import * as React from "react";
 import { FaArrowRight } from "react-icons/fa";
-import { URL_API } from "../../helpers";
-import { formatPrice } from "./PriceTag";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { Link as RRLink } from "react-router-dom";
+import api from "../../services/api";
 
 const OrderSummaryItem = (props) => {
   const { label, value, children } = props;
@@ -28,26 +26,21 @@ const OrderSummaryItem = (props) => {
 };
 
 export const CartOrderSummary = ({ updateCart }) => {
-  const { email, username, id: userId } = useSelector((state) => state.user);
-
   const [data, setData] = useState([]);
-  // console.log(updateCart);
 
   useEffect(() => {
-    if (userId) {
-      let fetchCart = `${URL_API}/user/cart/${userId}/all`;
+    let url = `/user/cart/all`;
 
-      axios
-        .get(fetchCart)
-        .then((res) => {
-          setData(() => res.data.content);
-          // console.log(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, [updateCart, userId]);
+    api
+      .get(url)
+      .then((res) => {
+        setData(() => res.data.content);
+        // console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [updateCart]);
 
   let subtotal = 0;
   if (data.length == 0) {
@@ -64,27 +57,32 @@ export const CartOrderSummary = ({ updateCart }) => {
       <Heading size="md">Order Summary</Heading>
 
       <Stack spacing="6">
-        <OrderSummaryItem label="Subtotal" value={`Rp ${subtotal}`} />
+        {/* <OrderSummaryItem label="Subtotal" value={`Rp ${subtotal}`} />
         <OrderSummaryItem label="Tax (10%)">
           Rp {(subtotal * 10) / 100}
-        </OrderSummaryItem>
+        </OrderSummaryItem> */}
         <Flex justify="space-between">
           <Text fontSize="lg" fontWeight="semibold">
             Total
           </Text>
           <Text fontSize="xl" fontWeight="extrabold">
-            Rp {(subtotal * 110) / 100}
+            {/* Rp {(subtotal * 110) / 100} */}
+            Rp {parseInt(subtotal).toLocaleString("id-ID")}
           </Text>
         </Flex>
       </Stack>
-      <Button
-        colorScheme="red"
-        size="lg"
-        fontSize="md"
-        rightIcon={<FaArrowRight />}
-      >
-        Checkout
-      </Button>
+
+      <RRLink to="/checkout" style={{ width: "100%" }}>
+        <Button
+          colorScheme="red"
+          size="lg"
+          fontSize="md"
+          rightIcon={<FaArrowRight />}
+          width="100%"
+        >
+          Checkout
+        </Button>
+      </RRLink>
     </Stack>
   );
 };
