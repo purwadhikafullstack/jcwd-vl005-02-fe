@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 // import { useDispatch } from "react-redux";
 import { useSelector, useDispatch } from "react-redux";
+import moment from "moment";
 import ThemeProvider from "../../theme";
 import Axios from "axios";
 import Box from "@mui/material/Box";
@@ -26,6 +27,7 @@ const AdminTransaction = () => {
   const [status, setStatus] = useState("");
   const dispatch = useDispatch();
   const selector = useSelector;
+  const [pageSize, setPageSize] = useState(5);
   const [open, setOpen] = useState(false);
 
   const onHandleMonth = (date, monthPicked) => {
@@ -212,6 +214,12 @@ const AdminTransaction = () => {
       headerName: "Total Payment",
       width: 130,
       editable: false,
+      valueFormatter: (params) =>
+        new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+        }).format(params?.value),
+
       // headerAlign: "center",
     },
     {
@@ -219,8 +227,8 @@ const AdminTransaction = () => {
       headerName: "Payment Date",
       width: 200,
       editable: false,
-      // headerAlign: "center",
-      type: "dateTime",
+      // moment.js
+      valueFormatter: (params) => moment(params?.value).format("LLL"),
     },
     {
       field: "picture",
@@ -231,7 +239,7 @@ const AdminTransaction = () => {
       renderCell: (params) => {
         return (
           <>
-            <Link to={"/admin/transaction/" + params.row.id}>
+            <Link to={"/admin/transactions/" + params.row.id}>
               <button className="widgetSmButton">
                 <VisibilityIcon className="widgetSmIcon" />
                 Display
@@ -321,10 +329,12 @@ const AdminTransaction = () => {
             rows={data}
             columns={columns}
             autoHeight={true}
-            pageSize={5}
-            rowsPerPageOptions={[10]}
             // checkboxSelection
             disableSelectionOnClick
+            pageSize={pageSize}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+            rowsPerPageOptions={[5, 10, 20, 100]}
+            pagination
           />
         </Box>
       </Page>

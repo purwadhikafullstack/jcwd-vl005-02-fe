@@ -171,7 +171,7 @@ export default function Navbar(props) {
                     <MenuItem>My Purchase</MenuItem>
                   </RRLink>
 
-                  <MenuItem>My Purchase</MenuItem>
+                  {/* <MenuItem>My Purchase</MenuItem> */}
                   <MenuDivider />
                   <MenuItem onClick={onButtonLogout}>Logout</MenuItem>
 
