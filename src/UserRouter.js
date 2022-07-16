@@ -16,6 +16,8 @@ import UserCheckout from "./pages/user/UserCheckout";
 import UserInvoice from "./pages/user/UserInvoice";
 import UserPurchases from "./pages/user/UserPurchases";
 // import UserPurchaseDetails from "./pages/user/UserPurchaseDetails";
+import NotificationTrial from "./pages/user/NotificationTrial";
+import UserNotifications from "./pages/user/UserNotifications";
 
 function UserRouter() {
   const { email, username, id: userId } = useSelector((state) => state.user);
@@ -55,6 +57,7 @@ function UserRouter() {
           path="/authentication/:token"
           element={<VerificationPage />}
         ></Route>
+        <Route path="/notification" element={<UserNotifications />}></Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Footer></Footer>

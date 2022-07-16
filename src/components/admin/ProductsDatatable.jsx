@@ -444,7 +444,7 @@ function FilterSearch({ setSearchQuery }) {
 
   return (
     <TextField
-      placeholder="Search..."
+      // placeholder="Search..."
       onChange={(event) => {
         console.log(event.target.value);
         setSearchQuery(event.target.value);
@@ -455,6 +455,8 @@ function FilterSearch({ setSearchQuery }) {
         marginLeft: 0,
       }}
       size="small"
+      label="Search..."
+      variant="outlined"
     />
   );
 }

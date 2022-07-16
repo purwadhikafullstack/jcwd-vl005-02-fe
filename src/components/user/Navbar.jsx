@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -23,6 +23,10 @@ import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { AiFillMedicineBox } from "react-icons/ai";
 import { Link as RRLink } from "react-router-dom";
 import { BiLogIn } from "react-icons/bi";
+import NotificationBadge from "./NotificationBadge";
+import { io } from "socket.io-client";
+
+const socket = io.connect("http://localhost:2000");
 
 const Links = [
   { menu: "Home", url: "/" },
@@ -46,6 +50,7 @@ const NavLink = ({ menu, url }) => (
 
 export default function Navbar(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [notification, setNotification] = useState("");
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -70,7 +75,15 @@ export default function Navbar(props) {
     navigate("/login");
   };
 
-  const color = useColorModeValue;
+  // Menerima
+  useEffect(() => {
+    socket.emit("join_channel", String(id));
+
+    socket.on("receive_notification", (data) => {
+      console.log("terima");
+      setNotification(data.message);
+    });
+  }, [socket, id]);
 
   return (
     <>
@@ -132,6 +145,57 @@ export default function Navbar(props) {
                   <Text fontWeight="600" fontSize="lg" color={"white"}>
                     Hi, {username}
                   </Text>
+
+                  <Menu>
+                    <MenuButton>
+                      {" "}
+                      <NotificationBadge
+                        // count={
+                        //   notifications.length != 0 && notifications.length
+                        // }
+                        count={notification != "" && 1}
+                      ></NotificationBadge>
+                    </MenuButton>
+                    {notification != "" ? (
+                      <MenuList
+                        zIndex="999999999"
+                        position="absolute"
+                        top="-10px"
+                        right="-40px"
+                      >
+                        <MenuItem onClick={() => setNotification("")}>
+                          {notification}
+                        </MenuItem>
+                        <MenuDivider />
+                        <RRLink
+                          to="/notification"
+                          onClick={() => setNotification("")}
+                        >
+                          <MenuItem as={Link} textAlign="center" margin="auto">
+                            See all notifications
+                          </MenuItem>
+                        </RRLink>
+                      </MenuList>
+                    ) : (
+                      <MenuList
+                        zIndex="999999999"
+                        position="absolute"
+                        top="-10px"
+                        right="-40px"
+                      >
+                        <MenuItem>No new notification</MenuItem>
+                        <MenuDivider />
+                        <RRLink
+                          to="/notification"
+                          onClick={() => setNotification("")}
+                        >
+                          <MenuItem as={Link} textAlign="center" margin="auto">
+                            See all notifications
+                          </MenuItem>
+                        </RRLink>
+                      </MenuList>
+                    )}
+                  </Menu>
                   <MenuButton
                     as={Button}
                     rounded={"full"}

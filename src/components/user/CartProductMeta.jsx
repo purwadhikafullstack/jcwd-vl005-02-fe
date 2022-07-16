@@ -11,7 +11,7 @@ import {
 import * as React from "react";
 
 export const CartProductMeta = (props) => {
-  const { image, name, description } = props;
+  const { image, name, description, stock, unit } = props;
   return (
     <Stack direction="row" spacing="5" width="full">
       <Image
@@ -29,6 +29,9 @@ export const CartProductMeta = (props) => {
           <Text fontWeight="medium">{name}</Text>
           <Text color={mode("gray.600", "gray.400")} fontSize="sm">
             {description}
+          </Text>
+          <Text color={mode("gray.600", "gray.400")} fontSize="sm">
+            Stock: {stock} {unit}
           </Text>
         </Stack>
       </Box>

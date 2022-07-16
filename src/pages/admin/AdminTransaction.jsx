@@ -18,6 +18,11 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+
+import { io } from "socket.io-client";
+
+const socket = io.connect("http://localhost:2000");
+
 const { RangePicker } = DatePicker;
 const { Title } = Typography;
 
@@ -31,6 +36,17 @@ const AdminTransaction = () => {
   const dispatch = useDispatch();
   const selector = useSelector;
   const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const joinRoom = (channel) => {
+    console.log("Joining channel ", channel);
+    socket.emit("join_channel", channel);
+  };
+
+  const sendNotification = (message, channel) => {
+    console.log("Send notif");
+    socket.emit("send_notification", { message, channel });
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -106,7 +122,7 @@ const AdminTransaction = () => {
   };
 
   // Handle Approve
-  const handleApprove = (id) => {
+  const handleApprove = (id, user_id, code) => {
     console.log("id:", id);
     // const test = "Approved";
     // console.log()
@@ -122,6 +138,10 @@ const AdminTransaction = () => {
         month: month,
         startDate: startDate,
         endDate: endDate,
+        userId: user_id,
+        message: `Your purchase with code ${code} has been approved`,
+        invoiceHeaderId: id,
+        invoiceHeaderCode: code,
       };
       Axios.patch(API_URL + `/admin/changetransactionstatus`, newStatus)
         .then((respond) => {
@@ -131,6 +151,11 @@ const AdminTransaction = () => {
           console.log(respond.data);
           setDataTransaction(respond.data);
           // console.log("data:", respond.data);
+          joinRoom(String(user_id));
+          sendNotification(
+            `Your purchase ${code} has been approved`,
+            String(user_id)
+          );
         })
         .catch((error) => {
           console.log(error);
@@ -141,7 +166,7 @@ const AdminTransaction = () => {
     });
   };
   // Handle reject
-  const handleReject = (id) => {
+  const handleReject = (id, user_id, code) => {
     console.log("id:", id);
     // const test = ;
     // console.log()
@@ -155,6 +180,10 @@ const AdminTransaction = () => {
         month: month,
         startDate: startDate,
         endDate: endDate,
+        userId: user_id,
+        message: `Your purchase with code ${code} has been rejected`,
+        invoiceHeaderId: id,
+        invoiceHeaderCode: code,
       };
       Axios.patch(API_URL + `/admin/changetransactionstatus`, newStatus)
         .then((respond) => {
@@ -164,6 +193,11 @@ const AdminTransaction = () => {
           console.log(respond.data);
           setDataTransaction(respond.data);
           // console.log("data:", respond.data);
+          joinRoom(String(user_id));
+          sendNotification(
+            `Your purchase ${code} has been rejected`,
+            String(user_id)
+          );
         })
         .catch((error) => {
           console.log(error);
@@ -173,16 +207,18 @@ const AdminTransaction = () => {
     });
   };
 
+  console.log(dataTransaction);
+
   const columns = [
     {
-      field: "id",
+      field: "code",
       identity: true,
-      headerName: "Payment ID",
+      headerName: "Invoice Code",
       width: 90,
       headerAlign: "center",
     },
     {
-      field: "customer_name",
+      field: "username",
       headerName: "Customer Name",
       width: 200,
       editable: false,
@@ -192,33 +228,74 @@ const AdminTransaction = () => {
     {
       field: "status",
       headerName: "Status",
-      width: 100,
+      width: 200,
       editable: false,
       headerAlign: "center",
       renderCell: (params) => {
+        function mysqlDate(date = new Date()) {
+          return date.toISOString().split("T")[0];
+        }
+        const currentDate = mysqlDate();
+
         return (
           <>
-            <button className={"widgetLgButton " + params.row.status}>
-              {params.row.status}
-            </button>
+            {params.row.status == "Approved" ? (
+              <button className={"widgetLgButton " + "Approved"}>
+                {params.row.status}
+              </button>
+            ) : params.row.status == "Rejected" ? (
+              <button className={"widgetLgButton " + "Rejected"}>
+                {params.row.status}
+              </button>
+            ) : !params.row.created_at &&
+              params.row.exp_date_in_js.split("T")[0] < currentDate ? (
+              <button className={"widgetLgButton " + "Rejected"}>
+                Expired
+              </button>
+            ) : params.row.expired_date < params.row.created_at ? (
+              <button className={"widgetLgButton " + "Rejected"}>
+                Expired
+              </button>
+            ) : (
+              <button className={"widgetLgButton " + "Pending"}>
+                {params.row.status}
+              </button>
+            )}
           </>
         );
       },
     },
     {
-      field: "amount",
+      field: "total_payment",
       headerName: "Amount",
+      width: 150,
+      editable: false,
+      headerAlign: "center",
+      renderCell: (params) => {
+        return (
+          <Box>
+            Rp {parseInt(params.row.total_payment).toLocaleString("id-ID")}
+          </Box>
+        );
+      },
+    },
+    {
+      field: "expired_date",
+      headerName: "Expired Date",
       width: 150,
       editable: false,
       headerAlign: "center",
     },
     {
-      field: "payment_date",
+      field: "created_at",
       headerName: "Payment Date",
       width: 200,
       editable: false,
       headerAlign: "center",
       type: "dateTime",
+      renderCell: (params) => {
+        return <Box>{params.row.created_at ? params.row.created_at : "-"}</Box>;
+      },
     },
     {
       field: "picture",
@@ -229,12 +306,16 @@ const AdminTransaction = () => {
       renderCell: (params) => {
         return (
           <>
-            <Link to={"/admin/transaction/" + params.row.id}>
-              <button className="widgetSmButton">
-                <VisibilityIcon className="widgetSmIcon" />
-                Display
-              </button>
-            </Link>
+            {params.row.created_at ? (
+              <Link to={"/admin/transaction/" + params.row.id}>
+                <button className="widgetSmButton">
+                  <VisibilityIcon className="widgetSmIcon" />
+                  Display
+                </button>
+              </Link>
+            ) : (
+              "-"
+            )}
           </>
         );
       },
@@ -248,10 +329,25 @@ const AdminTransaction = () => {
       renderCell: (params) => {
         return (
           <div className="action">
-            <IconButton onClick={() => handleApprove(params.row.id)}>
-              {/* <IconButton onClick={() => handleClickOpen(params.row.id)}> */}
-              <CheckCircleSharpIcon style={{ color: "green" }} />
-            </IconButton>
+            {params.row.created_at ? (
+              <IconButton
+                onClick={() =>
+                  handleApprove(
+                    params.row.id,
+                    params.row.user_id,
+                    params.row.code
+                  )
+                }
+              >
+                {/* <IconButton onClick={() => handleClickOpen(params.row.id)}> */}
+                <CheckCircleSharpIcon style={{ color: "green" }} />
+              </IconButton>
+            ) : (
+              <IconButton>
+                <CheckCircleSharpIcon style={{ color: "grey" }} />
+              </IconButton>
+            )}
+
             {/* <Dialog
               open={open}
               onClose={handleClose}
@@ -275,7 +371,11 @@ const AdminTransaction = () => {
                 </Button>
               </DialogActions>
             </Dialog> */}
-            <IconButton onClick={() => handleReject(params.row.id)}>
+            <IconButton
+              onClick={() =>
+                handleReject(params.row.id, params.row.user_id, params.row.code)
+              }
+            >
               <CancelSharpIcon style={{ color: "red" }} />
             </IconButton>
           </div>
