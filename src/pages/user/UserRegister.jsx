@@ -17,6 +17,7 @@ import {
   Text,
   useColorModeValue,
   useToast,
+  Spinner,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
@@ -60,10 +61,10 @@ export default function UserRegister() {
     console.log(newUser);
 
     setLoading(true);
-
     Axios.post(API_URL + `/users/register`, newUser)
       .then((respond) => {
         console.log("Respond:", respond.data);
+        setLoading(false);
 
         // reset state
         username.current.value = "";
@@ -83,6 +84,7 @@ export default function UserRegister() {
         setLoading(false);
       })
       .catch((error) => {
+        console.log(error.response.data);
         if (error.response) {
           console.log(error.response.data);
           toast({
@@ -209,6 +211,8 @@ export default function UserRegister() {
                 </FormControl>
               </Stack>
               <Button
+                leftIcon={loading ? <Spinner size="md" /> : null}
+                disabled={loading}
                 onClick={onRegisterSubmit}
                 fontFamily={"heading"}
                 mt={8}
