@@ -18,50 +18,58 @@ import UserPurchases from "./pages/user/UserPurchases";
 // import UserPurchaseDetails from "./pages/user/UserPurchaseDetails";
 import NotificationTrial from "./pages/user/NotificationTrial";
 import UserNotifications from "./pages/user/UserNotifications";
+import { Box } from "@chakra-ui/react";
 
 function UserRouter() {
   const { email, username, id: userId } = useSelector((state) => state.user);
   return (
-    <>
-      <Navbar></Navbar>
-      <Routes>
-        <Route exact path="/" element={<UserHome />} />
+    <div style={{ position: "relative", minHeight: "100vh" }}>
+      <div style={{ paddingBottom: "16.3rem" }}>
+        <Navbar></Navbar>
+        <Routes>
+          <Route exact path="/" element={<UserHome />} />
 
-        <Route path="/shop" element={<UserProducts />}></Route>
-        {localStorage.getItem("token") ? (
-          <Route path="/cart" element={<UserCart />}></Route>
-        ) : (
-          <Route path="/cart" element={<Navigate to="/" replace />} />
-        )}
-        {/* {userId ? (
+          <Route path="/shop" element={<UserProducts />}></Route>
+          {localStorage.getItem("token") ? (
+            <Route path="/cart" element={<UserCart />}></Route>
+          ) : (
+            <Route path="/cart" element={<Navigate to="/" replace />} />
+          )}
+          {/* {userId ? (
           <Route path="/checkout" element={<UserCheckout />}></Route>
         ) : (
           <Route path="/checkout" element={<Navigate to="/" replace />} />
         )} */}
-        <Route path="/checkout" element={<UserCheckout />}></Route>
-        {/* <Route path="/invoice" element={<UserInvoice />}></Route> */}
-        <Route path="/purchases">
-          <Route index element={<UserPurchases />} />
-          <Route path=":invoiceCode" element={<UserInvoice />} />
-        </Route>
+          <Route path="/checkout" element={<UserCheckout />}></Route>
+          {/* <Route path="/invoice" element={<UserInvoice />}></Route> */}
+          <Route path="/purchases">
+            <Route index element={<UserPurchases />} />
+            <Route path=":invoiceCode" element={<UserInvoice />} />
+          </Route>
 
-        <Route path="/products">
-          <Route index element={<UserProducts />} />
-          <Route path=":productId" element={<UserProductDetails />} />
-        </Route>
-        <Route path="/login" element={<UserLogin />}></Route>
-        <Route path="/register" element={<UserRegister />}></Route>
-        <Route path="/forgotpassword" element={<ForgotPassword />}></Route>
-        <Route path="/resetpassword/:token" element={<ResetPassword />}></Route>
-        <Route
-          path="/authentication/:token"
-          element={<VerificationPage />}
-        ></Route>
-        <Route path="/notification" element={<UserNotifications />}></Route>
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-      <Footer></Footer>
-    </>
+          <Route path="/products">
+            <Route index element={<UserProducts />} />
+            <Route path=":productId" element={<UserProductDetails />} />
+          </Route>
+          <Route path="/login" element={<UserLogin />}></Route>
+          <Route path="/register" element={<UserRegister />}></Route>
+          <Route path="/forgotpassword" element={<ForgotPassword />}></Route>
+          <Route
+            path="/resetpassword/:token"
+            element={<ResetPassword />}
+          ></Route>
+          <Route
+            path="/authentication/:token"
+            element={<VerificationPage />}
+          ></Route>
+          <Route path="/notification" element={<UserNotifications />}></Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </div>
+      <Box bottom="0" width="100%" position="absolute" height="16.3rem">
+        <Footer></Footer>
+      </Box>
+    </div>
   );
 }
 

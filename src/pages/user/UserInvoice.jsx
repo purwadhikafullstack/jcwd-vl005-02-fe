@@ -770,6 +770,28 @@ export default function UserInvoice() {
               </AlertDescription>
             </Alert>
           </>
+        ) : paymentData.clientToken &&
+          data[0].status == "Waiting for verification" ? (
+          <>
+            <Alert
+              status="warning"
+              variant="subtle"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+              textAlign="center"
+              height="250px"
+            >
+              <AlertIcon boxSize="40px" mr={0} />
+              <AlertTitle mt={4} mb={1} fontSize="lg">
+                Your payment is in verification process.
+              </AlertTitle>
+              <AlertDescription maxWidth="sm">
+                Thank you for purchasing our products. Please wait for the
+                verification process.
+              </AlertDescription>
+            </Alert>
+          </>
         ) : (
           <>
             <Alert

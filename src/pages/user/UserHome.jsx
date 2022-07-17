@@ -5,7 +5,7 @@ import BestSeller from "../../components/user/BestSeller";
 function UserHome() {
   return (
     <div>
-      <Box pt="5vh" height="92vh" margin="auto">
+      <Box margin="auto">
         <Banner></Banner>
       </Box>
       {/* <Box margin="auto">

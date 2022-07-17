@@ -12,7 +12,6 @@ import ReduxThunk from "redux-thunk";
 
 const storeReducer = createStore(Reducers);
 
-
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
@@ -20,5 +19,4 @@ root.render(
       <App />
     </Provider>
   </BrowserRouter>
-
 );

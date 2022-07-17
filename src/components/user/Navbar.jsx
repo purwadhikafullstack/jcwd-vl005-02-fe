@@ -25,6 +25,8 @@ import { Link as RRLink } from "react-router-dom";
 import { BiLogIn } from "react-icons/bi";
 import NotificationBadge from "./NotificationBadge";
 import { io } from "socket.io-client";
+import api from "../../services/api";
+import { useToastHook } from "./ToastNotification";
 
 const socket = io.connect("http://localhost:2000");
 
@@ -50,7 +52,10 @@ const NavLink = ({ menu, url }) => (
 
 export default function Navbar(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [notification, setNotification] = useState("");
+  const [notification, setNotification] = useState([]);
+  const [totalNotification, setTotalNotification] = useState(0);
+
+  const [state, newToast] = useToastHook();
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -81,9 +86,26 @@ export default function Navbar(props) {
 
     socket.on("receive_notification", (data) => {
       console.log("terima");
-      setNotification(data.message);
+      let url = `/user/history/unopened-notifications`;
+      newToast({
+        title: "Purchase notification",
+        message: data.message,
+        status: "info",
+      });
+      api
+        .get(url)
+        .then((res) => {
+          console.log(res);
+          setNotification(() => res.data.content);
+          setTotalNotification(res.data.details);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     });
   }, [socket, id]);
+
+  console.log(notification);
 
   return (
     <>
@@ -150,22 +172,25 @@ export default function Navbar(props) {
                     <MenuButton>
                       {" "}
                       <NotificationBadge
-                        // count={
-                        //   notifications.length != 0 && notifications.length
-                        // }
-                        count={notification != "" && 1}
+                        count={totalNotification != 0 && totalNotification}
                       ></NotificationBadge>
                     </MenuButton>
-                    {notification != "" ? (
+                    {notification.length ? (
                       <MenuList
                         zIndex="999999999"
                         position="absolute"
                         top="-10px"
                         right="-40px"
                       >
-                        <MenuItem onClick={() => setNotification("")}>
-                          {notification}
-                        </MenuItem>
+                        {notification.map((item) => (
+                          <MenuItem
+                            key={item.id}
+                            // onClick={() => setNotification("")}
+                          >
+                            {item.message}
+                          </MenuItem>
+                        ))}
+
                         <MenuDivider />
                         <RRLink
                           to="/notification"

@@ -135,7 +135,8 @@ export default function UserProducts() {
 
           <Container maxW="6xl" centerContent>
             <Wrap
-              spacing="20px"
+              spacingX="20px"
+              spacingY="40px"
               padding="50px 0"
               alignItems="center"
               justifyContent="center"
