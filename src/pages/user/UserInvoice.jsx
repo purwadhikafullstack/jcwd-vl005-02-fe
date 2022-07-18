@@ -53,6 +53,7 @@ import {
   IoSearchSharp,
 } from "react-icons/io5";
 import { AiFillMedicineBox } from "react-icons/ai";
+import { useDispatch } from "react-redux";
 
 function ModalMessage({ isOpen, onClose, status, subject, message }) {
   return (
@@ -133,6 +134,8 @@ export default function UserInvoice() {
     address: "",
   });
 
+  const dispatch = useDispatch();
+
   const { invoiceCode } = useParams();
 
   const [isOpen, setIsOpen] = useState({
@@ -161,6 +164,21 @@ export default function UserInvoice() {
       }
     });
   };
+
+  useEffect(() => {
+    let url = `/user/history/unopened-notifications`;
+    api
+      .get(url)
+      .then((res) => {
+        dispatch({
+          type: "UPDATE_BADGE",
+          payload: { totalNotificationBadge: res.data.details },
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   useEffect(() => {
     let url = `/user/checkout/get-invoice/${invoiceCode}`;

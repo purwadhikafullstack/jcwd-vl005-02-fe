@@ -30,10 +30,12 @@ import api from "../../services/api";
 import { io } from "socket.io-client";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 const socket = io.connect("http://localhost:2000");
 
 export default function UserNotifications() {
+  let dispatch = useDispatch();
   const [data, setData] = useState([]);
   const [totalData, setTotalData] = useState(0);
 
@@ -64,6 +66,10 @@ export default function UserNotifications() {
       .patch(url, { notificationId })
       .then((res) => {
         console.log(res);
+        dispatch({
+          type: "UPDATE_BADGE",
+          payload: { totalNotificationBadge: totalData },
+        });
       })
       .then(() => navigate(`/purchases/${code}`))
       .catch((err) => {

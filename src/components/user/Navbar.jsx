@@ -68,6 +68,11 @@ export default function Navbar(props) {
   const token = localStorage.getItem("token");
   // global state
   const { email, username, id } = useSelector((state) => state.user);
+  const { totalNotificationBadge } = useSelector(
+    (state) => state.notificationReducer
+  );
+  console.log(totalNotificationBadge);
+  // useSelector((state) => console.log(state));
 
   const dispatch = useDispatch();
   const onButtonNavigate = () => {
@@ -99,19 +104,23 @@ export default function Navbar(props) {
   };
 
   useEffect(() => {
-    socket.emit("join_channel", String(id));
     let url = `/user/history/unopened-notifications`;
     api
       .get(url)
       .then((res) => {
         console.log(res);
         setNotification(() => res.data.content);
-        setTotalNotification(res.data.details);
+        console.log(res.data.details);
+
+        dispatch({
+          type: "UPDATE_BADGE",
+          payload: { totalNotificationBadge: res.data.details },
+        });
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [id]);
+  }, []);
 
   // Menerima
   useEffect(() => {
@@ -130,7 +139,10 @@ export default function Navbar(props) {
         .then((res) => {
           console.log(res);
           setNotification(() => res.data.content);
-          setTotalNotification(res.data.details);
+          dispatch({
+            type: "UPDATE_BADGE",
+            payload: { totalNotificationBadge: res.data.details },
+          });
         })
         .catch((err) => {
           console.log(err);
@@ -205,7 +217,9 @@ export default function Navbar(props) {
                     <MenuButton>
                       {" "}
                       <NotificationBadge
-                        count={totalNotification != 0 && totalNotification}
+                        count={
+                          totalNotificationBadge != 0 && totalNotificationBadge
+                        }
                       ></NotificationBadge>
                     </MenuButton>
                     {notification.length ? (
