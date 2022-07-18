@@ -36,14 +36,20 @@ import { MdDashboard } from "react-icons/md";
 import { AiFillMedicineBox } from "react-icons/ai";
 import { GiMedicines } from "react-icons/gi";
 import { FaDollarSign } from "react-icons/fa";
+import { TbReportAnalytics} from "react-icons/tb";
+import { FaUserAlt } from "react-icons/fa"
 import { IconType } from "react-icons";
 import { ReactText } from "react";
+import { Button } from "antd";
+
 
 const LinkItems = [
   { name: "Dashboard", icon: MdDashboard, url: "/admin" },
   { name: "Products", icon: GiMedicines, url: "/admin/products" },
   { name: "Categories", icon: AiFillMedicineBox, url: "/admin/categories" },
-  { name: "Transaction", icon: FaDollarSign, url: "/admin/transaction" },
+  { name: "Users", icon: FaUserAlt, url: "/admin/users" },
+  { name: "Transactions", icon: FaDollarSign, url: "/admin/transactions" },
+  { name: "Reports", icon: TbReportAnalytics, url: "/admin/reports" },
   { name: "Favourites", icon: FiStar, url: "/admin" },
   { name: "Settings", icon: FiSettings, url: "/admin" },
 ];
@@ -192,6 +198,8 @@ const MobileNav = ({ onOpen, ...rest }) => {
         />
         <Flex alignItems={"center"}>
           <Menu>
+            {/* <Button> Login</Button>
+            <Button> register</Button> */}
             <MenuButton
               py={2}
               transition="all 0.3s"

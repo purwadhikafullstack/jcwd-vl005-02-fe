@@ -11,6 +11,7 @@ import UserProducts from "./pages/user/UserProducts";
 import Footer from "./components/user/Footer";
 import UserCart from "./pages/user/UserCart";
 import VerificationPage from "./pages/user/VerificationPage";
+import ResendEmailVerification from "./pages/user/UserResendVerification";
 import { useSelector } from "react-redux";
 import UserCheckout from "./pages/user/UserCheckout";
 import UserInvoice from "./pages/user/UserInvoice";
@@ -51,6 +52,7 @@ function UserRouter() {
         <Route path="/register" element={<UserRegister />}></Route>
         <Route path="/forgotpassword" element={<ForgotPassword />}></Route>
         <Route path="/resetpassword/:token" element={<ResetPassword />}></Route>
+        <Route path="/resending-the-verification-email" element={<ResendEmailVerification />}></Route>
         <Route
           path="/authentication/:token"
           element={<VerificationPage />}
