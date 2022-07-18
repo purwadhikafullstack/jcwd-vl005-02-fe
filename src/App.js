@@ -10,23 +10,27 @@ import Cookies from "js-cookie";
 
 const API_URL = process.env.REACT_APP_URL_API;
 function App() {
-  // IF NOT REMEMBER ME
+  // IF NOT REMEMBER ME USER
   const isChecked = localStorage.getItem("isChecked");
   const value = Cookies.get("loginstatus");
-
-  // console.log('cek:',isChecked)
-  // console.log(typeof isChecked); // string
-
-  // const a = false
-  // const b = true
-  // console.log(typeof a) // bool
 
   if (isChecked == "false") {
     console.log("STEP 1");
     if (!value) {
       localStorage.removeItem("token");
       localStorage.removeItem("isChecked");
-      // console.log("hapus token");
+    }
+  }
+
+  // IF NOT REMEMBER ME ADMIN
+  const isCheckedAdmin = localStorage.getItem("isCheckedAdmin");
+  const valueAdmin = Cookies.get("loginstatusadmin");
+
+  if (isCheckedAdmin == "false") {
+    console.log("STEP 1");
+    if (!valueAdmin) {
+      localStorage.removeItem("adminToken");
+      localStorage.removeItem("isCheckedAdmin");
     }
   }
 
@@ -39,9 +43,6 @@ function App() {
   // side effect
   useEffect(() => {
     const id = localStorage.getItem("token");
-
-    // console.log("myToken:", id);
-
     Axios.get(API_URL + `/users/keeplogin`, {
       headers: {
         "Auth-Token": id,
@@ -49,6 +50,25 @@ function App() {
     })
       .then((respond) => {
         dispatch({ type: "LOGIN", payload: respond.data });
+        // console.log("User Status:", respond.data.is_verified);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    const idAdmin = localStorage.getItem("adminToken");
+
+    // console.log("myToken:", id);
+
+    Axios.get(API_URL + `/admin/currentadmin`, {
+      headers: {
+        "Auth-Token-Admin": idAdmin,
+      },
+    })
+      .then((respond) => {
+        dispatch({ type: "ADMINLOGIN", payload: respond.data });
         // console.log("User Status:", respond.data.is_verified);
       })
       .catch((error) => {

@@ -11,7 +11,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import IconButton from "@mui/material/IconButton";
 import CheckCircleSharpIcon from "@mui/icons-material/CheckCircleSharp";
 import CancelSharpIcon from "@mui/icons-material/CancelSharp";
-import { Button as Tombol, DatePicker, version, Typography } from "antd";
+import { Button as Tombol, DatePicker, version, Typography,Space } from "antd";
 import { Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import Page from "../../components/admin/Page";
@@ -257,16 +257,17 @@ const AdminTransaction = () => {
       // headerAlign: "center",
       renderCell: (params) => {
         return (
-          <div className="action">
-            <IconButton onClick={() => handleApprove(params.row.id)}>
-              {/* <IconButton onClick={() => handleClickOpen(params.row.id)}> */}
-              <CheckCircleSharpIcon style={{ color: "green" }} />
-            </IconButton>
+          <Space className="actionusers">
+          <IconButton onClick={() => handleApprove(params.row.id)}>
+           {/* <IconButton onClick={() => handleClickOpen(params.row.id)}> */}
+           <CheckCircleSharpIcon style={{ color: "green" }} />
+         </IconButton>
 
-            <IconButton onClick={() => handleReject(params.row.id)}>
-              <CancelSharpIcon style={{ color: "red" }} />
-            </IconButton>
-          </div>
+         <IconButton onClick={() => handleReject(params.row.id)}>
+           <CancelSharpIcon style={{ color: "red" }} />
+         </IconButton>
+        
+       </Space>
         );
       },
     },
@@ -325,7 +326,8 @@ const AdminTransaction = () => {
         </div>
         <Box sx={{ height: 400, width: "100%" }}>
           <DataGrid
-            getRowId={(dataTransaction) => dataTransaction.id}
+            // getRowId={(dataTransaction) => dataTransaction.id}
+            rowHeight={100}
             rows={data}
             columns={columns}
             autoHeight={true}

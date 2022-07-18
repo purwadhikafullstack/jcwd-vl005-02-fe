@@ -29,6 +29,7 @@ export default function AdminReports() {
   const [currentMonth, setCurrentMonth] = useState(null);
   const [numberOfSales, setNumberOfSales] = useState(null);
   const [dataTopThree, setDataTopThree] = useState([]);
+  const [dataTransaction, setDataTransaction] = useState([]);
 
   const columns = [
     {
@@ -81,8 +82,100 @@ export default function AdminReports() {
       // type: "dateTime",
     },
   ];
+  const columnstransactions = [
+    {
+      field: "id",
+      identity: true,
+      headerName: "ID",
+      width: 80,
+      // headerAlign: "center",
+    },
+    {
+      field: "code",
+      headerName: "Code",
+      width: 100,
+      editable: false,
+      // headerAlign: "center",
+    },
+    {
+      field: "customer_name",
+      headerName: "Name",
+      width: 150,
+      editable: false,
+      // headerAlign: "center",
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      width: 100,
+      editable: false,
+      renderCell: (params) => {
+        return (
+          <>
+            <button className={"widgetLgButton " + params.row.status}>
+              {params.row.status}
+            </button>
+          </>
+        );
+      },
+      // headerAlign: "center",
+    },
+    {
+      field: "date",
+      headerName: "Date",
+      width: 180,
+      editable: false,
+      valueFormatter: (params) => moment(params?.value).format("LLL"),
+      // headerAlign: "center",
+    },
+    {
+      field: "shopping_amount",
+      headerName: "Shopping Amount",
+      width: 150,
+      editable: false,
+      valueFormatter: (params) =>
+        new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+        }).format(params?.value),
+      // headerAlign: "center",
+    },
+    {
+      field: "shipping_cost",
+      headerName: "Shopping Cost",
+      width: 150,
+      editable: false,
+      valueFormatter: (params) =>
+        new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+        }).format(params?.value),
+      // headerAlign: "center",
+    },
+    {
+      field: "total_payment",
+      headerName: "Total Payment",
+      width: 150,
+      editable: false,
+      valueFormatter: (params) =>
+        new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+        }).format(params?.value),
+      // headerAlign: "center",
+    },
+    {
+      field: "payment_method",
+      headerName: "Payment Methode",
+      width: 150,
+      editable: false,
+      // headerAlign: "center",
+    },
+  ];
 
   const PickerWithType = ({ type, onChange }) => {
+
+
     const handleDatePicked = (date, dateString) => {
       console.log(dateString);
       Axios.post(API_URL + `/admin/getreportbydate`, { date: dateString })
@@ -95,6 +188,7 @@ export default function AdminReports() {
           setNumberOfSales(respond.data.number_of_sales);
           setCurrentMonth(respond.data.date);
           setDataTopThree(respond.data.top_three);
+          setDataTransaction(respond.data.data_transactions)
         })
         .catch((error) => {
           console.log(error);
@@ -113,6 +207,7 @@ export default function AdminReports() {
           setNumberOfSales(respond.data.number_of_sales);
           setCurrentMonth(respond.data.month);
           setDataTopThree(respond.data.top_three);
+          setDataTransaction(respond.data.data_transactions);
         })
         .catch((error) => {
           console.log(error);
@@ -129,20 +224,15 @@ export default function AdminReports() {
           setProfit(respond.data.profit);
           setNumberOfSales(respond.data.number_of_sales);
           setCurrentMonth(respond.data.year);
+          setDataTransaction(respond.data.data_transactions)
           setDataTopThree(respond.data.top_three);
+          
         })
         .catch((error) => {
           console.log(error);
         });
     };
 
-    // const monthPicked = (month,monthString) => {
-    //   alert(monthString)
-    // }
-
-    // const bulan = console.log('bulan dipilih')
-    // console.log(onChange)
-    // if (type === "time") return <TimePicker onChange={onChange} />;
     if (type === "date") return <DatePicker onChange={handleDatePicked} />;
     if (type === "month")
       return <DatePicker onChange={handleMonthPicked} picker="month" />;
@@ -155,13 +245,14 @@ export default function AdminReports() {
   useEffect(() => {
     Axios.get(API_URL + `/admin/report`)
       .then((respond) => {
-        console.log("RESPON:", respond.data);
+        console.log("RESPON:", respond.data.current_month);
         setRevenue(respond.data.revenue);
         setCost(respond.data.cost);
         setProfit(respond.data.profit);
         setNumberOfSales(respond.data.number_of_sales);
         setCurrentMonth(respond.data.current_month);
         setDataTopThree(respond.data.top_three);
+        setDataTransaction(respond.data.data_transactions)
 
         // dispatch({ type: "DATA_TRANSACTIONS", payload: respond.data });
 
@@ -238,15 +329,15 @@ export default function AdminReports() {
             </Grid>
           </Grid>
           <Box marginTop={"50px"} sx={{ height: 400, width: "100%" }}>
-          <div className="title">
+            <div className="title">
               <Typography variant="h4" sx={{ mb: 5 }}>
-                Belum Fix
+                Reports Data
               </Typography>
             </div>
             <DataGrid
               getRowId={(dataTransaction) => dataTransaction.id}
-              rows={[]}
-              columns={columns}
+              rows={dataTransaction}
+              columns={columnstransactions}
               autoHeight={true}
               pageSize={5}
               rowsPerPageOptions={[10]}
@@ -254,7 +345,7 @@ export default function AdminReports() {
               disableSelectionOnClick
             />
           </Box>
-          <Box  sx={{ height: 400, width: "100%" }}>
+          <Box marginTop={"10%"} sx={{ height: 400, width: "100%" }}>
             <div className="title">
               <Typography variant="h4" sx={{ mb: 5 }}>
                 Top 3 Most Sold

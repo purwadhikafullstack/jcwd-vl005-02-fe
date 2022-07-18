@@ -37,6 +37,12 @@
   padding: 20px;
 }
 
+.actionusers {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 .userTitleContainer {
   display: flex;
   align-items: center;

@@ -11,7 +11,14 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import IconButton from "@mui/material/IconButton";
 import CheckCircleSharpIcon from "@mui/icons-material/CheckCircleSharp";
 import CancelSharpIcon from "@mui/icons-material/CancelSharp";
-import { Button as Tombol, DatePicker, version, Typography } from "antd";
+import {
+  Button as Tombol,
+  DatePicker,
+  version,
+  Typography,
+  Button,
+  Space,
+} from "antd";
 import { Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import Page from "../../components/admin/Page";
@@ -22,6 +29,9 @@ const AdminManageUsers = () => {
   const API_URL = process.env.REACT_APP_URL_API;
   const [pageSize, setPageSize] = useState(5);
   const [usersData, setUsersData] = useState([]);
+  const [status, setStatus] = useState("");
+  const dispatch = useDispatch();
+  const selector = useSelector;
   const columns = [
     {
       field: "id",
@@ -95,19 +105,86 @@ const AdminManageUsers = () => {
       headerName: "Action",
       width: 100,
       editable: false,
+      renderCell: (params) => {
+        return (
+          <Space className="actionusers">
+            <IconButton  onClick={() => handleActive(params.row.id)} >
+              <CheckCircleSharpIcon style={{ color: "green" }} />
+            </IconButton>
+
+            <IconButton onClick={() => handleBanned(params.row.id)}>
+              <CancelSharpIcon style={{ color: "red" }} />
+            </IconButton>
+          </Space>
+        );
+      },
     },
   ];
+
+
+  const handleBanned = (id) => {
+    console.log("id:", id);
+    // const test = ;
+    // console.log()
+    setStatus("banned");
+    // console.log(await getStatus())
+    setStatus((statusbaru) => {
+      console.log("test:", statusbaru);
+      const newStatus = {
+        id: id,
+        is_active: statusbaru,
+      };
+      Axios.patch(API_URL + `/admin/changeuserstatus`, newStatus)
+        .then((respond) => {
+          // save user data to global state
+          dispatch({ type: "DATA_USERS", payload: respond.data });
+
+          console.log(respond.data);
+          // setDataTransaction(respond.data);
+          // console.log("data:", respond.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      return status;
+    });
+  };
+  const handleActive = (id) => {
+    console.log("id:", id);
+    // const test = ;
+    // console.log()
+    setStatus("active");
+    // console.log(await getStatus())
+    setStatus((statusbaru) => {
+      console.log("test:", statusbaru);
+      const newStatus = {
+        id: id,
+        is_active: statusbaru,
+      };
+      Axios.patch(API_URL + `/admin/changeuserstatus`, newStatus)
+        .then((respond) => {
+          // save user data to global state
+          dispatch({ type: "DATA_USERS", payload: respond.data });
+
+          console.log(respond.data);
+          // setDataTransaction(respond.data);
+          // console.log("data:", respond.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      return status;
+    });
+  };
 
   useEffect(() => {
     Axios.get(API_URL + `/admin/users`)
       .then((respond) => {
         setUsersData(respond.data);
-        // console.log(respond.data);
-        // console.log("data:", respond.data);
-
         // save user data to global state
-        // dispatch({ type: "DATA_TRANSACTIONS", payload: respond.data });
-
+        dispatch({ type: "DATA_USERS", payload: respond.data });
         setUsersData(respond.data);
         console.log(respond.data);
       })
@@ -115,6 +192,8 @@ const AdminManageUsers = () => {
         console.log(error);
       });
   }, []);
+
+  const data = selector((state) => state.manageUsersReducer);
   return (
     <ThemeProvider>
       <Page title="Manage Users">
@@ -124,7 +203,8 @@ const AdminManageUsers = () => {
         <Box sx={{ height: 400, width: "100%" }}>
           <DataGrid
             // getRowId={(dataTransaction) => dataTransaction.id}
-            rows={usersData}
+            rowHeight={100}
+            rows={data}
             columns={columns}
             autoHeight={true}
             // checkboxSelection
