@@ -324,7 +324,7 @@ const AdminTransaction = () => {
     {
       field: "action",
       headerName: "Action",
-      width: 80,
+      width: 100,
       editable: false,
       // headerAlign: "center",
       renderCell: (params) => {
