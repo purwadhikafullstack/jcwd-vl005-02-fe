@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 import { ReactNode, useEffect, useState } from "react";
+=======
+import { ReactNode } from "react";
+import React, { useState, useEffect } from "react";
+>>>>>>> 2c58f7f3a8381ce0cdf270b3a89b4230320b8ed5
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Cookies from "js-cookie";
@@ -29,6 +34,7 @@ import {
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { AiFillMedicineBox } from "react-icons/ai";
 import { Link as RRLink } from "react-router-dom";
+<<<<<<< HEAD
 import { BiLogIn } from "react-icons/bi";
 import NotificationBadge from "./NotificationBadge";
 import { io } from "socket.io-client";
@@ -36,6 +42,8 @@ import api from "../../services/api";
 import { useToastHook } from "./ToastNotification";
 
 const socket = io.connect("http://localhost:2000");
+=======
+>>>>>>> 2c58f7f3a8381ce0cdf270b3a89b4230320b8ed5
 
 const Links = [
   { menu: "Home", url: "/" },
@@ -58,10 +66,13 @@ const NavLink = ({ menu, url }) => (
 
 export default function Navbar(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+<<<<<<< HEAD
   const [notification, setNotification] = useState([]);
   const [totalNotification, setTotalNotification] = useState(0);
 
   const [state, newToast] = useToastHook();
+=======
+>>>>>>> 2c58f7f3a8381ce0cdf270b3a89b4230320b8ed5
   const [confirm, setConfirm] = useState(false);
 
   const navigate = useNavigate();
