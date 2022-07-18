@@ -8,15 +8,13 @@ export default function transactionsReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     // export const  = "DATA_TRANSACTIONS";
     case DATA_TRANSACTIONS:
-      return [...action.payload];
-    case DATA_TRANSACTIONS_MONTH:
-      return [...state, ...action.payload];
+      return action.payload
+    case STATUS:
+      return action.payload;
 
     default:
       return state;
   }
 }
-
-
 
 // export default transactionsReducer;

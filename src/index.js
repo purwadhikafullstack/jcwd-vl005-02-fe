@@ -9,14 +9,17 @@ import { BrowserRouter } from "react-router-dom";
 import userReducer from "./redux/reducers/user-reducer";
 import { createStore, combineReducers, applyMiddleware } from "redux";
 import ReduxThunk from "redux-thunk";
+import { HelmetProvider } from "react-helmet-async";
 
 const storeReducer = createStore(Reducers);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <BrowserRouter>
-    <Provider store={storeReducer}>
-      <App />
-    </Provider>
-  </BrowserRouter>
+  <HelmetProvider>
+    <BrowserRouter>
+      <Provider store={storeReducer}>
+        <App />
+      </Provider>
+    </BrowserRouter>
+  </HelmetProvider>
 );

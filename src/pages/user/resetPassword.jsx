@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 import Axios from "axios";
 import {
   Button,
@@ -22,14 +23,15 @@ export default function ResetPassword() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const toast = useToast();
-  const email = useRef("");
   const password = useRef("");
   const repassword = useRef("");
+
+  const params = useParams();
 
   const onButtonSubmit = () => {
     // input validation
     if (
-      email.current.value === "" ||
+      // email.current.value === "" ||
       password.current.value === "" ||
       repassword.current.value === ""
     ) {
@@ -42,32 +44,48 @@ export default function ResetPassword() {
       });
     }
 
-    const newUser = {
-      email: email.current.value,
+    const newPass = {
+      // email: email.current.value,
       password: password.current.value,
       repassword: repassword.current.value,
     };
-    console.log(newUser);
+    // console.log(newUser);
 
     setLoading(true);
-    Axios.post(API_URL + `/users/resetpassword`, newUser).then((respond) => {
-      console.log("Respond:", respond.data);
+    Axios.post(API_URL + `/users/resetpassword`, newPass, {
+      headers: {
+        Authorization: `Bearer ${params.token}`,
+      },
+    })
+      .then((respond) => {
+        console.log("Respond:", respond.data);
+        console.log(respond.data);
+        // reset state
+        password.current.value = "";
+        repassword.current.value = "";
+        toast({
+          title: "Reset Password Success",
+          description: respond.data,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
 
-      // reset state
-
-      email.current.value = "";
-      password.current.value = "";
-      repassword.current.value = "";
-      toast({
-        title: "Reset Password Success",
-        description: respond.data,
-        status: "success",
-        duration: 3000,
-        isClosable: true,
+        setLoading(false);
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.log(error.response.data);
+          toast({
+            title: "Error",
+            description: error.response.data,
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        }
+        setLoading(false);
       });
-
-      setLoading(false);
-    });
   };
 
   return (
@@ -90,7 +108,7 @@ export default function ResetPassword() {
         <Heading lineHeight={1.1} fontSize={{ base: "2xl", md: "3xl" }}>
           Enter new password
         </Heading>
-        <FormControl id="email" isRequired>
+        {/* <FormControl id="email" isRequired>
           <FormLabel>Email address</FormLabel>
           <Input
             ref={email}
@@ -98,7 +116,7 @@ export default function ResetPassword() {
             _placeholder={{ color: "gray.500" }}
             type="email"
           />
-        </FormControl>
+        </FormControl> */}
         <FormControl id="password" isRequired>
           <FormLabel>Password</FormLabel>
           <InputGroup>
@@ -130,12 +148,12 @@ export default function ResetPassword() {
         <Stack spacing={6}>
           <Button
             onClick={onButtonSubmit}
-            bgGradient="linear(to-r, red.400,pink.400)"
+            fontFamily={"heading"}
+            mt={8}
+            w={"full"}
+            bg={"red.500"}
             color={"white"}
-            _hover={{
-              bgGradient: "linear(to-r, red.400,pink.400)",
-              boxShadow: "xl",
-            }}
+            _hover={{ bg: "red.400" }}
           >
             Submit
           </Button>

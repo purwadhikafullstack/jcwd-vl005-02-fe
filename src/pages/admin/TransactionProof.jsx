@@ -1,54 +1,56 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
-import { Link } from "react-router-dom";
-import "./index.css";
+import Axios from "axios";
+import ThemeProvider from "../../theme";
+// import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { URL_API } from "../../helpers";
-import api from "../../services/api";
+import { Button as Tombol, DatePicker, version, Typography } from "antd";
+import "./report&transactions.css";
+const { Title } = Typography;
 
 export default function TransactionProof() {
-  const [url, setUrl] = useState("");
+  const API_URL = process.env.REACT_APP_URL_API;
+  const [bukti, setBukti] = useState("");
+  const params = useParams();
   const navigate = useNavigate();
-  const onButtonBack = () => {
-    navigate("/admin/transaction");
-  };
-
-  const invoiceId = useParams().id;
 
   useEffect(() => {
-    let fetch = `/admin/transaction/${invoiceId}`;
-
-    api
-      .get(fetch)
-      .then((res) => {
-        setUrl(() => res.data);
+    console.log("my parameter:", params.invoiceId);
+    Axios.get(API_URL + `/admin/transaction/${params.invoiceId}`)
+      .then((respond) => {
+        console.log("bukti pembayaran:", respond.data);
+        setBukti(respond.data);
       })
-      .catch((err) => {
-        // console.log("error");
-        console.log(err);
+      .catch((error) => {
+        console.log(error);
       });
   }, []);
 
-  console.log(url);
-
+  const onButtonBack = () => {
+    navigate("/admin/transactions");
+  };
   return (
-    <div className="user">
-      <div className="userTitleContainer">
-        <h1 className="UserTitle">Bukti Pembayaran</h1>
-        {/* <Link to="/newUser">
-            <button className="userAddButton">Create</button>
-          </Link> */}
-      </div>
-      <div className="userContainer">
-        <div className="userUpdate">
-          <img className="userUpdateImg" src={`${URL_API}/${url}`} alt="none" />
+    <ThemeProvider>
+      <div className="user">
+        <div className="userTitleContainer">
+          {/* <h1 className="UserTitle">Bukti Pembayaran</h1> */}
+          <Title level={3}>Payment Proof</Title>
+        </div>
+        <div className="userContainer">
+          <div className="userUpdate">
+            <img
+              className="userUpdateImg"
+              src={API_URL + `${bukti}`}
+              alt="none"
+            />
+          </div>
+        </div>
+        <div className="back">
+          <button onClick={onButtonBack} className="backButton">
+            Back
+          </button>
         </div>
       </div>
-      <div className="back">
-        <button onClick={onButtonBack} className="backButton">
-          Back
-        </button>
-      </div>
-    </div>
+    </ThemeProvider>
   );
 }

@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import Cookies from "js-cookie";
 import {
   Box,
   Flex,
@@ -18,6 +19,12 @@ import {
   useColorModeValue,
   Stack,
   Text,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { AiFillMedicineBox } from "react-icons/ai";
@@ -34,7 +41,6 @@ const Links = [
   { menu: "Home", url: "/" },
   { menu: "Shop", url: "/shop" },
 ];
-
 const NavLink = ({ menu, url }) => (
   <Link
     px={3}
@@ -56,6 +62,7 @@ export default function Navbar(props) {
   const [totalNotification, setTotalNotification] = useState(0);
 
   const [state, newToast] = useToastHook();
+  const [confirm, setConfirm] = useState(false);
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -74,13 +81,25 @@ export default function Navbar(props) {
   const onButtonRegister = () => {
     navigate("/register");
   };
+
   const onButtonLogout = () => {
+    setConfirm(true);
+  };
+  const onBtnCancelConfirm = () => {
+    setConfirm(false);
+  };
+  // console.log(confirm);
+  const onConfirmButtonLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("isChecked");
+    Cookies.remove("loginstatus");
     dispatch({ type: "LOGOUT" });
+    setConfirm(false);
     navigate("/login");
   };
 
   useEffect(() => {
+    socket.emit("join_channel", String(id));
     let url = `/user/history/unopened-notifications`;
     api
       .get(url)
@@ -92,7 +111,7 @@ export default function Navbar(props) {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [id]);
 
   // Menerima
   useEffect(() => {
@@ -256,8 +275,37 @@ export default function Navbar(props) {
                     <MenuItem>My Purchase</MenuItem>
                   </RRLink>
 
+                  {/* <MenuItem>My Purchase</MenuItem> */}
                   <MenuDivider />
                   <MenuItem onClick={onButtonLogout}>Logout</MenuItem>
+
+                  <AlertDialog isOpen={confirm}>
+                    <AlertDialogOverlay>
+                      <AlertDialogContent>
+                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                          Confirm Logout
+                        </AlertDialogHeader>
+
+                        <AlertDialogBody>
+                          Are you sure you want to Logout?
+                        </AlertDialogBody>
+
+                        <AlertDialogFooter>
+                          <Button onClick={onBtnCancelConfirm}>Cancel</Button>
+                          <Button
+                            onClick={onConfirmButtonLogout}
+                            w={"100px"}
+                            bg={"red.500"}
+                            color={"white"}
+                            _hover={{ bg: "red.600" }}
+                            ml={3}
+                          >
+                            Yes
+                          </Button>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialogOverlay>
+                  </AlertDialog>
                 </MenuList>
               </Menu>
             </Flex>

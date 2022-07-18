@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 // import { useDispatch } from "react-redux";
 import { useSelector, useDispatch } from "react-redux";
+import moment from "moment";
+import ThemeProvider from "../../theme";
 import Axios from "axios";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
@@ -12,13 +14,7 @@ import CancelSharpIcon from "@mui/icons-material/CancelSharp";
 import { Button as Tombol, DatePicker, version, Typography } from "antd";
 import { Link } from "react-router-dom";
 import "antd/dist/antd.css";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-
+import Page from "../../components/admin/Page";
 import { io } from "socket.io-client";
 
 const socket = io.connect("http://localhost:2000");
@@ -35,6 +31,7 @@ const AdminTransaction = () => {
   const [status, setStatus] = useState("");
   const dispatch = useDispatch();
   const selector = useSelector;
+  const [pageSize, setPageSize] = useState(5);
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -46,14 +43,6 @@ const AdminTransaction = () => {
   const sendNotification = (message, channel) => {
     console.log("Send notif");
     socket.emit("send_notification", { message, channel });
-  };
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
   };
 
   const onHandleMonth = (date, monthPicked) => {
@@ -82,6 +71,7 @@ const AdminTransaction = () => {
         dispatch({ type: "DATA_TRANSACTIONS", payload: respond.data });
         setDataTransaction(respond.data);
         console.log("data:", respond.data);
+        setMonth("");
       })
       .catch((error) => {
         console.log(error);
@@ -100,6 +90,8 @@ const AdminTransaction = () => {
         // console.log(respond.data);
         setDataTransaction(respond.data);
         // console.log("data:", respond.data);
+        // RESET STATE
+        // month.current.value = "";
       })
       .catch((error) => {
         console.log(error);
@@ -110,11 +102,15 @@ const AdminTransaction = () => {
     Axios.get(API_URL + `/admin/transaction`)
       .then((respond) => {
         // save user data to global state
-        // dispatch({ type: "DATA_TRANSACTIONS", payload: respond.data });
+        dispatch({ type: "DATA_TRANSACTIONS", payload: respond.data });
 
         console.log(respond.data);
         setDataTransaction(respond.data);
         console.log("data:", respond.data);
+
+        setMonth("");
+        setstartDate("");
+        setendtDate("");
       })
       .catch((error) => {
         console.log(error);
@@ -123,94 +119,93 @@ const AdminTransaction = () => {
 
   // Handle Approve
   const handleApprove = (id, user_id, code) => {
-    console.log("id:", id);
-    // const test = "Approved";
-    // console.log()
-    setStatus("Approved");
-    // console.log(await getStatus())
+    console.log("id:", id, user_id, code);
 
-    // solusi update state click pertama
-    setStatus((statusbaru) => {
-      console.log("test:", statusbaru);
-      const newStatus = {
-        id: id,
-        status: statusbaru,
-        month: month,
-        startDate: startDate,
-        endDate: endDate,
-        userId: user_id,
-        message: `Your purchase with code ${code} has been approved`,
-        invoiceHeaderId: id,
-        invoiceHeaderCode: code,
-      };
-      Axios.patch(
-        API_URL + `/admin/change-transaction-status-approved`,
-        newStatus
-      )
-        .then((respond) => {
-          // save user data to global state
-          // dispatch({ type: "STATUS", payload: respond.data });
+    // setStatus((statusbaru) => {
+    //   console.log("test:", statusbaru);
+    const newStatus = {
+      id: id,
+      status: "Approved",
+      month: month,
+      startDate: startDate,
+      endDate: endDate,
+      userId: user_id,
+      message: `Your purchase with code ${code} has been approved`,
+      invoiceHeaderId: id,
+      invoiceHeaderCode: code,
+    };
+    console.log(newStatus);
+    // joinRoom(String(user_id));
+    // sendNotification(
+    //   `Your purchase ${code} has been approved`,
+    //   String(user_id)
+    // );
+    Axios.patch(
+      API_URL + `/admin/change-transaction-status-approved`,
+      newStatus
+    )
+      .then((respond) => {
+        // save user data to global state
+        dispatch({ type: "DATA_TRANSACTIONS", payload: respond.data });
+        console.log("MASUK");
+        console.log(respond.data);
+        setDataTransaction(respond.data);
+        // console.log("data:", respond.data);
+        joinRoom(String(user_id));
+        sendNotification(
+          `Your purchase ${code} has been approved`,
+          String(user_id)
+        );
+      })
+      .catch((error) => {
+        console.log("masuk error");
+        console.log(error);
+      });
 
-          console.log(respond.data);
-          setDataTransaction(respond.data);
-          // console.log("data:", respond.data);
-          joinRoom(String(user_id));
-          sendNotification(
-            `Your purchase ${code} has been approved`,
-            String(user_id)
-          );
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      setOpen(false);
-
-      return status;
-    });
+    return status;
   };
+
   // Handle reject
   const handleReject = (id, user_id, code) => {
     console.log("id:", id);
     // const test = ;
     // console.log()
-    setStatus("Rejected");
+    // setStatus("Rejected");
     // console.log(await getStatus())
-    setStatus((statusbaru) => {
-      console.log("test:", statusbaru);
-      const newStatus = {
-        id: id,
-        status: statusbaru,
-        month: month,
-        startDate: startDate,
-        endDate: endDate,
-        userId: user_id,
-        message: `Your purchase with code ${code} has been rejected`,
-        invoiceHeaderId: id,
-        invoiceHeaderCode: code,
-      };
-      Axios.patch(
-        API_URL + `/admin/change-transaction-status-rejected`,
-        newStatus
-      )
-        .then((respond) => {
-          // save user data to global state
-          // dispatch({ type: "STATUS", payload: respond.data });
 
-          console.log(respond.data);
-          setDataTransaction(respond.data);
-          // console.log("data:", respond.data);
-          joinRoom(String(user_id));
-          sendNotification(
-            `Your purchase ${code} has been rejected`,
-            String(user_id)
-          );
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    const newStatus = {
+      id: id,
+      status: "Rejected",
+      month: month,
+      startDate: startDate,
+      endDate: endDate,
+      userId: user_id,
+      message: `Your purchase with code ${code} has been rejected`,
+      invoiceHeaderId: id,
+      invoiceHeaderCode: code,
+    };
+    Axios.patch(
+      API_URL + `/admin/change-transaction-status-rejected`,
+      newStatus
+    )
+      .then((respond) => {
+        // save user data to global state
+        dispatch({ type: "DATA_TRANSACTIONS", payload: respond.data });
 
-      return status;
-    });
+        console.log(respond.data);
+        setDataTransaction(respond.data);
+        // console.log("data:", respond.data);
+        joinRoom(String(user_id));
+        sendNotification(
+          `Your purchase ${code} has been rejected`,
+          String(user_id)
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    return status;
   };
 
   console.log(dataTransaction);
@@ -220,15 +215,15 @@ const AdminTransaction = () => {
       field: "code",
       identity: true,
       headerName: "Invoice Code",
-      width: 90,
-      headerAlign: "center",
+      width: 150,
+      // headerAlign: "center",
     },
     {
       field: "username",
       headerName: "Customer Name",
-      width: 200,
+      width: 150,
       editable: false,
-      headerAlign: "center",
+      // headerAlign: "center",
     },
 
     {
@@ -236,7 +231,7 @@ const AdminTransaction = () => {
       headerName: "Status",
       width: 200,
       editable: false,
-      headerAlign: "center",
+      // headerAlign: "center",
       renderCell: (params) => {
         function mysqlDate(date = new Date()) {
           return date.toISOString().split("T")[0];
@@ -306,9 +301,9 @@ const AdminTransaction = () => {
     {
       field: "picture",
       headerName: "Payment Proof",
-      width: 120,
+      width: 100,
       editable: false,
-      headerAlign: "center",
+      // headerAlign: "center",
       renderCell: (params) => {
         return (
           <>
@@ -331,7 +326,7 @@ const AdminTransaction = () => {
       headerName: "Action",
       width: 100,
       editable: false,
-      headerAlign: "center",
+      // headerAlign: "center",
       renderCell: (params) => {
         return (
           <div className="action">
@@ -355,30 +350,6 @@ const AdminTransaction = () => {
                 <CheckCircleSharpIcon style={{ color: "grey" }} />
               </IconButton>
             )}
-
-            {/* <Dialog
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-            >
-              <DialogTitle id="alert-dialog-title">
-                {"Use Google's location service?"}
-              </DialogTitle>
-              <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                  Let Google help apps determine location. This means sending
-                  anonymous location data to Google, even when no apps are
-                  running.
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleClose}>Disagree</Button>
-                <Button onClick={() => handleApprove(params.row.id)} autoFocus>
-                  Agree
-                </Button>
-              </DialogActions>
-            </Dialog> */}
 
             {params.row.status != "Approved" &&
             params.row.status != "Rejected" ? (
@@ -421,11 +392,10 @@ const AdminTransaction = () => {
       });
   }, []);
   const data = selector((state) => state.transactionsReducer);
-  // console.log("data globalku:", data);
-  // setDataTransaction(data)
 
   return (
-    <>
+    <ThemeProvider>
+      {/* <Page title="Transactions"> */}
       <div className="App">
         <Title level={3}>Transactions</Title>
         <DatePicker
@@ -459,16 +429,19 @@ const AdminTransaction = () => {
       <Box sx={{ height: 400, width: "100%" }}>
         <DataGrid
           getRowId={(dataTransaction) => dataTransaction.id}
-          rows={dataTransaction}
+          rows={data}
           columns={columns}
           autoHeight={true}
-          pageSize={5}
-          rowsPerPageOptions={[10]}
           // checkboxSelection
           disableSelectionOnClick
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[5, 10, 20, 100]}
+          pagination
         />
       </Box>
-    </>
+      {/* </Page> */}
+    </ThemeProvider>
   );
 };
 
