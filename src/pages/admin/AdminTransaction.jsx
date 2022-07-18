@@ -143,7 +143,10 @@ const AdminTransaction = () => {
         invoiceHeaderId: id,
         invoiceHeaderCode: code,
       };
-      Axios.patch(API_URL + `/admin/changetransactionstatus`, newStatus)
+      Axios.patch(
+        API_URL + `/admin/change-transaction-status-approved`,
+        newStatus
+      )
         .then((respond) => {
           // save user data to global state
           // dispatch({ type: "STATUS", payload: respond.data });
@@ -185,7 +188,10 @@ const AdminTransaction = () => {
         invoiceHeaderId: id,
         invoiceHeaderCode: code,
       };
-      Axios.patch(API_URL + `/admin/changetransactionstatus`, newStatus)
+      Axios.patch(
+        API_URL + `/admin/change-transaction-status-rejected`,
+        newStatus
+      )
         .then((respond) => {
           // save user data to global state
           // dispatch({ type: "STATUS", payload: respond.data });
@@ -329,7 +335,9 @@ const AdminTransaction = () => {
       renderCell: (params) => {
         return (
           <div className="action">
-            {params.row.created_at ? (
+            {params.row.created_at &&
+            params.row.status != "Approved" &&
+            params.row.status != "Rejected" ? (
               <IconButton
                 onClick={() =>
                   handleApprove(
@@ -371,13 +379,25 @@ const AdminTransaction = () => {
                 </Button>
               </DialogActions>
             </Dialog> */}
-            <IconButton
-              onClick={() =>
-                handleReject(params.row.id, params.row.user_id, params.row.code)
-              }
-            >
-              <CancelSharpIcon style={{ color: "red" }} />
-            </IconButton>
+
+            {params.row.status != "Approved" &&
+            params.row.status != "Rejected" ? (
+              <IconButton
+                onClick={() =>
+                  handleReject(
+                    params.row.id,
+                    params.row.user_id,
+                    params.row.code
+                  )
+                }
+              >
+                <CancelSharpIcon style={{ color: "red" }} />
+              </IconButton>
+            ) : (
+              <IconButton>
+                <CancelSharpIcon style={{ color: "grey" }} />
+              </IconButton>
+            )}
           </div>
         );
       },

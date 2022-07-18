@@ -80,6 +80,20 @@ export default function Navbar(props) {
     navigate("/login");
   };
 
+  useEffect(() => {
+    let url = `/user/history/unopened-notifications`;
+    api
+      .get(url)
+      .then((res) => {
+        console.log(res);
+        setNotification(() => res.data.content);
+        setTotalNotification(res.data.details);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   // Menerima
   useEffect(() => {
     socket.emit("join_channel", String(id));
