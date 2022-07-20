@@ -76,51 +76,75 @@ const UserPurchases = () => {
         </Heading>
       </Stack>
       <Stack mt={10}>
-        <TableContainer>
-          <Table variant="striped" colorScheme="gray">
-            <Thead>
-              <Tr>
-                <Th>Invoice Code</Th>
-                <Th>Date</Th>
-                <Th isNumeric>Amount</Th>
-                <Th isNumeric>Shipping Cost</Th>
-                <Th isNumeric>Total Payment</Th>
-                <Th>Payment Method</Th>
-                <Th>Status</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {data.map((item, index) => {
-                return (
-                  <Tr key={index}>
-                    <Td>
-                      <Link
-                        style={{ color: "blue", textDecoration: "underline" }}
-                        to={`${item.code}`}
-                      >
-                        {item.code}
-                      </Link>
-                    </Td>
-                    <Td>{item.date}</Td>
-                    <Td isNumeric>
-                      Rp{" "}
-                      {parseInt(item.shopping_amount).toLocaleString("id-ID")}
-                    </Td>
-                    <Td isNumeric>
-                      Rp {parseInt(item.shipping_cost).toLocaleString("id-ID")}
-                    </Td>
-                    <Td isNumeric>
-                      Rp {parseInt(item.total_payment).toLocaleString("id-ID")}
-                    </Td>
+        {totalData ? (
+          <TableContainer>
+            <Table variant="striped" colorScheme="gray">
+              <Thead>
+                <Tr>
+                  <Th>Invoice Code</Th>
+                  <Th>Date</Th>
+                  <Th isNumeric>Amount</Th>
+                  <Th isNumeric>Shipping Cost</Th>
+                  <Th isNumeric>Total Payment</Th>
+                  <Th>Payment Method</Th>
+                  <Th>Status</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {data.map((item, index) => {
+                  return (
+                    <Tr key={index}>
+                      <Td>
+                        <Link
+                          style={{ color: "blue", textDecoration: "underline" }}
+                          to={`${item.code}`}
+                        >
+                          {item.code}
+                        </Link>
+                      </Td>
+                      <Td>{item.date}</Td>
+                      <Td isNumeric>
+                        Rp{" "}
+                        {parseInt(item.shopping_amount).toLocaleString("id-ID")}
+                      </Td>
+                      <Td isNumeric>
+                        Rp{" "}
+                        {parseInt(item.shipping_cost).toLocaleString("id-ID")}
+                      </Td>
+                      <Td isNumeric>
+                        Rp{" "}
+                        {parseInt(item.total_payment).toLocaleString("id-ID")}
+                      </Td>
 
-                    <Td>{item.payment_method}</Td>
-                    <Td>{item.status}</Td>
-                  </Tr>
-                );
-              })}
-            </Tbody>
-          </Table>
-        </TableContainer>
+                      <Td>{item.payment_method}</Td>
+                      <Td>{item.status}</Td>
+                    </Tr>
+                  );
+                })}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        ) : (
+          <Box
+            textAlign="center"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            m="auto"
+            w="100%"
+          >
+            <Alert
+              status="warning"
+              maxW="md"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <AlertIcon />
+              You don't have any purchase yet.
+            </Alert>
+          </Box>
+        )}
       </Stack>
     </Box>
   );

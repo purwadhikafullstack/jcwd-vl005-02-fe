@@ -5,6 +5,7 @@ import transactionsReducer from "./transactionsReducer";
 import statusReducer from "./status";
 import adminReducer from "./adminReducer";
 import manageUsersReducer from "./manageUsersReducer"
+import { notificationReducer } from "./notificationReducer";
 
 export const Reducers = combineReducers({
   productReducer,
@@ -12,5 +13,6 @@ export const Reducers = combineReducers({
   transactionsReducer,
   statusReducer,
   adminReducer,
-  manageUsersReducer
+  manageUsersReducer,
+  notificationReducer,
 });

@@ -308,7 +308,7 @@ const Update = (props) => {
           show={showSuccess.open}
           close={() => {
             setShowSuccess({ open: false, title: "", description: "" });
-            return navigate(`/products`);
+            return navigate(`/admin/products`);
           }}
         />
 
@@ -507,10 +507,10 @@ const Update = (props) => {
                     onBlur={() => setUnitIsFocused(false)}
                     value={enteredUnit}
                   >
-                    <MenuItem value="tablet">tablet</MenuItem>
-                    <MenuItem value="pill">pill</MenuItem>
+                    <MenuItem value="l">l</MenuItem>
                     <MenuItem value="ml">ml</MenuItem>
                     <MenuItem value="gr">gr</MenuItem>
+                    <MenuItem value="mg">mg</MenuItem>
                   </Select>
                   {unitInputHasError ? (
                     <FormHelperText>Please select product unit!</FormHelperText>

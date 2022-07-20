@@ -1,5 +1,4 @@
-import { ReactNode } from "react";
-import React, { useState, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Cookies from "js-cookie";
@@ -30,6 +29,13 @@ import {
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { AiFillMedicineBox } from "react-icons/ai";
 import { Link as RRLink } from "react-router-dom";
+import { BiLogIn } from "react-icons/bi";
+import NotificationBadge from "./NotificationBadge";
+import { io } from "socket.io-client";
+import api from "../../services/api";
+import { useToastHook } from "./ToastNotification";
+
+const socket = io.connect("http://localhost:2000");
 
 const Links = [
   { menu: "Home", url: "/" },
@@ -52,12 +58,21 @@ const NavLink = ({ menu, url }) => (
 
 export default function Navbar(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [notification, setNotification] = useState([]);
+  const [totalNotification, setTotalNotification] = useState(0);
+
+  const [state, newToast] = useToastHook();
   const [confirm, setConfirm] = useState(false);
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   // global state
   const { email, username, id } = useSelector((state) => state.user);
+  const { totalNotificationBadge } = useSelector(
+    (state) => state.notificationReducer
+  );
+  console.log(totalNotificationBadge);
+  // useSelector((state) => console.log(state));
 
   const dispatch = useDispatch();
   const onButtonNavigate = () => {
@@ -88,7 +103,54 @@ export default function Navbar(props) {
     navigate("/login");
   };
 
-  const color = useColorModeValue;
+  useEffect(() => {
+    let url = `/user/history/unopened-notifications`;
+    api
+      .get(url)
+      .then((res) => {
+        console.log(res);
+        setNotification(() => res.data.content);
+        console.log(res.data.details);
+
+        dispatch({
+          type: "UPDATE_BADGE",
+          payload: { totalNotificationBadge: res.data.details },
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  // Menerima
+  useEffect(() => {
+    socket.emit("join_channel", String(id));
+
+    socket.on("receive_notification", (data) => {
+      console.log("terima");
+      let url = `/user/history/unopened-notifications`;
+      newToast({
+        title: "Purchase notification",
+        message: data.message,
+        status: "info",
+      });
+      api
+        .get(url)
+        .then((res) => {
+          console.log(res);
+          setNotification(() => res.data.content);
+          dispatch({
+            type: "UPDATE_BADGE",
+            payload: { totalNotificationBadge: res.data.details },
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  }, [socket, id]);
+
+  console.log(notification);
 
   return (
     <>
@@ -150,6 +212,62 @@ export default function Navbar(props) {
                   <Text fontWeight="600" fontSize="lg" color={"white"}>
                     Hi, {username}
                   </Text>
+
+                  <Menu>
+                    <MenuButton>
+                      {" "}
+                      <NotificationBadge
+                        count={
+                          totalNotificationBadge != 0 && totalNotificationBadge
+                        }
+                      ></NotificationBadge>
+                    </MenuButton>
+                    {notification.length ? (
+                      <MenuList
+                        zIndex="999999999"
+                        position="absolute"
+                        top="-10px"
+                        right="-40px"
+                      >
+                        {notification.map((item) => (
+                          <MenuItem
+                            key={item.id}
+                            // onClick={() => setNotification("")}
+                          >
+                            {item.message}
+                          </MenuItem>
+                        ))}
+
+                        <MenuDivider />
+                        <RRLink
+                          to="/notification"
+                          onClick={() => setNotification("")}
+                        >
+                          <MenuItem as={Link} textAlign="center" margin="auto">
+                            See all notifications
+                          </MenuItem>
+                        </RRLink>
+                      </MenuList>
+                    ) : (
+                      <MenuList
+                        zIndex="999999999"
+                        position="absolute"
+                        top="-10px"
+                        right="-40px"
+                      >
+                        <MenuItem>No new notification</MenuItem>
+                        <MenuDivider />
+                        <RRLink
+                          to="/notification"
+                          onClick={() => setNotification("")}
+                        >
+                          <MenuItem as={Link} textAlign="center" margin="auto">
+                            See all notifications
+                          </MenuItem>
+                        </RRLink>
+                      </MenuList>
+                    )}
+                  </Menu>
                   <MenuButton
                     as={Button}
                     rounded={"full"}

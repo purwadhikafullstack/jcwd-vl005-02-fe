@@ -92,6 +92,21 @@ const Content = () => {
           <Route path="/resetpassword" element={<AdminResetPassword />} />
         </Routes>
       )}
+      <Routes>
+        <Route exact path="/" element={<AdminProducts />} />
+        <Route path="products" element={<AdminProducts />} />
+        <Route path="/products/new" element={<AdminNewProduct />} />
+        <Route
+          path="/products/update/:productId"
+          element={<AdminUpdateProduct />}
+        />
+        <Route path="/products/:productId" element={<AdminProductDetails />} />
+        <Route path="/categories" element={<AdminCategories />} />
+        <Route path="/transaction/:invoiceId" element={<TransactionProof />} />
+        <Route path="/transactions" element={<AdminTransaction />} />
+        <Route path="/reports" element={<AdminReports />} />
+        <Route path="/users" element={<AdminManageUsers />} />
+      </Routes>
     </ThemeProvider>
   );
 };
