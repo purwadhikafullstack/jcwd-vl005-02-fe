@@ -201,15 +201,19 @@ const UserCart = () => {
           </Stack>
         </Stack>
 
-        <Flex direction="column" align="center" flex="1">
-          <CartOrderSummary updateCart={updateCart} />
-          <HStack mt="6" fontWeight="semibold">
-            <p>or</p>
-            <RRLink to="/shop" style={{ color: "red" }}>
-              Continue shopping
-            </RRLink>
-          </HStack>
-        </Flex>
+        {data.length ? (
+          <Flex direction="column" align="center" flex="1">
+            <CartOrderSummary updateCart={updateCart} />
+            <HStack mt="6" fontWeight="semibold">
+              <p>or</p>
+              <RRLink to="/shop" style={{ color: "red" }}>
+                Continue shopping
+              </RRLink>
+            </HStack>
+          </Flex>
+        ) : (
+          ""
+        )}
       </Stack>
     </Box>
   );

@@ -8,7 +8,7 @@ import AdminProductDetails from "./pages/admin/AdminProductDetails";
 import NavbarDrawer from "./components/admin/NavbarDrawer";
 import { ChakraProvider } from "@chakra-ui/react";
 import AdminTransaction from "./pages/admin/AdminTransaction";
-import TransactionProof from "./pages/admin/TransactionProof"
+import TransactionProof from "./pages/admin/TransactionProof";
 import AdminReports from "./pages/admin/AdminReports";
 import AdminManageUsers from "./pages/admin/AdminManageUsers";
 
@@ -37,10 +37,10 @@ const Content = () => {
         />
         <Route path="/products/:productId" element={<AdminProductDetails />} />
         <Route path="/categories" element={<AdminCategories />} />
-        <Route path="/transactions" element={<AdminTransaction/>} />
-        <Route path="/transactions/:invoiceId" element={<TransactionProof/>} />
-        <Route path="/reports" element={<AdminReports/>} />
-        <Route path="/users" element={<AdminManageUsers/>} />
+        <Route path="/transaction/:invoiceId" element={<TransactionProof />} />
+        <Route path="/transactions" element={<AdminTransaction />} />
+        <Route path="/reports" element={<AdminReports />} />
+        <Route path="/users" element={<AdminManageUsers />} />
       </Routes>
     </ThemeProvider>
   );

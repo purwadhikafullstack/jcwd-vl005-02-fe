@@ -97,6 +97,8 @@ export const CartItem = (props) => {
         name={name}
         description={category}
         image={URL_API + picture}
+        stock={stock_in_unit}
+        unit={unit}
       />
 
       {/* Desktop */}
