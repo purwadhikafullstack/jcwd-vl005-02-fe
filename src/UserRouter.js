@@ -20,6 +20,7 @@ import UserPurchases from "./pages/user/UserPurchases";
 import NotificationTrial from "./pages/user/NotificationTrial";
 import UserNotifications from "./pages/user/UserNotifications";
 import { Box } from "@chakra-ui/react";
+import UserDashboard from "./pages/user/UserDashboard";
 
 function UserRouter() {
   const { email, username, id: userId } = useSelector((state) => state.user);
@@ -29,6 +30,7 @@ function UserRouter() {
         <Navbar></Navbar>
         <Routes>
           <Route exact path="/" element={<UserHome />} />
+          <Route exact path="/dashboard/*" element={<UserDashboard />} />
 
           <Route path="/shop" element={<UserProducts />}></Route>
           {localStorage.getItem("token") ? (

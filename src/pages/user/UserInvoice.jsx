@@ -624,9 +624,9 @@ export default function UserInvoice() {
             variant="solid"
             colorScheme={
               data.length && data[0].status == "Waiting for payment"
-                ? "red"
-                : data.length && data[0].status == "Waiting for verification"
                 ? "yellow"
+                : data.length && data[0].status == "Waiting for verification"
+                ? "blue"
                 : data.length && data[0].status == "Approved"
                 ? "green"
                 : "red"
@@ -643,7 +643,7 @@ export default function UserInvoice() {
         data[0].status == "Waiting for payment" ? (
           <>
             <Alert
-              status="error"
+              status="warning"
               variant="subtle"
               flexDirection="column"
               alignItems="center"
@@ -676,7 +676,7 @@ export default function UserInvoice() {
                   mt={8}
                   size={"md"}
                   py={"7"}
-                  bg={"red.500"}
+                  bg={"yellow.500"}
                   color={"white"}
                   textTransform={"uppercase"}
                   _hover={{
@@ -694,7 +694,7 @@ export default function UserInvoice() {
                   mt={8}
                   size={"md"}
                   py={"7"}
-                  bg={"red.500"}
+                  bg={"yellow.500"}
                   color={"white"}
                   textTransform={"uppercase"}
                   _hover={{
@@ -712,7 +712,7 @@ export default function UserInvoice() {
         paymentData.clientToken && data[0].status == "Waiting for payment" ? (
           <>
             <Alert
-              status="error"
+              status="yellow"
               variant="subtle"
               flexDirection="column"
               alignItems="center"
@@ -753,7 +753,7 @@ export default function UserInvoice() {
                 mt={8}
                 size={"md"}
                 py={"7"}
-                bg={"red.500"}
+                bg={"yellow.500"}
                 color={"white"}
                 textTransform={"uppercase"}
                 _hover={{
@@ -792,7 +792,7 @@ export default function UserInvoice() {
           data[0].status == "Waiting for verification" ? (
           <>
             <Alert
-              status="warning"
+              status="info"
               variant="subtle"
               flexDirection="column"
               alignItems="center"

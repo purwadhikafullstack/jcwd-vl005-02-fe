@@ -240,7 +240,7 @@ export default function Navbar(props) {
 
                         <MenuDivider />
                         <RRLink
-                          to="/notification"
+                          to="/dashboard/notifications"
                           onClick={() => setNotification("")}
                         >
                           <MenuItem as={Link} textAlign="center" margin="auto">
@@ -258,7 +258,7 @@ export default function Navbar(props) {
                         <MenuItem>No new notification</MenuItem>
                         <MenuDivider />
                         <RRLink
-                          to="/notification"
+                          to="/dashboard/notifications"
                           onClick={() => setNotification("")}
                         >
                           <MenuItem as={Link} textAlign="center" margin="auto">
@@ -280,12 +280,14 @@ export default function Navbar(props) {
                 </Stack>
 
                 <MenuList zIndex="999999999">
-                  <MenuItem>My Account</MenuItem>
+                  <RRLink to="/dashboard">
+                    <MenuItem>My Dashboard</MenuItem>
+                  </RRLink>
 
-                  <RRLink to="/cart">
+                  <RRLink to="/dashboard/cart">
                     <MenuItem>My Cart</MenuItem>
                   </RRLink>
-                  <RRLink to="/purchases">
+                  <RRLink to="/dashboard/purchases">
                     <MenuItem>My Purchase</MenuItem>
                   </RRLink>
 
