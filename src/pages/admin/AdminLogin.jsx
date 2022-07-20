@@ -148,7 +148,7 @@ export default function SignupCard() {
                 justify={"space-between"}
               >
                 <Checkbox onChange={handleChange}>Remember me</Checkbox>
-                <Link as={ReactLink} to="/forgotpassword" color={"blue.400"}>
+                <Link as={ReactLink} to="/admin/forgetpassword" color={"blue.400"}>
                   Forgot password?
                 </Link>
               </Stack>

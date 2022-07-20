@@ -13,6 +13,8 @@ import AdminReports from "./pages/admin/AdminReports";
 import AdminManageUsers from "./pages/admin/AdminManageUsers";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AddNewAdmin from "./pages/admin/AddNewAdmin";
+import AdminForgotPassword from "./pages/admin/AdminForgetPassword";
+import AdminResetPassword from "./pages/admin/AdminResetPassword";
 
 const theme = createTheme({
   typography: {
@@ -61,6 +63,8 @@ const Content = () => {
           <Route path="/users" element={<AdminManageUsers />} />
           <Route path="/login" element={<AdminLogin />} />
           <Route path="/add-new-admin" element={<AddNewAdmin />} />
+          <Route path="/forgetpassword" element={<AdminForgotPassword />} />
+          <Route path="/resetpassword" element={<AdminResetPassword />} />
         </Routes>
       ) : (
         <Routes>
@@ -84,6 +88,8 @@ const Content = () => {
           <Route path="/reports" element={<Navigate to="/admin/login" replace />} />
           <Route path="/users" element={<Navigate to="/admin/login" replace />} />
           <Route path="/login" element={<AdminLogin />} />
+          <Route path="/forgetpassword" element={<AdminForgotPassword />} />
+          <Route path="/resetpassword" element={<AdminResetPassword />} />
         </Routes>
       )}
     </ThemeProvider>

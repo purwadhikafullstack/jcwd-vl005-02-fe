@@ -53,7 +53,11 @@ const LinkItems = [
   { name: "Users", icon: FaUserAlt, url: "/admin/users" },
   { name: "Transactions", icon: FaDollarSign, url: "/admin/transactions" },
   { name: "Reports", icon: TbReportAnalytics, url: "/admin/reports" },
-  { name: "Add New Admin", icon: AiOutlineUserAdd, url: "/admin/add-new-admin" },
+  {
+    name: "Add New Admin",
+    icon: AiOutlineUserAdd,
+    url: "/admin/add-new-admin",
+  },
   { name: "Favourites", icon: FiStar, url: "/admin" },
   { name: "Settings", icon: FiSettings, url: "/admin" },
 ];
@@ -202,6 +206,10 @@ const MobileNav = ({ onOpen, ...rest }) => {
     dispatch({ type: "ADMINLOGOUT" });
     navigate("/admin/login");
   };
+
+  const onButtonLogin = () => {
+    navigate("/admin/login");
+  };
   return (
     <>
       {adminToken ? (
@@ -319,13 +327,13 @@ const MobileNav = ({ onOpen, ...rest }) => {
           <HStack spacing={{ base: "0", md: "6" }}>
             <Menu>
               {/* <Button> Login</Button> */}
-              {/* <Tombol
-                // onClick={onButtonRegister}
+              <Tombol
+                onClick={onButtonLogin}
                 // display={{ base: "none", md: "inline-flex" }}
                 fontSize={"sm"}
                 fontWeight={600}
                 // bgGradient="linear(to-r, white,white)"
-                colorScheme={"red"}
+                colorScheme={"blue"}
                 color={"white"}
                 bg={"blue.400"}
                 _hover={{
@@ -335,7 +343,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
                 }}
               >
                 Sign In
-              </Tombol> */}
+              </Tombol>
             </Menu>
           </HStack>
         </Flex>

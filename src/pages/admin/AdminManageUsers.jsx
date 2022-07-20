@@ -11,12 +11,22 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import IconButton from "@mui/material/IconButton";
 import CheckCircleSharpIcon from "@mui/icons-material/CheckCircleSharp";
 import CancelSharpIcon from "@mui/icons-material/CancelSharp";
+
 import {
-  Button as Tombol,
-  DatePicker,
-  version,
-  Typography,
+  useDisclosure,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  ChakraProvider,
   Button,
+} from "@chakra-ui/react";
+import {
+  // Button ,
+  DatePicker,
+  Typography,
   Space,
 } from "antd";
 import { Link } from "react-router-dom";
@@ -32,6 +42,92 @@ const AdminManageUsers = () => {
   const [status, setStatus] = useState("");
   const dispatch = useDispatch();
   const selector = useSelector;
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [confirm, setConfirm] = useState(false);
+  const [confirm2, setConfirm2] = useState(false);
+  const [idUser, setIdUser] = useState(null);
+
+  const onButtonActive = (id) => {
+    console.log(id);
+    setIdUser(id);
+    // setIdUser((newId) => {
+    //   console.log("Iduser:", newId);
+    // });
+
+    setConfirm(true);
+  };
+  const onButtonActive2 = (id) => {
+    console.log(id);
+    setIdUser(id);
+    // setIdUser((newId) => {
+    //   console.log("Iduser:", newId);
+    // });
+
+    setConfirm2(true);
+  };
+
+  const handleActive = () => {
+    setStatus("active");
+    setStatus((statusbaru) => {
+      console.log("Test:", idUser);
+      const newStatus = {
+        id: idUser,
+        is_active: statusbaru,
+      };
+      Axios.patch(API_URL + `/admin/changeuserstatus`, newStatus)
+        .then((respond) => {
+          // save user data to global state
+          dispatch({ type: "DATA_USERS", payload: respond.data });
+
+          console.log(respond.data);
+          // setDataTransaction(respond.data);
+          // console.log("data:", respond.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      setConfirm(false);
+
+      return status;
+    });
+  };
+
+  const handleBanned = (id) => {
+    console.log("id:", id);
+    // const test = ;
+    // console.log()
+    setStatus("banned");
+    // console.log(await getStatus())
+    setStatus((statusbaru) => {
+      console.log("test:", statusbaru);
+      const newStatus = {
+        id: idUser,
+        is_active: statusbaru,
+      };
+      Axios.patch(API_URL + `/admin/changeuserstatus`, newStatus)
+        .then((respond) => {
+          // save user data to global state
+          dispatch({ type: "DATA_USERS", payload: respond.data });
+
+          console.log(respond.data);
+          // setDataTransaction(respond.data);
+          // console.log("data:", respond.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      setConfirm2(false);
+      return status;
+    });
+  };
+
+  const onBtnCancelConfirm = () => {
+    setConfirm(false);
+  };
+  const onBtnCancelConfirm2 = () => {
+    setConfirm2(false);
+  };
+
   const columns = [
     {
       field: "id",
@@ -108,76 +204,79 @@ const AdminManageUsers = () => {
       renderCell: (params) => {
         return (
           <Space className="actionusers">
-            <IconButton  onClick={() => handleActive(params.row.id)} >
+            {/* <IconButton onClick={() => handleActive(params.row.id)}> */}
+            <IconButton onClick={() => onButtonActive(params.row.id)}>
               <CheckCircleSharpIcon style={{ color: "green" }} />
             </IconButton>
 
-            <IconButton onClick={() => handleBanned(params.row.id)}>
+            <ChakraProvider>
+              <AlertDialog isOpen={confirm}>
+                <AlertDialogOverlay>
+                  <AlertDialogContent>
+                    <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                      Reactivate user
+                    </AlertDialogHeader>
+
+                    <AlertDialogBody>
+                      Are you sure you want to Reactivate this user?
+                    </AlertDialogBody>
+
+                    <AlertDialogFooter>
+                      <Button onClick={onBtnCancelConfirm}>Cancel</Button>
+                      <Button
+                        onClick={handleActive}
+                        w={"100px"}
+                        bg={"blue.400"}
+                        color={"white"}
+                        _hover={{ bg: "blue.500" }}
+                        ml={3}
+                      >
+                        Yes
+                      </Button>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialogOverlay>
+              </AlertDialog>
+            </ChakraProvider>
+
+            <IconButton onClick={() => onButtonActive2(params.row.id)}>
               <CancelSharpIcon style={{ color: "red" }} />
             </IconButton>
+
+            <ChakraProvider>
+              <AlertDialog isOpen={confirm2}>
+                <AlertDialogOverlay>
+                  <AlertDialogContent>
+                    <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                      deactivate confirmation
+                    </AlertDialogHeader>
+
+                    <AlertDialogBody>
+                      Are you sure you want to deactivate this user?
+                    </AlertDialogBody>
+
+                    <AlertDialogFooter>
+                      <Button onClick={onBtnCancelConfirm2}>Cancel</Button>
+                      <Button
+                        onClick={handleBanned}
+                        w={"100px"}
+                        bg={"blue.400"}
+                        color={"white"}
+                        _hover={{ bg: "blue.500" }}
+                        ml={3}
+                      >
+                        Yes
+                      </Button>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialogOverlay>
+              </AlertDialog>
+            </ChakraProvider>
           </Space>
         );
       },
     },
   ];
-
-
-  const handleBanned = (id) => {
-    console.log("id:", id);
-    // const test = ;
-    // console.log()
-    setStatus("banned");
-    // console.log(await getStatus())
-    setStatus((statusbaru) => {
-      console.log("test:", statusbaru);
-      const newStatus = {
-        id: id,
-        is_active: statusbaru,
-      };
-      Axios.patch(API_URL + `/admin/changeuserstatus`, newStatus)
-        .then((respond) => {
-          // save user data to global state
-          dispatch({ type: "DATA_USERS", payload: respond.data });
-
-          console.log(respond.data);
-          // setDataTransaction(respond.data);
-          // console.log("data:", respond.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
-      return status;
-    });
-  };
-  const handleActive = (id) => {
-    console.log("id:", id);
-    // const test = ;
-    // console.log()
-    setStatus("active");
-    // console.log(await getStatus())
-    setStatus((statusbaru) => {
-      console.log("test:", statusbaru);
-      const newStatus = {
-        id: id,
-        is_active: statusbaru,
-      };
-      Axios.patch(API_URL + `/admin/changeuserstatus`, newStatus)
-        .then((respond) => {
-          // save user data to global state
-          dispatch({ type: "DATA_USERS", payload: respond.data });
-
-          console.log(respond.data);
-          // setDataTransaction(respond.data);
-          // console.log("data:", respond.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
-      return status;
-    });
-  };
 
   useEffect(() => {
     Axios.get(API_URL + `/admin/users`)
