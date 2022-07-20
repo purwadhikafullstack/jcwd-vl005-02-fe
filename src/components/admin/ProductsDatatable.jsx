@@ -5,85 +5,52 @@ import axios from "axios";
 import { useEffect } from "react";
 import { URL_API } from "../../helpers";
 import { connect } from "react-redux";
-
-// import "./ProductsDatatable.scss";
-
 import Success from "../general/Modals/Success";
 import Error from "../general/Modals/Error";
 import Spinner from "../general/Spinner/Spinner";
-
 import { productData } from "../../actions";
 
-import PropTypes from "prop-types";
-import { alpha } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
-import TableSortLabel from "@mui/material/TableSortLabel";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Paper from "@mui/material/Paper";
-import Checkbox from "@mui/material/Checkbox";
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
-import Switch from "@mui/material/Switch";
-import DeleteIcon from "@mui/icons-material/Delete";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import { visuallyHidden } from "@mui/utils";
-import { Alert, AlertTitle, Button, Container, TextField } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Container,
+  TextField,
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  Typography,
+  Paper,
+  Switch,
+  List,
+  ListItem,
+  ListItemButton,
+  Radio,
+  RadioGroup,
+  FormControl,
+  FormControlLabel,
+  Divider,
+  SwipeableDrawer,
+} from "@mui/material";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import EditIcon from "@mui/icons-material/Edit";
-import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import SearchIcon from "@mui/icons-material/Search";
-import { styled } from "@mui/material/styles";
-import InputBase from "@mui/material/InputBase";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-
-// const productCategories = [
-//   "Antibiotika",
-//   "Antijamur",
-//   "Antiseptika",
-//   "Antihipertensi",
-//   "Diuretika",
-//   "Antidiabetes",
-//   "Antidepresant",
-//   "Analgetik-antipiretik",
-//   "Antialergi",
-//   "Kortikosteroid",
-//   "Obat saluran cerna",
-//   "Obat saluran nafas",
-//   "Komedolitik",
-//   "Cairan Parenteral",
-// ];
+import DeleteIcon from "@mui/icons-material/Delete";
 
 function createData(
   id,
   name,
   picture,
   category,
+  category_name,
   description,
   price,
-  sold,
   stock,
   volume,
+  stock_in_unit,
   unit
 ) {
   return {
@@ -91,11 +58,12 @@ function createData(
     name,
     picture,
     category,
+    category_name,
     description,
     price,
-    sold,
     stock,
     volume,
+    stock_in_unit,
     unit,
   };
 }
@@ -135,19 +103,13 @@ const headCells = [
     id: "price",
     numeric: true,
     disablePadding: false,
-    label: "Price",
-  },
-  {
-    id: "sold",
-    numeric: true,
-    disablePadding: false,
-    label: "Sold",
+    label: "Price (Rp)",
   },
   {
     id: "stock",
     numeric: true,
     disablePadding: false,
-    label: "Stock",
+    label: "Stock In Package",
   },
   {
     id: "volume",
@@ -156,10 +118,10 @@ const headCells = [
     label: "Volume",
   },
   {
-    id: "unit",
+    id: "stock_in_unit",
     numeric: false,
     disablePadding: false,
-    label: "Unit",
+    label: "Stock In Unit",
   },
   {
     id: "action",
@@ -384,11 +346,6 @@ function SortDrawer({ sort, setSort }) {
                     control={<Radio />}
                     label="Price"
                   />
-                  <FormControlLabel
-                    value="sold"
-                    control={<Radio />}
-                    label="Sold"
-                  />
 
                   <FormControlLabel
                     value="stock"
@@ -539,11 +496,12 @@ function ProductsDatatable(props) {
         data[i].name,
         data[i].picture,
         data[i].category,
+        data[i].category_name,
         data[i].description,
         data[i].price,
-        data[i].sold,
         data[i].stock,
         data[i].volume,
+        data[i].stock_in_unit,
         data[i].unit
       )
     );
@@ -599,7 +557,7 @@ function ProductsDatatable(props) {
   // console.log(categoryFilterSelected);
 
   return (
-    <Container sx={{ width: "100%" }} maxWidth="lg">
+    <Container sx={{ width: "100%" }} maxWidth="xl">
       <Box
         sx={{
           display: "flex",
@@ -729,13 +687,23 @@ function ProductsDatatable(props) {
                             />
                           </Box>
                         </TableCell>
-                        <TableCell align="center">{row.category}</TableCell>
+                        <TableCell align="center">
+                          {row.category_name}
+                        </TableCell>
                         <TableCell align="center">{row.description}</TableCell>
-                        <TableCell align="center">{row.price}</TableCell>{" "}
-                        <TableCell align="center">{row.sold}</TableCell>
+                        <TableCell align="center">
+                          {parseInt(row.price).toLocaleString("id-ID")}
+                        </TableCell>
+
                         <TableCell align="center">{row.stock}</TableCell>
-                        <TableCell align="center">{row.volume}</TableCell>
-                        <TableCell align="center">{row.unit}</TableCell>
+                        <TableCell align="center">
+                          {parseInt(row.volume).toLocaleString("id-ID")}{" "}
+                          {row.unit}
+                        </TableCell>
+                        <TableCell align="center">
+                          {parseInt(row.stock_in_unit).toLocaleString("id-ID")}{" "}
+                          {row.unit}
+                        </TableCell>
                         <TableCell align="center">
                           <Box
                             className="cellAction"
@@ -756,7 +724,7 @@ function ProductsDatatable(props) {
                               >
                                 <RemoveRedEyeIcon fontSize="small" />
                               </Button>
-                            </Link>{" "}
+                            </Link>
                             {/* <Link
                             to={`/products/update/${row.id}`}
                             style={{ textDecoration: "none" }}
@@ -776,6 +744,7 @@ function ProductsDatatable(props) {
                                   .get(URL_API + `/admin/product/${row.id}`)
                                   .then((res) => {
                                     props.productData(res.data.content);
+                                    console.log(res.data.content);
                                   })
                                   .catch((err) => {
                                     console.log(err);
@@ -850,7 +819,6 @@ const mapStateToProps = (state) => {
     productDescription: state.productReducer.description,
     productCategory: state.productReducer.category,
     productPrice: state.productReducer.price,
-    productSold: state.productReducer.sold,
     productStock: state.productReducer.stock,
     productVolume: state.productReducer.volume,
     productUnit: state.productReducer.unit,

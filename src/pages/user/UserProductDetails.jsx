@@ -258,16 +258,10 @@ export default function UserProductDetails() {
                 </ListItem>
                 {/* <ListItem>
                   <Text as={"span"} fontWeight={"bold"}>
-                    Volume per unit:
-                  </Text>{" "}
-                  {product.volume} {product.unit}
-                </ListItem> */}
-                <ListItem>
-                  <Text as={"span"} fontWeight={"bold"}>
                     Sold:
                   </Text>{" "}
                   {product.sold} unit(s)
-                </ListItem>
+                </ListItem> */}
               </List>
             </Box>
 

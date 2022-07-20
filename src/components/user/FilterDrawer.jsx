@@ -137,12 +137,12 @@ function FilterDrawer({ sendDataFilter }) {
             value={price}
           >
             <Stack direction="column">
-              <Radio value="1">All price</Radio>
-              <Radio value="2">Rp 0 - 249</Radio>
-              <Radio value="3">Rp 250 - Rp 499</Radio>
-              <Radio value="4">Rp 500 - Rp 999</Radio>
-              <Radio value="5">Rp 1.000 - Rp 2.000</Radio>
-              <Radio value="6">Above Rp 2.000</Radio>
+              <Radio value="0-unlimited">All price</Radio>
+              <Radio value="0-249">Rp 0 - 249</Radio>
+              <Radio value="250-499">Rp 250 - Rp 499</Radio>
+              <Radio value="500-999">Rp 500 - Rp 999</Radio>
+              <Radio value="1000-2000">Rp 1.000 - Rp 2.000</Radio>
+              <Radio value="2000-unlimited">Above Rp 2.000</Radio>
             </Stack>
           </RadioGroup>
         </Box>

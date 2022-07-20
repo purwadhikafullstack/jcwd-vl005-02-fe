@@ -261,7 +261,7 @@ function EnhancedTable(props) {
         }}
       >
         <TextField
-          placeholder="Add new category..."
+          // placeholder="Add new category..."
           onChange={(event) => {
             console.log(event.target.value);
             setNewCategory(event.target.value);
@@ -274,6 +274,8 @@ function EnhancedTable(props) {
           }}
           size="small"
           value={newCategory}
+          label="Add new category..."
+          variant="outlined"
         />
 
         <Button variant="contained" onClick={addHandler}>

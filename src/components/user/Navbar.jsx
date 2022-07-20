@@ -71,7 +71,6 @@ export default function Navbar(props) {
   const { totalNotificationBadge } = useSelector(
     (state) => state.notificationReducer
   );
-  console.log(totalNotificationBadge);
   // useSelector((state) => console.log(state));
 
   const dispatch = useDispatch();
@@ -108,9 +107,7 @@ export default function Navbar(props) {
     api
       .get(url)
       .then((res) => {
-        console.log(res);
         setNotification(() => res.data.content);
-        console.log(res.data.details);
 
         dispatch({
           type: "UPDATE_BADGE",
@@ -149,8 +146,6 @@ export default function Navbar(props) {
         });
     });
   }, [socket, id]);
-
-  console.log(notification);
 
   return (
     <>

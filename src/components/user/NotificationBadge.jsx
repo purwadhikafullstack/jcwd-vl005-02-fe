@@ -5,6 +5,7 @@ import { FaBell } from "react-icons/fa";
 export default function NotificationBadge({ count }) {
   return (
     <IconButton
+      as={Box}
       css={css`
         position: relative !important;
       `}
