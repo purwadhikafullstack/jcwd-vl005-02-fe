@@ -1,10 +1,10 @@
 import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Navbar from "./components/user/Navbar";
-import ForgotPassword from "./pages/user/ForgotPassword";
-import ResetPassword from "./pages/user/ResetPassword";
+import ForgotPassword from "./pages/user/forgotPassword";
+import ResetPassword from "./pages/user/resetPassword";
 import UserHome from "./pages/user/UserHome";
-import UserLogin from "./pages/user/UserLogin";
+import UserLogin from "./pages/user/userLogin";
 import UserRegister from "./pages/user/UserRegister";
 import UserProductDetails from "./pages/user/UserProductDetails";
 import UserProducts from "./pages/user/UserProducts";
