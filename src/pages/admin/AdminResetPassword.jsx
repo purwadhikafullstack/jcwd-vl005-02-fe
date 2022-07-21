@@ -53,7 +53,7 @@ export default function AdminResetPassword() {
     // console.log(newUser);
 
     setLoading(true);
-    Axios.post(API_URL + `/users/resetpassword`, newPass, {
+    Axios.post(API_URL + `/admin/resetpassword`, newPass, {
       headers: {
         Authorization: `Bearer ${params.token}`,
       },

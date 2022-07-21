@@ -174,8 +174,6 @@ export default function AdminReports() {
   ];
 
   const PickerWithType = ({ type, onChange }) => {
-
-
     const handleDatePicked = (date, dateString) => {
       console.log(dateString);
       Axios.post(API_URL + `/admin/getreportbydate`, { date: dateString })
@@ -188,7 +186,7 @@ export default function AdminReports() {
           setNumberOfSales(respond.data.number_of_sales);
           setCurrentMonth(respond.data.date);
           setDataTopThree(respond.data.top_three);
-          setDataTransaction(respond.data.data_transactions)
+          setDataTransaction(respond.data.data_transactions);
         })
         .catch((error) => {
           console.log(error);
@@ -224,9 +222,8 @@ export default function AdminReports() {
           setProfit(respond.data.profit);
           setNumberOfSales(respond.data.number_of_sales);
           setCurrentMonth(respond.data.year);
-          setDataTransaction(respond.data.data_transactions)
+          setDataTransaction(respond.data.data_transactions);
           setDataTopThree(respond.data.top_three);
-          
         })
         .catch((error) => {
           console.log(error);
@@ -252,7 +249,7 @@ export default function AdminReports() {
         setNumberOfSales(respond.data.number_of_sales);
         setCurrentMonth(respond.data.current_month);
         setDataTopThree(respond.data.top_three);
-        setDataTransaction(respond.data.data_transactions)
+        setDataTransaction(respond.data.data_transactions);
 
         // dispatch({ type: "DATA_TRANSACTIONS", payload: respond.data });
 

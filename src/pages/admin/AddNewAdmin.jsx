@@ -1,55 +1,92 @@
+import React, { useRef, useState } from "react";
+import Axios from "axios";
 import {
   Box,
-  Flex,
   Stack,
   Heading,
-  Text,
   Container,
   Input,
   Button,
-  SimpleGrid,
-  Avatar,
-  AvatarGroup,
-  useBreakpointValue,
-  IconProps,
-  Icon,
+  useToast,
 } from "@chakra-ui/react";
 import { ChakraProvider } from "@chakra-ui/react";
 
-const avatars = [
-  {
-    name: "Ryan Florence",
-    url: "https://bit.ly/ryan-florence",
-  },
-  {
-    name: "Segun Adebayo",
-    url: "https://bit.ly/sage-adebayo",
-  },
-  {
-    name: "Kent Dodds",
-    url: "https://bit.ly/kent-c-dodds",
-  },
-  {
-    name: "Prosper Otemuyiwa",
-    url: "https://bit.ly/prosper-baba",
-  },
-  {
-    name: "Christian Nwamba",
-    url: "https://bit.ly/code-beast",
-  },
-];
-
 export default function AddNewAdmin() {
+  const API_URL = process.env.REACT_APP_URL_API;
+  const username = useRef("");
+  const email = useRef("");
+  const firstName = useRef("");
+  const lastName = useRef("");
+  const password = useRef("");
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
+  const onSubmit = () => {
+    // input validation
+    if (
+      username.current.value === "" ||
+      email.current.value === "" ||
+      firstName.current.value === "" ||
+      lastName.current.value === "" ||
+      password.current.value === ""
+    ) {
+      return toast({
+        title: "Warning",
+        description: "Fill in all the form",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+    const newAdmin = {
+      username: username.current.value,
+      email: email.current.value,
+      firstName: firstName.current.value,
+      lastName: lastName.current.value,
+      password: password.current.value,
+    };
+
+    setLoading(true);
+    Axios.post(API_URL + `/admin/addnewadmin`, newAdmin)
+      .then((respond) => {
+        console.log("Respond:", respond.data);
+        setLoading(false);
+
+        // reset state
+        username.current.value = "";
+        email.current.value = "";
+        firstName.current.value = "";
+        lastName.current.value = "";
+        password.current.value = "";
+
+        toast({
+          title: "Add New Admin Success",
+          description: respond.data,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+        if (error.response) {
+          console.log(error.response.data);
+          toast({
+            title: "Error",
+            description: error.response.data,
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        }
+        setLoading(false);
+      });
+  };
   return (
     <ChakraProvider>
       <Box position={"relative"}>
-        <Container
-        //   as={SimpleGrid}
-        //   maxW={"7xl"}
-        //   columns={{ base: 1, md: 2 }}
-        //   spacing={{ base: 10, lg: 32 }}
-        //   py={{ base: 10, sm: 20, lg: 32 }}
-        >
+        <Container>
           <Stack
             bg={"gray.20"}
             rounded={"xl"}
@@ -64,23 +101,13 @@ export default function AddNewAdmin() {
                 fontSize={{ base: "2xl", sm: "3xl", md: "4xl" }}
               >
                 Add new admin
-                {/* <Text
-                  as={"span"}
-                  bgGradient="linear(to-r, red.400,pink.400)"
-                  bgClip="text"
-                >
-                  
-                </Text> */}
               </Heading>
-              {/* <Text color={"gray.500"} fontSize={{ base: "sm", sm: "md" }}>
-                We’re looking for amazing engineers just like you! Become a part
-                of our rockstar engineering team and skyrocket your career!
-              </Text> */}
             </Stack>
             <Box as={"form"} mt={10}>
               <Stack spacing={4}>
                 <Input
                   placeholder="Firstname"
+                  ref={firstName}
                   bg={"gray.100"}
                   border={0}
                   color={"gray.500"}
@@ -90,6 +117,7 @@ export default function AddNewAdmin() {
                 />
                 <Input
                   placeholder="Lastname"
+                  ref={lastName}
                   bg={"gray.100"}
                   border={0}
                   color={"gray.500"}
@@ -99,6 +127,7 @@ export default function AddNewAdmin() {
                 />
                 <Input
                   placeholder="Username"
+                  ref={username}
                   bg={"gray.100"}
                   border={0}
                   color={"gray.500"}
@@ -108,6 +137,7 @@ export default function AddNewAdmin() {
                 />
                 <Input
                   placeholder="Email"
+                  ref={email}
                   bg={"gray.100"}
                   border={0}
                   color={"gray.500"}
@@ -116,7 +146,8 @@ export default function AddNewAdmin() {
                   }}
                 />
                 <Input
-                type={'password'}
+                  type={"password"}
+                  ref={password}
                   placeholder="Password"
                   bg={"gray.100"}
                   border={0}
@@ -127,6 +158,7 @@ export default function AddNewAdmin() {
                 />
               </Stack>
               <Button
+                onClick={onSubmit}
                 fontFamily={"heading"}
                 mt={8}
                 w={"full"}

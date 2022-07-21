@@ -94,8 +94,8 @@ export default function UserLogin() {
 
   // const value = Cookies.get("loginstatus");
   // console.log(value);
-  const token = localStorage.getItem("token");
-  if (token) return <Navigate to="/" />;
+  // const token = localStorage.getItem("token");
+  // if (token) return <Navigate to="/" />;
   const color = useColorModeValue;
 
   return (

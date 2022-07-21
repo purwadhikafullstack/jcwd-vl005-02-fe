@@ -48,20 +48,14 @@ const AdminManageUsers = () => {
   const [idUser, setIdUser] = useState(null);
 
   const onButtonActive = (id) => {
-    console.log(id);
+    console.log(idUser);
     setIdUser(id);
-    // setIdUser((newId) => {
-    //   console.log("Iduser:", newId);
-    // });
 
     setConfirm(true);
   };
   const onButtonActive2 = (id) => {
     console.log(id);
     setIdUser(id);
-    // setIdUser((newId) => {
-    //   console.log("Iduser:", newId);
-    // });
 
     setConfirm2(true);
   };
@@ -199,80 +193,39 @@ const AdminManageUsers = () => {
     {
       field: "action",
       headerName: "Action",
-      width: 100,
+      width: 150,
       editable: false,
       renderCell: (params) => {
         return (
-          <Space className="actionusers">
-            {/* <IconButton onClick={() => handleActive(params.row.id)}> */}
-            <IconButton onClick={() => onButtonActive(params.row.id)}>
-              <CheckCircleSharpIcon style={{ color: "green" }} />
-            </IconButton>
-
-            <ChakraProvider>
-              <AlertDialog isOpen={confirm}>
-                <AlertDialogOverlay>
-                  <AlertDialogContent>
-                    <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                      Reactivate user
-                    </AlertDialogHeader>
-
-                    <AlertDialogBody>
-                      Are you sure you want to Reactivate this user?
-                    </AlertDialogBody>
-
-                    <AlertDialogFooter>
-                      <Button onClick={onBtnCancelConfirm}>Cancel</Button>
-                      <Button
-                        onClick={handleActive}
-                        w={"100px"}
-                        bg={"blue.400"}
-                        color={"white"}
-                        _hover={{ bg: "blue.500" }}
-                        ml={3}
-                      >
-                        Yes
-                      </Button>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialogOverlay>
-              </AlertDialog>
-            </ChakraProvider>
-
-            <IconButton onClick={() => onButtonActive2(params.row.id)}>
-              <CancelSharpIcon style={{ color: "red" }} />
-            </IconButton>
-
-            <ChakraProvider>
-              <AlertDialog isOpen={confirm2}>
-                <AlertDialogOverlay>
-                  <AlertDialogContent>
-                    <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                      deactivate confirmation
-                    </AlertDialogHeader>
-
-                    <AlertDialogBody>
-                      Are you sure you want to deactivate this user?
-                    </AlertDialogBody>
-
-                    <AlertDialogFooter>
-                      <Button onClick={onBtnCancelConfirm2}>Cancel</Button>
-                      <Button
-                        onClick={handleBanned}
-                        w={"100px"}
-                        bg={"blue.400"}
-                        color={"white"}
-                        _hover={{ bg: "blue.500" }}
-                        ml={3}
-                      >
-                        Yes
-                      </Button>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialogOverlay>
-              </AlertDialog>
-            </ChakraProvider>
-          </Space>
+          <ChakraProvider>
+            <Space className="actionusers">
+              {params.row.is_active == "active" ? (
+                <>
+                  <Button
+                    onClick={() => onButtonActive2(params.row.id)}
+                    size="sm"
+                    bg={"red.500"}
+                    color={"white"}
+                    _hover={{ bg: "red.400" }}
+                    ml={3}
+                  >
+                    Deactivate
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  onClick={() => onButtonActive(params.row.id)}
+                  bg={"green.500"}
+                  size="sm"
+                  color={"white"}
+                  _hover={{ bg: "green.400" }}
+                  ml={3}
+                >
+                  Reactivate
+                </Button>
+              )}
+            </Space>
+          </ChakraProvider>
         );
       },
     },
@@ -314,6 +267,63 @@ const AdminManageUsers = () => {
             pagination
           />
         </Box>
+        <ChakraProvider>
+          <AlertDialog isOpen={confirm}>
+            <AlertDialogOverlay>
+              <AlertDialogContent>
+                <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                  Reactivate user
+                </AlertDialogHeader>
+
+                <AlertDialogBody>
+                  Are you sure you want to reactivate this user?
+                </AlertDialogBody>
+
+                <AlertDialogFooter>
+                  <Button onClick={onBtnCancelConfirm}>Cancel</Button>
+                  <Button
+                    onClick={handleActive}
+                    w={"100px"}
+                    bg={"blue.400"}
+                    color={"white"}
+                    _hover={{ bg: "blue.500" }}
+                    ml={3}
+                  >
+                    Yes
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialogOverlay>
+          </AlertDialog>
+
+          <AlertDialog isOpen={confirm2}>
+            <AlertDialogOverlay>
+              <AlertDialogContent>
+                <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                  deactivate confirmation
+                </AlertDialogHeader>
+
+                <AlertDialogBody>
+                  Are you sure you want to deactivate this user?
+                </AlertDialogBody>
+
+                <AlertDialogFooter>
+                  <Button onClick={onBtnCancelConfirm2}>Cancel</Button>
+                  <Button
+                    onClick={handleBanned}
+                    w={"100px"}
+                    bg={"blue.400"}
+                    color={"white"}
+                    _hover={{ bg: "blue.500" }}
+                    ml={3}
+                  >
+                    Yes
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialogOverlay>
+          </AlertDialog>
+        </ChakraProvider>
       </Page>
     </ThemeProvider>
   );

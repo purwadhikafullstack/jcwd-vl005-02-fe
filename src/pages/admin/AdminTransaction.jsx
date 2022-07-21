@@ -11,11 +11,22 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import IconButton from "@mui/material/IconButton";
 import CheckCircleSharpIcon from "@mui/icons-material/CheckCircleSharp";
 import CancelSharpIcon from "@mui/icons-material/CancelSharp";
-import { Button as Tombol, DatePicker, version, Typography,Space } from "antd";
+import { Button as Tombol, DatePicker, version, Typography, Space } from "antd";
 import { Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import Page from "../../components/admin/Page";
 import { io } from "socket.io-client";
+import {
+  useDisclosure,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  ChakraProvider,
+  Button,
+} from "@chakra-ui/react";
 
 const socket = io.connect("http://localhost:2000");
 
@@ -31,9 +42,116 @@ const AdminTransaction = () => {
   const [status, setStatus] = useState("");
   const dispatch = useDispatch();
   const selector = useSelector;
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const [confirmApprove, setConfirmApprove] = useState(false);
+  const [confirmReject, setConfirmReject] = useState(false);
+  const [invoiceId, setInvoiceId] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const [invoiceCode, setInvoiceCode] = useState(null);
+
+  const onButtonApprove = (id, user_id, code) => {
+    setInvoiceId(id);
+    setUserId(user_id);
+    setInvoiceCode(code);
+    setConfirmApprove(true);
+  };
+
+  // Handle Approve
+  const handleApprove = () => {
+    console.log(`ID = ${invoiceId} user-id= ${userId} code= ${invoiceCode}`);
+    const newStatus = {
+      id: invoiceId,
+      status: "Approved",
+      month: month,
+      startDate: startDate,
+      endDate: endDate,
+      userId: userId,
+      message: `Your purchase with code ${invoiceCode} has been approved`,
+      invoiceHeaderId: invoiceId,
+      invoiceHeaderCode: invoiceCode,
+    };
+    console.log(newStatus);
+
+    Axios.patch(
+      API_URL + `/admin/change-transaction-status-approved`,
+      newStatus
+    )
+      .then((respond) => {
+        // save user data to global state
+        dispatch({ type: "DATA_TRANSACTIONS", payload: respond.data });
+        console.log("MASUK");
+        console.log(respond.data);
+        setDataTransaction(respond.data);
+        // console.log("data:", respond.data);
+        joinRoom(String(userId));
+        sendNotification(
+          `Your purchase ${invoiceCode} has been approved`,
+          String(userId)
+        );
+      })
+      .catch((error) => {
+        console.log("masuk error");
+        console.log(error);
+      });
+    setConfirmApprove(false);
+
+    return status;
+  };
+
+  const onButtonReject = (id, user_id, code) => {
+    setInvoiceId(id);
+    setUserId(user_id);
+    setInvoiceCode(code);
+
+    setConfirmReject(true);
+  };
+
+  // Handle reject
+  const handleReject = () => {
+    const newStatus = {
+      id: invoiceId,
+      status: "Rejected",
+      month: month,
+      startDate: startDate,
+      endDate: endDate,
+      userId: userId,
+      message: `Your purchase with code ${invoiceCode} has been rejected`,
+      invoiceHeaderId: invoiceId,
+      invoiceHeaderCode: invoiceCode,
+    };
+    Axios.patch(
+      API_URL + `/admin/change-transaction-status-rejected`,
+      newStatus
+    )
+      .then((respond) => {
+        // save user data to global state
+        dispatch({ type: "DATA_TRANSACTIONS", payload: respond.data });
+
+        console.log(respond.data);
+        setDataTransaction(respond.data);
+        // console.log("data:", respond.data);
+        joinRoom(String(userId));
+        sendNotification(
+          `Your purchase ${invoiceCode} has been rejected`,
+          String(userId)
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    setConfirmReject(false);
+
+    return status;
+  };
+
+  const onBtnCancelConfirmApprove = () => {
+    setConfirmApprove(false);
+  };
+  const onBtnCancelConfirmReject = () => {
+    setConfirmReject(false);
+  };
 
   const joinRoom = (channel) => {
     console.log("Joining channel ", channel);
@@ -117,97 +235,6 @@ const AdminTransaction = () => {
       });
   };
 
-  // Handle Approve
-  const handleApprove = (id, user_id, code) => {
-    console.log("id:", id, user_id, code);
-
-    // setStatus((statusbaru) => {
-    //   console.log("test:", statusbaru);
-    const newStatus = {
-      id: id,
-      status: "Approved",
-      month: month,
-      startDate: startDate,
-      endDate: endDate,
-      userId: user_id,
-      message: `Your purchase with code ${code} has been approved`,
-      invoiceHeaderId: id,
-      invoiceHeaderCode: code,
-    };
-    console.log(newStatus);
-    // joinRoom(String(user_id));
-    // sendNotification(
-    //   `Your purchase ${code} has been approved`,
-    //   String(user_id)
-    // );
-    Axios.patch(
-      API_URL + `/admin/change-transaction-status-approved`,
-      newStatus
-    )
-      .then((respond) => {
-        // save user data to global state
-        dispatch({ type: "DATA_TRANSACTIONS", payload: respond.data });
-        console.log("MASUK");
-        console.log(respond.data);
-        setDataTransaction(respond.data);
-        // console.log("data:", respond.data);
-        joinRoom(String(user_id));
-        sendNotification(
-          `Your purchase ${code} has been approved`,
-          String(user_id)
-        );
-      })
-      .catch((error) => {
-        console.log("masuk error");
-        console.log(error);
-      });
-
-    return status;
-  };
-
-  // Handle reject
-  const handleReject = (id, user_id, code) => {
-    console.log("id:", id);
-    // const test = ;
-    // console.log()
-    // setStatus("Rejected");
-    // console.log(await getStatus())
-
-    const newStatus = {
-      id: id,
-      status: "Rejected",
-      month: month,
-      startDate: startDate,
-      endDate: endDate,
-      userId: user_id,
-      message: `Your purchase with code ${code} has been rejected`,
-      invoiceHeaderId: id,
-      invoiceHeaderCode: code,
-    };
-    Axios.patch(
-      API_URL + `/admin/change-transaction-status-rejected`,
-      newStatus
-    )
-      .then((respond) => {
-        // save user data to global state
-        dispatch({ type: "DATA_TRANSACTIONS", payload: respond.data });
-
-        console.log(respond.data);
-        setDataTransaction(respond.data);
-        // console.log("data:", respond.data);
-        joinRoom(String(user_id));
-        sendNotification(
-          `Your purchase ${code} has been rejected`,
-          String(user_id)
-        );
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    return status;
-  };
-
   console.log(dataTransaction);
 
   const columns = [
@@ -219,7 +246,7 @@ const AdminTransaction = () => {
       // headerAlign: "center",
     },
     {
-      field: "username",
+      field: "name",
       headerName: "Customer Name",
       width: 150,
       editable: false,
@@ -271,7 +298,7 @@ const AdminTransaction = () => {
       headerName: "Amount",
       width: 150,
       editable: false,
-      headerAlign: "center",
+      // headerAlign: "center",
       renderCell: (params) => {
         return (
           <Box>
@@ -281,18 +308,26 @@ const AdminTransaction = () => {
       },
     },
     {
+      field: "date",
+      headerName: "Order Date",
+      width: 200,
+      editable: false,
+      // headerAlign: "center",
+      valueFormatter: (params) => moment(params?.value).format("LLL"),
+    },
+    {
       field: "expired_date",
       headerName: "Expired Date",
       width: 150,
       editable: false,
-      headerAlign: "center",
+      // headerAlign: "center",
     },
     {
       field: "created_at",
       headerName: "Payment Date",
       width: 200,
       editable: false,
-      headerAlign: "center",
+      // headerAlign: "center",
       type: "dateTime",
       renderCell: (params) => {
         return <Box>{params.row.created_at ? params.row.created_at : "-"}</Box>;
@@ -308,7 +343,7 @@ const AdminTransaction = () => {
         return (
           <>
             {params.row.created_at ? (
-              <Link to={"/admin/transaction/" + params.row.id}>
+              <Link to={"/admin/transactions/" + params.row.id}>
                 <button className="widgetSmButton">
                   <VisibilityIcon className="widgetSmIcon" />
                   Display
@@ -329,22 +364,24 @@ const AdminTransaction = () => {
       // headerAlign: "center",
       renderCell: (params) => {
         return (
-          <div className="action">
+          <ChakraProvider>
+            {/* <div className="action"> */}
             {params.row.created_at &&
             params.row.status != "Approved" &&
             params.row.status != "Rejected" ? (
-              <IconButton
-                onClick={() =>
-                  handleApprove(
-                    params.row.id,
-                    params.row.user_id,
-                    params.row.code
-                  )
-                }
-              >
-                {/* <IconButton onClick={() => handleClickOpen(params.row.id)}> */}
-                <CheckCircleSharpIcon style={{ color: "green" }} />
-              </IconButton>
+              <>
+                <IconButton
+                  onClick={() =>
+                    onButtonApprove(
+                      params.row.id,
+                      params.row.user_id,
+                      params.row.code
+                    )
+                  }
+                >
+                  <CheckCircleSharpIcon style={{ color: "green" }} />
+                </IconButton>
+              </>
             ) : (
               <IconButton>
                 <CheckCircleSharpIcon style={{ color: "grey" }} />
@@ -353,36 +390,33 @@ const AdminTransaction = () => {
 
             {params.row.status != "Approved" &&
             params.row.status != "Rejected" ? (
-              <IconButton
-                onClick={() =>
-                  handleReject(
-                    params.row.id,
-                    params.row.user_id,
-                    params.row.code
-                  )
-                }
-              >
-                <CancelSharpIcon style={{ color: "red" }} />
-              </IconButton>
+              <>
+                <IconButton
+                  onClick={() =>
+                    onButtonReject(
+                      params.row.id,
+                      params.row.user_id,
+                      params.row.code
+                    )
+                  }
+                >
+                  <CancelSharpIcon style={{ color: "red" }} />
+                </IconButton>
+              </>
             ) : (
               <IconButton>
                 <CancelSharpIcon style={{ color: "grey" }} />
               </IconButton>
             )}
-          </div>
+          </ChakraProvider>
         );
       },
     },
   ];
-  // () => handleDelete(params.row.id)
 
   useEffect(() => {
     Axios.get(API_URL + `/admin/transaction`)
       .then((respond) => {
-        // console.log(respond.data);
-        // console.log("data:", respond.data);
-
-        // save user data to global state
         dispatch({ type: "DATA_TRANSACTIONS", payload: respond.data });
 
         setDataTransaction(respond.data);
@@ -441,6 +475,66 @@ const AdminTransaction = () => {
         />
       </Box>
       {/* </Page> */}
+      <ChakraProvider>
+        {/* APPROVE */}
+        <AlertDialog isOpen={confirmApprove}>
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                Approve Confirmation
+              </AlertDialogHeader>
+
+              <AlertDialogBody>
+                Are you sure you want to approve this transaction?
+              </AlertDialogBody>
+
+              <AlertDialogFooter>
+                <Button onClick={onBtnCancelConfirmApprove}>Cancel</Button>
+                <Button
+                  onClick={handleApprove}
+                  w={"100px"}
+                  bg={"blue.400"}
+                  color={"white"}
+                  _hover={{ bg: "blue.500" }}
+                  ml={3}
+                >
+                  Yes
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
+        </AlertDialog>
+
+        {/* REJECT */}
+
+        <AlertDialog isOpen={confirmReject}>
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                Reject Confirmation
+              </AlertDialogHeader>
+
+              <AlertDialogBody>
+                Are you sure you want to reject this transaction?
+              </AlertDialogBody>
+
+              <AlertDialogFooter>
+                <Button onClick={onBtnCancelConfirmReject}>Cancel</Button>
+                <Button
+                  onClick={handleReject}
+                  w={"100px"}
+                  bg={"blue.400"}
+                  color={"white"}
+                  _hover={{ bg: "blue.500" }}
+                  ml={3}
+                >
+                  Yes
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
+        </AlertDialog>
+      </ChakraProvider>
     </ThemeProvider>
   );
 };

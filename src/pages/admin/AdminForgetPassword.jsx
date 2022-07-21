@@ -18,11 +18,11 @@ const API_URL = process.env.REACT_APP_URL_API;
 export default function AdminForgotPassword() {
   const toast = useToast();
   const [loading, setLoading] = useState(false);
-  const emailUser = useRef("");
+  const emailAdmin = useRef("");
   const onButtonRequest = () => {
     setLoading(true);
-    Axios.post(API_URL + `/users/forgotpassword`, {
-      Email: emailUser.current.value,
+    Axios.post(API_URL + `/admin/forgetpassword`, {
+      Email: emailAdmin.current.value,
     })
       .then((respond) => {
         console.log("Respond:", respond.data);
@@ -37,7 +37,7 @@ export default function AdminForgotPassword() {
 
         // reset state
 
-        emailUser.current.value = "";
+        emailAdmin.current.value = "";
 
         setLoading(false);
       })
@@ -84,7 +84,7 @@ export default function AdminForgotPassword() {
           </Text>
           <FormControl id="email">
             <Input
-              ref={emailUser}
+              ref={emailAdmin}
               placeholder="your-email@example.com"
               _placeholder={{ color: "gray.500" }}
               type="email"

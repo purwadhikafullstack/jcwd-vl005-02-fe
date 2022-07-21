@@ -58,8 +58,8 @@ const LinkItems = [
     icon: AiOutlineUserAdd,
     url: "/admin/add-new-admin",
   },
-  { name: "Favourites", icon: FiStar, url: "/admin" },
-  { name: "Settings", icon: FiSettings, url: "/admin" },
+  // { name: "Favourites", icon: FiStar, url: "/admin" },
+  // { name: "Settings", icon: FiSettings, url: "/admin" },
 ];
 
 const color = useColorModeValue;
@@ -196,7 +196,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
   const dispatch = useDispatch();
 
   // global state
-  const { email, username, id } = useSelector((state) => state.adminReducer);
+  const { email, username, id,first_name,last_name } = useSelector((state) => state.adminReducer);
 
   const onButtonLogout = () => {
     localStorage.removeItem("adminToken");
@@ -265,14 +265,14 @@ const MobileNav = ({ onOpen, ...rest }) => {
                   _focus={{ boxShadow: "none" }}
                 >
                   <HStack>
-                    <Avatar size={"sm"} name={email} />
+                    <Avatar size={"sm"} name={first_name} />
                     <VStack
                       display={{ base: "none", md: "flex" }}
                       alignItems="flex-start"
                       spacing="1px"
                       ml="2"
                     >
-                      <Text fontSize="sm">{email}</Text>
+                      <Text fontSize="sm">{first_name} {last_name}</Text>
                       <Text fontSize="xs" color="gray.600">
                         Admin
                       </Text>

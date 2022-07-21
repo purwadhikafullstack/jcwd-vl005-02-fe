@@ -1,10 +1,10 @@
 import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Navbar from "./components/user/Navbar";
-import ForgotPassword from "./pages/user/forgotPassword";
-import ResetPassword from "./pages/user/resetPassword";
+import ForgotPassword from "./pages/user/ForgotPassword";
+import ResetPassword from "./pages/user/ResetPassword";
 import UserHome from "./pages/user/UserHome";
-import UserLogin from "./pages/user/userLogin";
+import UserLogin from "./pages/user/UserLogin";
 import UserRegister from "./pages/user/UserRegister";
 import UserProductDetails from "./pages/user/UserProductDetails";
 import UserProducts from "./pages/user/UserProducts";
@@ -22,15 +22,35 @@ import UserNotifications from "./pages/user/UserNotifications";
 import { Box } from "@chakra-ui/react";
 
 function UserRouter() {
-  const { email, username, id: userId } = useSelector((state) => state.user);
+  const { is_verified } = useSelector((state) => state.user);
   return (
     <div style={{ position: "relative", minHeight: "100vh" }}>
       <div style={{ paddingBottom: "16.3rem" }}>
         <Navbar></Navbar>
         <Routes>
-          <Route exact path="/" element={<UserHome />} />
+          {localStorage.getItem("token") && is_verified === "unferified" ? (
+            <Route
+              exact
+              path="/"
+              element={
+                <Navigate to="/resending-the-verification-email" replace />
+              }
+            />
+          ) : (
+            <Route exact path="/" element={<UserHome />} />
+          )}
+          {localStorage.getItem("token") && is_verified === "unferified" ? (
+            <Route
+              exact
+              path="/shop"
+              element={
+                <Navigate to="/resending-the-verification-email" replace />
+              }
+            />
+          ) : (
+            <Route path="/shop" element={<UserProducts />}></Route>
+          )}
 
-          <Route path="/shop" element={<UserProducts />}></Route>
           {localStorage.getItem("token") ? (
             <Route path="/cart" element={<UserCart />}></Route>
           ) : (
@@ -55,6 +75,10 @@ function UserRouter() {
           <Route path="/login" element={<UserLogin />}></Route>
           <Route path="/register" element={<UserRegister />}></Route>
           <Route path="/forgotpassword" element={<ForgotPassword />}></Route>
+          <Route
+            path="/resending-the-verification-email"
+            element={<ResendEmailVerification />}
+          ></Route>
           <Route
             path="/resetpassword/:token"
             element={<ResetPassword />}
