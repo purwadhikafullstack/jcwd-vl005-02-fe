@@ -14,6 +14,7 @@ import {
   InputGroup,
   useToast,
   InputRightElement,
+  Spinner,
 } from "@chakra-ui/react";
 
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
@@ -44,15 +45,13 @@ export default function AdminResetPassword() {
         isClosable: true,
       });
     }
-
+    setLoading(true);
     const newPass = {
       // email: email.current.value,
       password: password.current.value,
       repassword: repassword.current.value,
     };
-    // console.log(newUser);
 
-    setLoading(true);
     Axios.post(API_URL + `/admin/resetpassword`, newPass, {
       headers: {
         Authorization: `Bearer ${params.token}`,
@@ -148,6 +147,8 @@ export default function AdminResetPassword() {
           <Stack spacing={6}>
             <Button
               onClick={onButtonSubmit}
+              leftIcon={loading ? <Spinner size="md" /> : null}
+              disabled={loading}
               fontFamily={"heading"}
               mt={8}
               w={"full"}

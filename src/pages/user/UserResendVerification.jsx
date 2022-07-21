@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { EmailIcon } from "@chakra-ui/icons";
 import { useSelector } from "react-redux";
 import Axios from "axios";
@@ -12,16 +13,18 @@ import {
   Text,
   useColorModeValue,
   useToast,
+  Spinner,
 } from "@chakra-ui/react";
 
 const ResendEmailVerification = () => {
   const API_URL = process.env.REACT_APP_URL_API;
+  const [loading, setLoading] = useState(false);
   const { is_verified, email, id, username, first_name, last_name } =
     useSelector((state) => state.user);
   const toast = useToast();
 
   const onBtnResend = () => {
-    // alert(last_name)
+    setLoading(true);
     Axios.post(API_URL + `/users/resendemail`, {
       id: id,
       email: email,
@@ -37,9 +40,11 @@ const ResendEmailVerification = () => {
           duration: 3000,
           isClosable: true,
         });
+        setLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false);
       });
   };
   return (
@@ -71,6 +76,8 @@ const ResendEmailVerification = () => {
 
           <Button
             onClick={onBtnResend}
+            leftIcon={loading ? <Spinner size="md" /> : null}
+            disabled={loading}
             margin={"2%"}
             bgColor={"red.500"}
             color="white"

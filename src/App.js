@@ -15,7 +15,7 @@ function App() {
   const value = Cookies.get("loginstatus");
 
   if (isChecked == "false") {
-    console.log("STEP 1");
+    // console.log("STEP 1");
     if (!value) {
       localStorage.removeItem("token");
       localStorage.removeItem("isChecked");
@@ -27,7 +27,7 @@ function App() {
   const valueAdmin = Cookies.get("loginstatusadmin");
 
   if (isCheckedAdmin == "false") {
-    console.log("STEP 1");
+    // console.log("STEP 1");
     if (!valueAdmin) {
       localStorage.removeItem("adminToken");
       localStorage.removeItem("isCheckedAdmin");

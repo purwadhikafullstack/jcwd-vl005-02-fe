@@ -11,6 +11,7 @@ import {
   Text,
   useColorModeValue,
   useToast,
+  Spinner,
 } from "@chakra-ui/react";
 
 const API_URL = process.env.REACT_APP_URL_API;
@@ -19,6 +20,7 @@ export default function AdminForgotPassword() {
   const toast = useToast();
   const [loading, setLoading] = useState(false);
   const emailAdmin = useRef("");
+
   const onButtonRequest = () => {
     setLoading(true);
     Axios.post(API_URL + `/admin/forgetpassword`, {
@@ -93,6 +95,8 @@ export default function AdminForgotPassword() {
           <Stack spacing={6}>
             <Button
               onClick={onButtonRequest}
+              leftIcon={loading ? <Spinner size="md" /> : null}
+              disabled={loading}
               fontFamily={"heading"}
               mt={8}
               w={"full"}

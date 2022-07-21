@@ -8,6 +8,7 @@ import {
   Input,
   Button,
   useToast,
+  Spinner,
 } from "@chakra-ui/react";
 import { ChakraProvider } from "@chakra-ui/react";
 
@@ -20,6 +21,8 @@ export default function AddNewAdmin() {
   const password = useRef("");
   const [loading, setLoading] = useState(false);
   const toast = useToast();
+
+
   const onSubmit = () => {
     // input validation
     if (
@@ -159,6 +162,8 @@ export default function AddNewAdmin() {
               </Stack>
               <Button
                 onClick={onSubmit}
+                leftIcon={loading ? <Spinner size="md" /> : null}
+                disabled={loading}
                 fontFamily={"heading"}
                 mt={8}
                 w={"full"}

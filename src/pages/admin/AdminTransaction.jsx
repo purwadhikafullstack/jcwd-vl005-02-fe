@@ -429,7 +429,6 @@ const AdminTransaction = () => {
 
   return (
     <ThemeProvider>
-      {/* <Page title="Transactions"> */}
       <div className="App">
         <Title level={3}>Transactions</Title>
         <DatePicker

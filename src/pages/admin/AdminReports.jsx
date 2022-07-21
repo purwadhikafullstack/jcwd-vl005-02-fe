@@ -30,6 +30,7 @@ export default function AdminReports() {
   const [numberOfSales, setNumberOfSales] = useState(null);
   const [dataTopThree, setDataTopThree] = useState([]);
   const [dataTransaction, setDataTransaction] = useState([]);
+  const [pageSize, setPageSize] = useState(10);
 
   const columns = [
     {
@@ -336,13 +337,16 @@ export default function AdminReports() {
               rows={dataTransaction}
               columns={columnstransactions}
               autoHeight={true}
-              pageSize={5}
-              rowsPerPageOptions={[10]}
+              pageSize={pageSize}
+              onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+              rowsPerPageOptions={[10, 20, 100]}
+              pagination
               // checkboxSelection
               disableSelectionOnClick
             />
           </Box>
-          <Box marginTop={"10%"} sx={{ height: 400, width: "100%" }}>
+
+          <Box marginTop={"40%"} sx={{ height: 400, width: "100%" }}>
             <div className="title">
               <Typography variant="h4" sx={{ mb: 5 }}>
                 Top 3 Most Sold
@@ -354,8 +358,9 @@ export default function AdminReports() {
               rows={dataTopThree}
               columns={columns}
               autoHeight={true}
-              pageSize={5}
-              rowsPerPageOptions={[10]}
+              pageSize={3}
+              // onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+              // rowsPerPageOptions={[10, 20, 100]}
               // checkboxSelection
               disableSelectionOnClick
             />
