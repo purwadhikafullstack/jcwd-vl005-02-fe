@@ -25,6 +25,7 @@ import {
   Grid,
   InputAdornment,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 // const productCategories = [
 //   "Antibiotika",
@@ -48,6 +49,7 @@ const AdminNewProduct = () => {
   // STATE DEFINITION //
   //////////////////////
   const [loading, setLoading] = useState(false);
+  const [newProductId, setNewProductId] = useState(0);
   const [showSuccess, setShowSuccess] = useState({
     open: false,
     title: "",
@@ -75,6 +77,8 @@ const AdminNewProduct = () => {
   //   volume: "",
   //   unit: "",
   // });
+
+  let navigate = useNavigate();
 
   const InputPhoto = styled("input")({
     display: "none",
@@ -318,6 +322,7 @@ const AdminNewProduct = () => {
           title: res.data.subject,
           description: res.data.message,
         });
+        setNewProductId(res.data.details);
       })
       .catch((err) => {
         console.log(err);
@@ -355,9 +360,10 @@ const AdminNewProduct = () => {
           successTitle={showSuccess.title}
           successDescription={showSuccess.description}
           show={showSuccess.open}
-          close={() =>
-            setShowSuccess({ open: false, title: "", description: "" })
-          }
+          close={() => {
+            setShowSuccess({ open: false, title: "", description: "" });
+            navigate(`/admin/products/${newProductId}`);
+          }}
         />
 
         <FormControl

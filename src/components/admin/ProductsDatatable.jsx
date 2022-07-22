@@ -335,7 +335,6 @@ function SortDrawer({ sort, setSort }) {
                   onChange={handleSort}
                   value={sortBy ? sortBy : sort.property}
                 >
-                  <FormControlLabel value="id" control={<Radio />} label="ID" />
                   <FormControlLabel
                     value="name"
                     control={<Radio />}
@@ -350,7 +349,12 @@ function SortDrawer({ sort, setSort }) {
                   <FormControlLabel
                     value="stock"
                     control={<Radio />}
-                    label="Stock"
+                    label="Stock in Package"
+                  />
+                  <FormControlLabel
+                    value="stock_in_unit"
+                    control={<Radio />}
+                    label="Stock in Unit"
                   />
                 </RadioGroup>
               </FormControl>
