@@ -33,7 +33,6 @@ export default function TransactionProof() {
     <ThemeProvider>
       <div className="user">
         <div className="userTitleContainer">
-          {/* <h1 className="UserTitle">Bukti Pembayaran</h1> */}
           <Title level={3}>Payment Proof</Title>
         </div>
         <div className="userContainer">

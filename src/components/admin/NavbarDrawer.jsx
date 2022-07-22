@@ -1,5 +1,8 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import {
+  Button as Tombol,
   IconButton,
   Avatar,
   Box,
@@ -36,12 +39,12 @@ import { MdDashboard } from "react-icons/md";
 import { AiFillMedicineBox } from "react-icons/ai";
 import { GiMedicines } from "react-icons/gi";
 import { FaDollarSign } from "react-icons/fa";
-import { TbReportAnalytics} from "react-icons/tb";
-import { FaUserAlt } from "react-icons/fa"
+import { TbReportAnalytics } from "react-icons/tb";
+import { FaUserAlt } from "react-icons/fa";
+import { AiOutlineUserAdd } from "react-icons/ai";
 import { IconType } from "react-icons";
 import { ReactText } from "react";
 import { Button } from "antd";
-
 
 const LinkItems = [
   { name: "Dashboard", icon: MdDashboard, url: "/admin" },
@@ -50,12 +53,20 @@ const LinkItems = [
   { name: "Users", icon: FaUserAlt, url: "/admin/users" },
   { name: "Transactions", icon: FaDollarSign, url: "/admin/transactions" },
   { name: "Reports", icon: TbReportAnalytics, url: "/admin/reports" },
-  { name: "Favourites", icon: FiStar, url: "/admin" },
-  { name: "Settings", icon: FiSettings, url: "/admin" },
+  {
+    name: "Add New Admin",
+    icon: AiOutlineUserAdd,
+    url: "/admin/add-new-admin",
+  },
+  // { name: "Favourites", icon: FiStar, url: "/admin" },
+  // { name: "Settings", icon: FiSettings, url: "/admin" },
 ];
+
+const color = useColorModeValue;
 
 export default function NavbarDrawer({ children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const adminToken = localStorage.getItem("adminToken");
   return (
     <Box minH="100vh" bg={useColorModeValue("white", "gray.900")}>
       <SidebarContent
@@ -77,49 +88,68 @@ export default function NavbarDrawer({ children }) {
       </Drawer>
       {/* mobilenav */}
       <MobileNav onOpen={onOpen} />
-      <Box ml={{ base: 0, md: 60 }} p="4">
-        {children}
-      </Box>
+      {adminToken ? (
+        <Box ml={{ base: 0, md: 60 }} p="4">
+          {children}
+        </Box>
+      ) : (
+        <Box ml={{ base: 0, md: 0 }} p="4">
+          {children}
+        </Box>
+      )}
     </Box>
   );
 }
 
 const SidebarContent = ({ onClose, ...rest }) => {
+  const adminToken = localStorage.getItem("adminToken");
   return (
-    <Box
-      transition="3s ease"
-      bg={useColorModeValue("white", "gray.900")}
-      borderRight="1px"
-      borderRightColor={useColorModeValue("gray.200", "gray.700")}
-      w={{ base: "full", md: 60 }}
-      pos="fixed"
-      h="full"
-      {...rest}
-    >
-      <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text
-          fontSize="xl"
-          fontFamily="monospace"
-          fontWeight="bold"
-          display="flex"
-          flexDir="row"
-          alignItems="center"
+    <>
+      {adminToken ? (
+        <Box
+          transition="3s ease"
+          bg={color("white", "gray.900")}
+          borderRight="1px"
+          borderRightColor={color("gray.200", "gray.700")}
+          w={{ base: "full", md: 60 }}
+          pos="fixed"
+          h="full"
+          {...rest}
         >
-          <AiFillMedicineBox
-            style={{
-              marginRight: "10px",
-            }}
-          />
-          Pharmastore
-        </Text>
-        <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
-      </Flex>
-      {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon} url={link.url}>
-          {link.name}
-        </NavItem>
-      ))}
-    </Box>
+          <Flex
+            h="20"
+            alignItems="center"
+            mx="8"
+            justifyContent="space-between"
+          >
+            <Text
+              fontSize="xl"
+              fontFamily="monospace"
+              fontWeight="bold"
+              display="flex"
+              flexDir="row"
+              alignItems="center"
+            >
+              <AiFillMedicineBox
+                style={{
+                  marginRight: "10px",
+                }}
+              />
+              Pharmastore
+            </Text>
+            <CloseButton
+              display={{ base: "flex", md: "none" }}
+              onClick={onClose}
+            />
+          </Flex>
+          {LinkItems.map((link) => (
+            <NavItem key={link.name} icon={link.icon} url={link.url}>
+              {link.name}
+            </NavItem>
+          ))}
+        </Box>
+      ) : null}
+    </>
   );
 };
 
@@ -160,87 +190,164 @@ const NavItem = ({ icon, children, url, ...rest }) => {
 };
 
 const MobileNav = ({ onOpen, ...rest }) => {
+  const adminToken = localStorage.getItem("adminToken");
+  const [test, setTest] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  // global state
+  const { email, username, id,first_name,last_name } = useSelector((state) => state.adminReducer);
+
+  const onButtonLogout = () => {
+    localStorage.removeItem("adminToken");
+    setTest("Hi");
+    // console.log(test);
+
+    dispatch({ type: "ADMINLOGOUT" });
+    navigate("/admin/login");
+  };
+
+  const onButtonLogin = () => {
+    navigate("/admin/login");
+  };
   return (
-    <Flex
-      ml={{ base: 0, md: 60 }}
-      px={{ base: 4, md: 4 }}
-      height="20"
-      alignItems="center"
-      bg={useColorModeValue("white", "gray.900")}
-      borderBottomWidth="1px"
-      borderBottomColor={useColorModeValue("gray.200", "gray.700")}
-      justifyContent={{ base: "space-between", md: "flex-end" }}
-      {...rest}
-    >
-      <IconButton
-        display={{ base: "flex", md: "none" }}
-        onClick={onOpen}
-        variant="outline"
-        aria-label="open menu"
-        icon={<FiMenu />}
-      />
+    <>
+      {adminToken ? (
+        <Flex
+          ml={{ base: 0, md: 60 }}
+          px={{ base: 4, md: 4 }}
+          height="20"
+          alignItems="center"
+          bg={color("white", "gray.900")}
+          borderBottomWidth="1px"
+          borderBottomColor={color("gray.200", "gray.700")}
+          justifyContent={{ base: "space-between", md: "flex-end" }}
+          {...rest}
+        >
+          <IconButton
+            display={{ base: "flex", md: "none" }}
+            onClick={onOpen}
+            variant="outline"
+            aria-label="open menu"
+            icon={<FiMenu />}
+          />
 
-      <Text
-        display={{ base: "flex", md: "none" }}
-        fontSize="2xl"
-        fontFamily="monospace"
-        fontWeight="bold"
-      >
-        Logo
-      </Text>
+          <Text
+            display={{ base: "flex", md: "none" }}
+            fontSize="2xl"
+            fontFamily="monospace"
+            fontWeight="bold"
+            flexDir="row"
+            alignItems="center"
+          >
+            <AiFillMedicineBox
+              style={{
+                marginRight: "10px",
+              }}
+            />
+            Pharmastore
+          </Text>
 
-      <HStack spacing={{ base: "0", md: "6" }}>
-        <IconButton
-          size="lg"
-          variant="ghost"
-          aria-label="open menu"
-          icon={<FiBell />}
-        />
-        <Flex alignItems={"center"}>
-          <Menu>
-            {/* <Button> Login</Button>
+          <HStack spacing={{ base: "0", md: "6" }}>
+            <IconButton
+              size="lg"
+              variant="ghost"
+              aria-label="open menu"
+              icon={<FiBell />}
+            />
+            <Flex alignItems={"center"}>
+              <Menu>
+                {/* <Button> Login</Button>
             <Button> register</Button> */}
-            <MenuButton
-              py={2}
-              transition="all 0.3s"
-              _focus={{ boxShadow: "none" }}
-            >
-              <HStack>
-                <Avatar
-                  size={"sm"}
-                  src={
-                    "https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
-                  }
-                />
-                <VStack
-                  display={{ base: "none", md: "flex" }}
-                  alignItems="flex-start"
-                  spacing="1px"
-                  ml="2"
+                <MenuButton
+                  py={2}
+                  transition="all 0.3s"
+                  _focus={{ boxShadow: "none" }}
                 >
-                  <Text fontSize="sm">Justina Clark</Text>
-                  <Text fontSize="xs" color="gray.600">
-                    Admin
-                  </Text>
-                </VStack>
-                <Box display={{ base: "none", md: "flex" }}>
-                  <FiChevronDown />
-                </Box>
-              </HStack>
-            </MenuButton>
-            <MenuList
-              bg={useColorModeValue("white", "gray.900")}
-              borderColor={useColorModeValue("gray.200", "gray.700")}
-            >
-              <MenuItem>Profile</MenuItem>
-              <MenuItem>Settings</MenuItem>
-              <MenuItem>Billing</MenuItem>
-              <MenuDivider />
-              <MenuItem>Sign out</MenuItem>
-            </MenuList>
-          </Menu>
+                  <HStack>
+                    <Avatar size={"sm"} name={first_name} />
+                    <VStack
+                      display={{ base: "none", md: "flex" }}
+                      alignItems="flex-start"
+                      spacing="1px"
+                      ml="2"
+                    >
+                      <Text fontSize="sm">{first_name} {last_name}</Text>
+                      <Text fontSize="xs" color="gray.600">
+                        Admin
+                      </Text>
+                    </VStack>
+                    <Box display={{ base: "none", md: "flex" }}>
+                      <FiChevronDown />
+                    </Box>
+                  </HStack>
+                </MenuButton>
+                <MenuList
+                  bg={color("white", "gray.900")}
+                  borderColor={color("gray.200", "gray.700")}
+                >
+                  <MenuItem>Profile</MenuItem>
+                  <MenuItem>Settings</MenuItem>
+                  <MenuItem>Billing</MenuItem>
+                  <MenuDivider />
+                  <MenuItem onClick={onButtonLogout}>Sign out</MenuItem>
+                </MenuList>
+              </Menu>
+            </Flex>
+          </HStack>
         </Flex>
-      </HStack>
-    </Flex>
+      ) : (
+        <Flex
+          ml={{ base: 0, md: 0 }}
+          px={{ base: 4, md: 4 }}
+          height="20"
+          alignItems="center"
+          bg={color("white", "gray.900")}
+          borderBottomWidth="1px"
+          borderBottomColor={color("gray.200", "gray.700")}
+          justifyContent={{ base: "space-between", md: "space-between" }}
+          {...rest}
+        >
+          <Text
+            fontSize="xl"
+            fontFamily="monospace"
+            fontWeight="bold"
+            display="flex"
+            flexDir="row"
+            alignItems="center"
+          >
+            <AiFillMedicineBox
+              style={{
+                marginRight: "10px",
+              }}
+            />
+            Pharmastore
+          </Text>
+
+          <HStack spacing={{ base: "0", md: "6" }}>
+            <Menu>
+              {/* <Button> Login</Button> */}
+              <Tombol
+                onClick={onButtonLogin}
+                // display={{ base: "none", md: "inline-flex" }}
+                fontSize={"sm"}
+                fontWeight={600}
+                // bgGradient="linear(to-r, white,white)"
+                colorScheme={"blue"}
+                color={"white"}
+                bg={"blue.400"}
+                _hover={{
+                  bgGradient: "linear(to-r, blue.400,blue.400)",
+                  boxShadow: "xl",
+                  color: "white",
+                }}
+              >
+                Sign In
+              </Tombol>
+            </Menu>
+          </HStack>
+        </Flex>
+      )}
+    </>
   );
 };

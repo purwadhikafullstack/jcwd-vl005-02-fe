@@ -13,6 +13,7 @@ import {
   InputGroup,
   useToast,
   InputRightElement,
+  Spinner,
 } from "@chakra-ui/react";
 
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
@@ -148,6 +149,8 @@ export default function ResetPassword() {
         <Stack spacing={6}>
           <Button
             onClick={onButtonSubmit}
+            leftIcon={loading ? <Spinner size="md" /> : null}
+            disabled={loading}
             fontFamily={"heading"}
             mt={8}
             w={"full"}

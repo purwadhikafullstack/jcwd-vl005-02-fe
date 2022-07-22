@@ -1,4 +1,7 @@
+import React, { useState } from "react";
 import { EmailIcon } from "@chakra-ui/icons";
+import { useSelector } from "react-redux";
+import Axios from "axios";
 import {
   Box,
   Button,
@@ -10,9 +13,40 @@ import {
   Text,
   useColorModeValue,
   useToast,
+  Spinner,
 } from "@chakra-ui/react";
 
 const ResendEmailVerification = () => {
+  const API_URL = process.env.REACT_APP_URL_API;
+  const [loading, setLoading] = useState(false);
+  const { is_verified, email, id, username, first_name, last_name } =
+    useSelector((state) => state.user);
+  const toast = useToast();
+
+  const onBtnResend = () => {
+    setLoading(true);
+    Axios.post(API_URL + `/users/resendemail`, {
+      id: id,
+      email: email,
+      is_verified: is_verified,
+    })
+      .then((respond) => {
+        // setMessage(" Your account has been verified");
+        // alert(respond.data);
+        toast({
+          title: respond.data,
+          // description: respond.data,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  };
   return (
     <Flex
       minH={"100vh"}
@@ -37,16 +71,18 @@ const ResendEmailVerification = () => {
           </Heading>
 
           <Text color={"gray.500"}>
-            You must verify your email address to access this page
+            Hi {username} you must verify your email address to access this page
           </Text>
 
           <Button
+            onClick={onBtnResend}
+            leftIcon={loading ? <Spinner size="md" /> : null}
+            disabled={loading}
             margin={"2%"}
-            // colorScheme="red.500"
-            // bgGradient="linear(to-r, teal.400, teal.500, teal.600)"
-            bgColor={"red.400"}
+            bgColor={"red.500"}
             color="white"
             variant="solid"
+            _hover={{ bg: "red.400" }}
           >
             Resend verification email
           </Button>
