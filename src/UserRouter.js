@@ -23,16 +23,47 @@ import { Box } from "@chakra-ui/react";
 import UserDashboard from "./pages/user/UserDashboard";
 
 function UserRouter() {
-  const { email, username, id: userId } = useSelector((state) => state.user);
+  const { is_verified } = useSelector((state) => state.user);
   return (
     <div style={{ position: "relative", minHeight: "100vh" }}>
       <div style={{ paddingBottom: "16.3rem" }}>
         <Navbar></Navbar>
         <Routes>
-          <Route exact path="/" element={<UserHome />} />
-          <Route exact path="/dashboard/*" element={<UserDashboard />} />
+          {localStorage.getItem("token") && is_verified === "unferified" ? (
+            <Route
+              exact
+              path="/"
+              element={
+                <Navigate to="/resending-the-verification-email" replace />
+              }
+            />
+          ) : (
+            <Route exact path="/" element={<UserHome />} />
+          )}
+          {localStorage.getItem("token") && is_verified === "unferified" ? (
+            <Route
+              exact
+              path="/shop"
+              element={
+                <Navigate to="/resending-the-verification-email" replace />
+              }
+            />
+          ) : (
+            <Route path="/shop" element={<UserProducts />}></Route>
+          )}
 
-          <Route path="/shop" element={<UserProducts />}></Route>
+          {localStorage.getItem("token") && is_verified === "unferified" ? (
+            <Route
+              exact
+              path="/dashboard/*"
+              element={
+                <Navigate to="/resending-the-verification-email" replace />
+              }
+            />
+          ) : (
+            <Route exact path="/dashboard/*" element={<UserDashboard />} />
+          )}
+
           {localStorage.getItem("token") ? (
             <Route path="/cart" element={<UserCart />}></Route>
           ) : (
@@ -57,6 +88,10 @@ function UserRouter() {
           <Route path="/login" element={<UserLogin />}></Route>
           <Route path="/register" element={<UserRegister />}></Route>
           <Route path="/forgotpassword" element={<ForgotPassword />}></Route>
+          <Route
+            path="/resending-the-verification-email"
+            element={<ResendEmailVerification />}
+          ></Route>
           <Route
             path="/resetpassword/:token"
             element={<ResetPassword />}

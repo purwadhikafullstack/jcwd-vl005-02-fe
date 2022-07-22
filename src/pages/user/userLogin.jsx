@@ -16,7 +16,6 @@ import {
   SimpleGrid,
   useBreakpointValue,
   Spinner,
-  // IconProps,
   Icon,
   FormControl,
   FormLabel,
@@ -29,7 +28,7 @@ import {
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 import { Link as ReactLink } from "react-router-dom";
-// import { color } from "@mui/system";
+
 
 export default function UserLogin() {
   const API_URL = process.env.REACT_APP_URL_API;
@@ -66,9 +65,8 @@ export default function UserLogin() {
           isClosable: true,
         });
         console.log(respond.data.token);
-        // save token to local storage
+        // save token to local storage and cookies
 
-        // document.cookie = "loginstatus=loggedin";
         Cookies.set("loginstatus", "loggedin");
         localStorage.setItem("token", respond.data.token);
         localStorage.setItem("isChecked", checked);
@@ -92,10 +90,6 @@ export default function UserLogin() {
       });
   };
 
-  // const value = Cookies.get("loginstatus");
-  // console.log(value);
-  const token = localStorage.getItem("token");
-  if (token) return <Navigate to="/" />;
   const color = useColorModeValue;
 
   return (

@@ -11,7 +11,24 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import IconButton from "@mui/material/IconButton";
 import CheckCircleSharpIcon from "@mui/icons-material/CheckCircleSharp";
 import CancelSharpIcon from "@mui/icons-material/CancelSharp";
-import { Button as Tombol, DatePicker, version, Typography } from "antd";
+
+import {
+  useDisclosure,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  ChakraProvider,
+  Button,
+} from "@chakra-ui/react";
+import {
+  // Button ,
+  DatePicker,
+  Typography,
+  Space,
+} from "antd";
 import { Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import Page from "../../components/admin/Page";
@@ -22,6 +39,89 @@ const AdminManageUsers = () => {
   const API_URL = process.env.REACT_APP_URL_API;
   const [pageSize, setPageSize] = useState(5);
   const [usersData, setUsersData] = useState([]);
+  const [status, setStatus] = useState("");
+  const dispatch = useDispatch();
+  const selector = useSelector;
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [confirm, setConfirm] = useState(false);
+  const [confirm2, setConfirm2] = useState(false);
+  const [idUser, setIdUser] = useState(null);
+
+  const onButtonActive = (id) => {
+    console.log(idUser);
+    setIdUser(id);
+
+    setConfirm(true);
+  };
+  const onButtonActive2 = (id) => {
+    console.log(id);
+    setIdUser(id);
+
+    setConfirm2(true);
+  };
+
+  const handleActive = () => {
+    setStatus("active");
+    setStatus((statusbaru) => {
+      console.log("Test:", idUser);
+      const newStatus = {
+        id: idUser,
+        is_active: statusbaru,
+      };
+      Axios.patch(API_URL + `/admin/changeuserstatus`, newStatus)
+        .then((respond) => {
+          // save user data to global state
+          dispatch({ type: "DATA_USERS", payload: respond.data });
+
+          console.log(respond.data);
+          // setDataTransaction(respond.data);
+          // console.log("data:", respond.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      setConfirm(false);
+
+      return status;
+    });
+  };
+
+  const handleBanned = (id) => {
+    console.log("id:", id);
+    // const test = ;
+    // console.log()
+    setStatus("banned");
+    // console.log(await getStatus())
+    setStatus((statusbaru) => {
+      console.log("test:", statusbaru);
+      const newStatus = {
+        id: idUser,
+        is_active: statusbaru,
+      };
+      Axios.patch(API_URL + `/admin/changeuserstatus`, newStatus)
+        .then((respond) => {
+          // save user data to global state
+          dispatch({ type: "DATA_USERS", payload: respond.data });
+
+          console.log(respond.data);
+          // setDataTransaction(respond.data);
+          // console.log("data:", respond.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      setConfirm2(false);
+      return status;
+    });
+  };
+
+  const onBtnCancelConfirm = () => {
+    setConfirm(false);
+  };
+  const onBtnCancelConfirm2 = () => {
+    setConfirm2(false);
+  };
+
   const columns = [
     {
       field: "id",
@@ -93,8 +193,41 @@ const AdminManageUsers = () => {
     {
       field: "action",
       headerName: "Action",
-      width: 100,
+      width: 150,
       editable: false,
+      renderCell: (params) => {
+        return (
+          <ChakraProvider>
+            <Space className="actionusers">
+              {params.row.is_active == "active" ? (
+                <>
+                  <Button
+                    onClick={() => onButtonActive2(params.row.id)}
+                    size="sm"
+                    bg={"red.500"}
+                    color={"white"}
+                    _hover={{ bg: "red.400" }}
+                    ml={3}
+                  >
+                    Deactivate
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  onClick={() => onButtonActive(params.row.id)}
+                  bg={"green.500"}
+                  size="sm"
+                  color={"white"}
+                  _hover={{ bg: "green.400" }}
+                  ml={3}
+                >
+                  Reactivate
+                </Button>
+              )}
+            </Space>
+          </ChakraProvider>
+        );
+      },
     },
   ];
 
@@ -102,12 +235,8 @@ const AdminManageUsers = () => {
     Axios.get(API_URL + `/admin/users`)
       .then((respond) => {
         setUsersData(respond.data);
-        // console.log(respond.data);
-        // console.log("data:", respond.data);
-
         // save user data to global state
-        // dispatch({ type: "DATA_TRANSACTIONS", payload: respond.data });
-
+        dispatch({ type: "DATA_USERS", payload: respond.data });
         setUsersData(respond.data);
         console.log(respond.data);
       })
@@ -115,6 +244,8 @@ const AdminManageUsers = () => {
         console.log(error);
       });
   }, []);
+
+  const data = selector((state) => state.manageUsersReducer);
   return (
     <ThemeProvider>
       <Page title="Manage Users">
@@ -124,7 +255,8 @@ const AdminManageUsers = () => {
         <Box sx={{ height: 400, width: "100%" }}>
           <DataGrid
             // getRowId={(dataTransaction) => dataTransaction.id}
-            rows={usersData}
+            rowHeight={100}
+            rows={data}
             columns={columns}
             autoHeight={true}
             // checkboxSelection
@@ -135,6 +267,63 @@ const AdminManageUsers = () => {
             pagination
           />
         </Box>
+        <ChakraProvider>
+          <AlertDialog isOpen={confirm}>
+            <AlertDialogOverlay>
+              <AlertDialogContent>
+                <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                  Reactivate user
+                </AlertDialogHeader>
+
+                <AlertDialogBody>
+                  Are you sure you want to reactivate this user?
+                </AlertDialogBody>
+
+                <AlertDialogFooter>
+                  <Button onClick={onBtnCancelConfirm}>Cancel</Button>
+                  <Button
+                    onClick={handleActive}
+                    w={"100px"}
+                    bg={"blue.400"}
+                    color={"white"}
+                    _hover={{ bg: "blue.500" }}
+                    ml={3}
+                  >
+                    Yes
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialogOverlay>
+          </AlertDialog>
+
+          <AlertDialog isOpen={confirm2}>
+            <AlertDialogOverlay>
+              <AlertDialogContent>
+                <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                  deactivate confirmation
+                </AlertDialogHeader>
+
+                <AlertDialogBody>
+                  Are you sure you want to deactivate this user?
+                </AlertDialogBody>
+
+                <AlertDialogFooter>
+                  <Button onClick={onBtnCancelConfirm2}>Cancel</Button>
+                  <Button
+                    onClick={handleBanned}
+                    w={"100px"}
+                    bg={"blue.400"}
+                    color={"white"}
+                    _hover={{ bg: "blue.500" }}
+                    ml={3}
+                  >
+                    Yes
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialogOverlay>
+          </AlertDialog>
+        </ChakraProvider>
       </Page>
     </ThemeProvider>
   );
