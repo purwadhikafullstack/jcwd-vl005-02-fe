@@ -56,7 +56,12 @@ function ModalMessage({ isOpen, onClose, status, subject, message }) {
 }
 
 export default function UserProductCard({ productData }) {
-  const { email, username, id: userId } = useSelector((state) => state.user);
+  const {
+    email,
+    username,
+    id: userId,
+    is_verified,
+  } = useSelector((state) => state.user);
 
   const [isOpen, setIsOpen] = useState({
     open: false,
@@ -93,6 +98,8 @@ export default function UserProductCard({ productData }) {
         });
       });
   };
+
+  console.log(is_verified);
 
   return (
     <Box
@@ -218,12 +225,23 @@ export default function UserProductCard({ productData }) {
             // <Badge colorScheme="green" textTransform="unset">
             //   In stock: {productData.stock} unit(s)
             // </Badge>
-            <Badge colorScheme="green" textTransform="unset">
+            <Badge colorScheme="green" textTransform="unset" mb={4}>
               In stock: {productData.stock_in_unit} {productData.unit}
             </Badge>
           ) : (
-            <Badge colorScheme="gray" textTransform="unset">
+            <Badge colorScheme="gray" textTransform="unset" mb={4}>
               Please ask admin for product availability!
+            </Badge>
+          )}
+
+          {productData.sold || productData.sold_times ? (
+            <Badge colorScheme="gray" textTransform="unset">
+              Sold: {productData.sold_times} times ({productData.sold}{" "}
+              {productData.unit})
+            </Badge>
+          ) : (
+            <Badge colorScheme="gray" textTransform="unset">
+              Product has not been sold yet.
             </Badge>
           )}
         </Flex>
@@ -246,7 +264,7 @@ export default function UserProductCard({ productData }) {
             </Button>
           </Link>
 
-          {productData.stock == 0 || !userId ? (
+          {productData.stock == 0 || !userId || is_verified === "unferified" ? (
             <Button w="45%" colorScheme="red" disabled>
               <BsCartPlus />
             </Button>

@@ -132,6 +132,11 @@ const UserAddressList = () => {
           My Address ({totalData} address(es))
         </Heading>
       </Stack>
+      <Link to="new">
+        <Button mt={4} colorScheme="red">
+          Add New Address
+        </Button>
+      </Link>
       <Stack mt={10}>
         {totalData ? (
           <TableContainer>

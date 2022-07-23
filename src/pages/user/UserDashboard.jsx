@@ -28,13 +28,15 @@ import { MdPayment } from "react-icons/md";
 import { BsCart4 } from "react-icons/bs";
 import { IconType } from "react-icons";
 import { ReactText } from "react";
-import { Link, Routes, Route, useLocation } from "react-router-dom";
+import { Link, Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import UserNotifications from "./UserNotifications";
 import UserMainDashboard from "./UserMainDashboard";
 import UserPurchases from "./UserPurchases";
 import UserAddress from "./UserAddress";
 import UserCart from "./UserCart";
+import ResendEmailVerification from "./UserResendVerification";
 
 const LinkItems = [
   // { name: "Home", icon: FiHome, url: "" },
@@ -50,6 +52,7 @@ const LinkItems = [
 
 export default function UserDashboard({ children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { is_verified } = useSelector((state) => state.user);
   return (
     <Box>
       <SidebarContent
@@ -75,9 +78,24 @@ export default function UserDashboard({ children }) {
       <Box ml={{ base: 0, md: 60 }} p="4">
         <Routes>
           <Route path="" element={<UserNotifications />} />
+
+          {localStorage.getItem("token") && is_verified === "unferified" ? (
+            <Route exact path="/cart" element={<ResendEmailVerification />} />
+          ) : (
+            <Route path="/cart" element={<UserCart />} />
+          )}
+          {localStorage.getItem("token") && is_verified === "unferified" ? (
+            <Route
+              exact
+              path="/purchases"
+              element={<ResendEmailVerification />}
+            />
+          ) : (
+            <Route path="/purchases" element={<UserPurchases />} />
+          )}
+
           <Route path="/notifications" element={<UserNotifications />} />
-          <Route path="/cart" element={<UserCart />} />
-          <Route path="/purchases" element={<UserPurchases />} />
+
           <Route path="/address/*" element={<UserAddress />} />
         </Routes>
       </Box>

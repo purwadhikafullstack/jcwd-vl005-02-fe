@@ -564,7 +564,7 @@ const AdminNewProduct = () => {
                     <MenuItem value="liter">liter</MenuItem>
                     <MenuItem value="gram">gram</MenuItem>
                     <MenuItem value="ml">ml</MenuItem>
-                    <MenuItem value="gr">gr</MenuItem>
+                    <MenuItem value="mg">mg</MenuItem>
                   </Select>
                   {unitInputHasError ? (
                     <FormHelperText>Please select product unit!</FormHelperText>

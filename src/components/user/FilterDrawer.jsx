@@ -110,7 +110,8 @@ function FilterDrawer({ sendDataFilter }) {
           >
             <option value="name">Name</option>
             <option value="price">Price</option>
-            <option value="sold">Sold</option>
+            <option value="sold">Units Sold</option>
+            <option value="sold_times">Times Sold</option>
             <option value="stock_in_unit">Stock</option>
           </Select>
           <RadioGroup

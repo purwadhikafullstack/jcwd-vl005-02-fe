@@ -40,6 +40,7 @@ import { MdPayments } from "react-icons/md";
 import { FaHandHoldingMedical } from "react-icons/fa";
 import { BiSupport } from "react-icons/bi";
 import api from "../../services/api";
+import { useSelector } from "react-redux";
 
 function ModalMessage({ isOpen, onClose, status, subject, message }) {
   return (
@@ -70,6 +71,8 @@ function ModalMessage({ isOpen, onClose, status, subject, message }) {
 export default function UserProductDetails() {
   const [currentAmount, setCurentAmount] = useState(1);
 
+  const { id: userId, is_verified } = useSelector((state) => state.user);
+
   const [product, setProduct] = useState({
     id: 0,
     name: "",
@@ -81,6 +84,8 @@ export default function UserProductDetails() {
     stock_in_unit: 0,
     volume: 0,
     unit: "",
+    sold: 0,
+    sold_times: 0,
   });
 
   const [isOpen, setIsOpen] = useState({
@@ -256,12 +261,28 @@ export default function UserProductDetails() {
                     </Tag>
                   )}
                 </ListItem>
-                {/* <ListItem>
-                  <Text as={"span"} fontWeight={"bold"}>
-                    Sold:
-                  </Text>{" "}
-                  {product.sold} unit(s)
-                </ListItem> */}
+                {product.sold ? (
+                  <>
+                    <ListItem>
+                      <Text as={"span"} fontWeight={"bold"}>
+                        Units Sold:
+                      </Text>{" "}
+                      {product.sold} {product.unit}
+                    </ListItem>
+                    <ListItem>
+                      <Text as={"span"} fontWeight={"bold"}>
+                        Times Sold:
+                      </Text>{" "}
+                      {product.sold_times} times
+                    </ListItem>
+                  </>
+                ) : (
+                  <ListItem>
+                    <Text as={"span"} fontWeight={"bold"}>
+                      Product has not been sold yet.
+                    </Text>{" "}
+                  </ListItem>
+                )}
               </List>
             </Box>
 
@@ -331,7 +352,7 @@ export default function UserProductDetails() {
               </SimpleGrid>
             </Box>
           </Stack>
-          {product.stock_in_unit > 0 ? (
+          {product.stock_in_unit > 0 && userId && is_verified === "verified" ? (
             <Box
               display="flex"
               flexDirection="row"

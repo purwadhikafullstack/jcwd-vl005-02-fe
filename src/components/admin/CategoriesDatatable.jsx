@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
@@ -100,8 +99,6 @@ function EnhancedTable(props) {
   const [newCategory, setNewCategory] = useState("");
   const [categoryName, setCategoryName] = useState("");
   const [editCategoryId, setEditCategoryId] = useState(null);
-
-  let navigate = useNavigate();
 
   // Make axios request
   useEffect(() => {
@@ -407,6 +404,7 @@ function EnhancedTable(props) {
                             placeholder="Enter a category name..."
                             onChange={editChangeHandler}
                             value={categoryName}
+                            label="Input new name"
                           />
                         </TableCell>
 
