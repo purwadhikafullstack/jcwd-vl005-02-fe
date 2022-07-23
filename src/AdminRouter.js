@@ -56,7 +56,10 @@ const Content = () => {
           <Route path="/login" element={<AdminLogin />} />
           <Route path="/add-new-admin" element={<AddNewAdmin />} />
           <Route path="/forgetpassword" element={<AdminForgotPassword />} />
-          <Route path="/resetpassword/:token" element={<AdminResetPassword />} />
+          <Route
+            path="/resetpassword/:token"
+            element={<AdminResetPassword />}
+          />
         </Routes>
       ) : (
         <Routes>
@@ -107,7 +110,10 @@ const Content = () => {
             element={<Navigate to="/admin/login" replace />}
           />
           <Route path="/forgetpassword" element={<AdminForgotPassword />} />
-          <Route path="/resetpassword/:token" element={<AdminResetPassword />} />
+          <Route
+            path="/resetpassword/:token"
+            element={<AdminResetPassword />}
+          />
         </Routes>
       )}
     </ThemeProvider>

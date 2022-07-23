@@ -74,7 +74,7 @@ export default function UserDashboard({ children }) {
       <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p="4">
         <Routes>
-          <Route path="" element={<UserMainDashboard />} />
+          <Route path="" element={<UserNotifications />} />
           <Route path="/notifications" element={<UserNotifications />} />
           <Route path="/cart" element={<UserCart />} />
           <Route path="/purchases" element={<UserPurchases />} />

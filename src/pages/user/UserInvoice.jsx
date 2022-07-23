@@ -92,9 +92,9 @@ function Spinner({ isOpen }) {
         <CircularProgress
           isIndeterminate
           color="red.300"
-          position="absolute"
-          top="50vh"
-          left="50vw"
+          position="fixed"
+          top="50%"
+          left="50%"
           transform="translate(-50%, -50%)"
           zIndex="99999"
         />
@@ -102,24 +102,6 @@ function Spinner({ isOpen }) {
     </>
   );
 }
-
-const Feature = ({ text, icon, iconBg }) => {
-  return (
-    <Stack direction={"row"} align={"center"}>
-      <Flex
-        w={8}
-        h={8}
-        align={"center"}
-        justify={"center"}
-        rounded={"full"}
-        bg={iconBg}
-      >
-        {icon}
-      </Flex>
-      <Text fontWeight={600}>{text}</Text>
-    </Stack>
-  );
-};
 
 export default function UserInvoice() {
   const { email, username, id: userId } = useSelector((state) => state.user);
@@ -275,10 +257,22 @@ export default function UserInvoice() {
         nonce = nonceData.nonce;
         const noncePaymentData = {
           paymentMethodNonce: nonce,
-          amount: parseInt(data[0].total_payment),
+          amount: parseInt(data[0].total_payment) / 15000,
         };
         processPayment(noncePaymentData)
           .then((res) => {
+            let url = `/user/checkout/update-invoice`;
+            api
+              .patch(url, {
+                code: data.length && data[0].code,
+              })
+              .then((response) => {
+                console.log(response);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+
             setIsOpen({
               ...isOpen,
               open: true,
@@ -318,6 +312,7 @@ export default function UserInvoice() {
   }
 
   const savePDF = () => {
+    setLoading(true);
     return getPDF() // API call
       .then((response) => {
         const blob = new Blob([response.data], { type: "application/pdf" });
@@ -325,11 +320,15 @@ export default function UserInvoice() {
         link.href = window.URL.createObjectURL(blob);
         link.download = `Invoice-${invoiceCode}.pdf`;
         link.click();
+        setLoading(false);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
   };
 
-  console.log(data);
+  console.log(paymentData.clientToken);
 
   return (
     <>
@@ -600,7 +599,7 @@ export default function UserInvoice() {
               subject: "",
               message: "",
             });
-            navigate("/", { replace: true });
+            navigate("/shop", { replace: true });
           }}
           status={isOpen.status}
           subject={isOpen.subject}
@@ -708,11 +707,12 @@ export default function UserInvoice() {
               )}
             </Alert>
           </>
-        ) : /* Jika payment method adalah CC dan status masih waiting for payment maka tampilan Drop in untuk pembayaran */
+        ) : // err
+        /* Jika payment method adalah CC dan status masih waiting for payment maka tampilan Drop in untuk pembayaran */
         paymentData.clientToken && data[0].status == "Waiting for payment" ? (
           <>
             <Alert
-              status="yellow"
+              status="warning"
               variant="subtle"
               flexDirection="column"
               alignItems="center"
@@ -767,7 +767,9 @@ export default function UserInvoice() {
               </Button>
             </Alert>
           </>
-        ) : paymentData.clientToken && data[0].status == "Approved" ? (
+        ) : // Err
+
+        paymentData.clientToken && data[0].status == "Approved" ? (
           <>
             <Alert
               status="success"

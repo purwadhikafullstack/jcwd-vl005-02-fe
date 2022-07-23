@@ -146,7 +146,7 @@ export default function CheckoutPayment({
           ) : (
             ""
           )}
-          <Radio value="Credit Card or Paypal">Credit Card or Paypal</Radio>
+          <Radio value="Credit Card">Credit Card</Radio>
         </Stack>
       </RadioGroup>
     </>

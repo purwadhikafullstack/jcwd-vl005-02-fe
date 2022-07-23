@@ -52,16 +52,10 @@ function UserRouter() {
             <Route path="/shop" element={<UserProducts />}></Route>
           )}
 
-          {localStorage.getItem("token") && is_verified === "unferified" ? (
-            <Route
-              exact
-              path="/dashboard/*"
-              element={
-                <Navigate to="/resending-the-verification-email" replace />
-              }
-            />
-          ) : (
+          {localStorage.getItem("token") ? (
             <Route exact path="/dashboard/*" element={<UserDashboard />} />
+          ) : (
+            <Route path="/cart" element={<Navigate to="/" replace />} />
           )}
 
           {localStorage.getItem("token") ? (
@@ -69,17 +63,20 @@ function UserRouter() {
           ) : (
             <Route path="/cart" element={<Navigate to="/" replace />} />
           )}
-          {/* {userId ? (
-          <Route path="/checkout" element={<UserCheckout />}></Route>
-        ) : (
-          <Route path="/checkout" element={<Navigate to="/" replace />} />
-        )} */}
-          <Route path="/checkout" element={<UserCheckout />}></Route>
-          {/* <Route path="/invoice" element={<UserInvoice />}></Route> */}
-          <Route path="/purchases">
-            <Route index element={<UserPurchases />} />
-            <Route path=":invoiceCode" element={<UserInvoice />} />
-          </Route>
+          {localStorage.getItem("token") ? (
+            <Route path="/checkout" element={<UserCheckout />}></Route>
+          ) : (
+            <Route path="/checkout" element={<Navigate to="/" replace />} />
+          )}
+
+          {localStorage.getItem("token") ? (
+            <Route path="/purchases">
+              <Route index element={<UserPurchases />} />
+              <Route path=":invoiceCode" element={<UserInvoice />} />
+            </Route>
+          ) : (
+            <Route path="/purchases" element={<Navigate to="/" replace />} />
+          )}
 
           <Route path="/products">
             <Route index element={<UserProducts />} />
