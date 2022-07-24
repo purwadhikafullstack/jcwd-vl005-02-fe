@@ -5,85 +5,46 @@ import axios from "axios";
 import { useEffect } from "react";
 import { URL_API } from "../../helpers";
 import { connect } from "react-redux";
-
-// import "./ProductsDatatable.scss";
-
 import Success from "../general/Modals/Success";
 import Error from "../general/Modals/Error";
 import Spinner from "../general/Spinner/Spinner";
-
 import { productData } from "../../actions";
 
-import PropTypes from "prop-types";
-import { alpha } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
-import TableSortLabel from "@mui/material/TableSortLabel";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Paper from "@mui/material/Paper";
-import Checkbox from "@mui/material/Checkbox";
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
-import Switch from "@mui/material/Switch";
-import DeleteIcon from "@mui/icons-material/Delete";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import { visuallyHidden } from "@mui/utils";
-import { Alert, AlertTitle, Button, Container, TextField } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Container,
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  Typography,
+  Paper,
+  Switch,
+  FormControlLabel,
+} from "@mui/material";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import EditIcon from "@mui/icons-material/Edit";
-import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import SearchIcon from "@mui/icons-material/Search";
-import { styled } from "@mui/material/styles";
-import InputBase from "@mui/material/InputBase";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-
-// const productCategories = [
-//   "Antibiotika",
-//   "Antijamur",
-//   "Antiseptika",
-//   "Antihipertensi",
-//   "Diuretika",
-//   "Antidiabetes",
-//   "Antidepresant",
-//   "Analgetik-antipiretik",
-//   "Antialergi",
-//   "Kortikosteroid",
-//   "Obat saluran cerna",
-//   "Obat saluran nafas",
-//   "Komedolitik",
-//   "Cairan Parenteral",
-// ];
+import DeleteIcon from "@mui/icons-material/Delete";
+import FilterDrawer from "./FilterDrawer";
+import SortDrawer from "./SortDrawer";
+import FilterSearch from "./FilterSearch";
 
 function createData(
   id,
   name,
   picture,
   category,
+  category_name,
   description,
   price,
-  sold,
   stock,
   volume,
+  stock_in_unit,
   unit
 ) {
   return {
@@ -91,11 +52,12 @@ function createData(
     name,
     picture,
     category,
+    category_name,
     description,
     price,
-    sold,
     stock,
     volume,
+    stock_in_unit,
     unit,
   };
 }
@@ -135,19 +97,13 @@ const headCells = [
     id: "price",
     numeric: true,
     disablePadding: false,
-    label: "Price",
-  },
-  {
-    id: "sold",
-    numeric: true,
-    disablePadding: false,
-    label: "Sold",
+    label: "Price (Rp)",
   },
   {
     id: "stock",
     numeric: true,
     disablePadding: false,
-    label: "Stock",
+    label: "Stock In Package",
   },
   {
     id: "volume",
@@ -156,10 +112,10 @@ const headCells = [
     label: "Volume",
   },
   {
-    id: "unit",
+    id: "stock_in_unit",
     numeric: false,
     disablePadding: false,
-    label: "Unit",
+    label: "Stock In Unit",
   },
   {
     id: "action",
@@ -188,285 +144,12 @@ function ProductTableHead() {
   );
 }
 
-function FilterDrawer({ categoryFilterSelected, setCategoryFilterSelected }) {
-  const [state, setState] = React.useState({
-    right: false,
-  });
-  const [categoryFilter, setCategoryFilter] = useState("");
-  const [productCategories, setProductCategories] = useState([]);
-
-  ////////////////////////////
-  // CATEGORY DATA FETCHING //
-  ////////////////////////////
-
-  useEffect(() => {
-    let fetchUrl = `${URL_API}/admin/categories`;
-    //  ?page=${page + 1}&limit=${rowsPerPage};
-
-    // console.log(fetchUrl);
-    axios
-      .get(fetchUrl)
-      .then((res) => {
-        setProductCategories(() => res.data.content);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
-  const toggleDrawer = (anchor, open) => (event) => {
-    if (
-      // event &&
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-
-    setState({ ...state, [anchor]: open });
-  };
-
-  const handleCategoryFilter = (event) => {
-    setCategoryFilter(event.target.value);
-    // console.log(event.target.value);
-  };
-
-  return (
-    <div>
-      <React.Fragment key={"right"}>
-        <Button
-          onClick={toggleDrawer("right", true)}
-          variant="outlined"
-          sx={{ marginRight: "10px" }}
-        >
-          Filter
-        </Button>
-        <SwipeableDrawer
-          anchor={"right"}
-          open={state["right"]}
-          onClose={toggleDrawer("right", false)}
-          onOpen={toggleDrawer("right", true)}
-        >
-          <Box
-            sx={{ width: 250 }}
-            role="presentation"
-            // onClick={toggleDrawer(anchor, false)}
-            // onKeyDown={toggleDrawer(anchor, false)}
-          >
-            <List>
-              <ListItem key={1} disablePadding>
-                <ListItemButton>
-                  <Typography sx={{ fontWeight: "800" }}>
-                    Filter by Category
-                  </Typography>
-                </ListItemButton>
-              </ListItem>
-            </List>
-            <Divider />
-
-            <List>
-              <FormControl sx={{ marginLeft: "20px" }}>
-                <RadioGroup
-                  aria-labelledby="categoryFilter"
-                  // defaultValue={
-                  //   categoryFilter ? categoryFilter : categoryFilterSelected
-                  // }
-                  name="categoryFilter"
-                  onChange={handleCategoryFilter}
-                >
-                  {productCategories.map((c, index) => {
-                    return (
-                      <FormControlLabel
-                        value={c.id}
-                        control={<Radio />}
-                        label={c.name}
-                        key={index}
-                      />
-                    );
-                  })}
-                </RadioGroup>
-              </FormControl>
-            </List>
-
-            <Button
-              variant="contained"
-              sx={{ marginLeft: "20px" }}
-              onClick={() => {
-                setState({ ...state, right: false });
-                setCategoryFilterSelected(categoryFilter);
-              }}
-              disabled={categoryFilter ? false : true}
-            >
-              Submit
-            </Button>
-          </Box>
-        </SwipeableDrawer>
-      </React.Fragment>
-    </div>
-  );
-}
-
-function SortDrawer({ sort, setSort }) {
-  const [state, setState] = React.useState({
-    right: false,
-  });
-  const [sortBy, setSortBy] = useState("");
-  const [sequence, setSequence] = useState("");
-
-  const toggleDrawer = (anchor, open) => (event) => {
-    if (
-      // event &&
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-
-    setState({ ...state, [anchor]: open });
-  };
-
-  const handleSort = (event) => {
-    setSortBy(event.target.value);
-    // console.log(event.target.value);
-  };
-
-  const handleSequence = (event) => {
-    setSequence(event.target.value);
-    // console.log(event.target.value);
-  };
-
-  return (
-    <div>
-      <React.Fragment key={"right"}>
-        <Button
-          onClick={toggleDrawer("right", true)}
-          variant="outlined"
-          sx={{ marginRight: "10px" }}
-        >
-          Sort
-        </Button>
-        <SwipeableDrawer
-          anchor={"right"}
-          open={state["right"]}
-          onClose={toggleDrawer("right", false)}
-          onOpen={toggleDrawer("right", true)}
-        >
-          <Box
-            sx={{ width: 250 }}
-            role="presentation"
-            // onClick={toggleDrawer(anchor, false)}
-            // onKeyDown={toggleDrawer(anchor, false)}
-          >
-            <List>
-              <ListItem key={1} disablePadding>
-                <ListItemButton>
-                  <Typography sx={{ fontWeight: "800" }}>Sort By</Typography>
-                </ListItemButton>
-              </ListItem>
-            </List>
-            <Divider />
-            <List>
-              <FormControl sx={{ marginLeft: "20px" }}>
-                <RadioGroup
-                  aria-labelledby="sortBy"
-                  name="sortBy"
-                  onChange={handleSort}
-                  value={sortBy ? sortBy : sort.property}
-                >
-                  <FormControlLabel value="id" control={<Radio />} label="ID" />
-                  <FormControlLabel
-                    value="name"
-                    control={<Radio />}
-                    label="Name"
-                  />
-                  <FormControlLabel
-                    value="price"
-                    control={<Radio />}
-                    label="Price"
-                  />
-                  <FormControlLabel
-                    value="sold"
-                    control={<Radio />}
-                    label="Sold"
-                  />
-
-                  <FormControlLabel
-                    value="stock"
-                    control={<Radio />}
-                    label="Stock"
-                  />
-                </RadioGroup>
-              </FormControl>
-            </List>
-            <Divider />
-            <List>
-              <FormControl sx={{ marginLeft: "20px" }}>
-                <RadioGroup
-                  aria-labelledby="sequence"
-                  value={sequence ? sequence : sort.order}
-                  name="sequence"
-                  onChange={handleSequence}
-                >
-                  <FormControlLabel
-                    value="desc"
-                    control={<Radio />}
-                    label="Descending"
-                  />
-                  <FormControlLabel
-                    value="asc"
-                    control={<Radio />}
-                    label="Ascending"
-                  />
-                </RadioGroup>
-              </FormControl>
-            </List>
-
-            <Button
-              variant="contained"
-              sx={{ marginLeft: "20px" }}
-              onClick={() => {
-                setState({ ...state, right: false });
-                setSort({ property: sortBy, order: sequence });
-              }}
-              disabled={sortBy && sequence ? false : true}
-            >
-              Submit
-            </Button>
-          </Box>
-        </SwipeableDrawer>
-      </React.Fragment>
-    </div>
-  );
-}
-
-function FilterSearch({ setSearchQuery }) {
-  // const [search, setSearch] = useState("");
-
-  return (
-    <TextField
-      // placeholder="Search..."
-      onChange={(event) => {
-        console.log(event.target.value);
-        setSearchQuery(event.target.value);
-      }}
-      sx={{
-        position: "relative",
-        borderRadius: "10px",
-        marginLeft: 0,
-      }}
-      size="small"
-      label="Search..."
-      variant="outlined"
-    />
-  );
-}
-
 function ProductsDatatable(props) {
   const [data, setData] = useState([]);
   const [totalData, setTotalData] = useState(0);
-  const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [page, setPage] = useState(0);
+  const [dense, setDense] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [onDelete, setOnDelete] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
@@ -511,7 +194,6 @@ function ProductsDatatable(props) {
         page + 1
       }&limit=${rowsPerPage}`;
     }
-    // console.log(fetchUrl);
     axios
       .get(fetchUrl)
       .then((res) => {
@@ -539,11 +221,12 @@ function ProductsDatatable(props) {
         data[i].name,
         data[i].picture,
         data[i].category,
+        data[i].category_name,
         data[i].description,
         data[i].price,
-        data[i].sold,
         data[i].stock,
         data[i].volume,
+        data[i].stock_in_unit,
         data[i].unit
       )
     );
@@ -594,12 +277,9 @@ function ProductsDatatable(props) {
       });
   };
 
-  // console.log(sort);
-  // console.log(searchQuery);
-  // console.log(categoryFilterSelected);
-
   return (
-    <Container sx={{ width: "100%" }} maxWidth="lg">
+    <Container sx={{ width: "100%" }} maxWidth="xl">
+      {/* Judul Page */}
       <Box
         sx={{
           display: "flex",
@@ -610,6 +290,9 @@ function ProductsDatatable(props) {
       >
         <Typography sx={{ fontSize: "1.5rem" }}>Products List</Typography>
       </Box>
+      {/*End - Judul Page */}
+
+      {/* Filter and sorting utility */}
       <Box
         sx={{
           display: "flex",
@@ -617,12 +300,8 @@ function ProductsDatatable(props) {
           margin: "20px 0 25px 0",
         }}
       >
-        <FilterSearch
-          // searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-        />
+        <FilterSearch setSearchQuery={setSearchQuery} />
       </Box>
-
       <Box
         sx={{
           display: "flex",
@@ -639,6 +318,9 @@ function ProductsDatatable(props) {
           <Button variant="contained">Add New </Button>
         </Link>
       </Box>
+      {/* End - Filter and sorting utility */}
+
+      {/* Data product beserta delete dan update functionality */}
       {data.length ? (
         <Box>
           <Paper sx={{ width: "100%", mb: 2 }}>
@@ -729,13 +411,23 @@ function ProductsDatatable(props) {
                             />
                           </Box>
                         </TableCell>
-                        <TableCell align="center">{row.category}</TableCell>
+                        <TableCell align="center">
+                          {row.category_name}
+                        </TableCell>
                         <TableCell align="center">{row.description}</TableCell>
-                        <TableCell align="center">{row.price}</TableCell>{" "}
-                        <TableCell align="center">{row.sold}</TableCell>
+                        <TableCell align="center">
+                          {parseInt(row.price).toLocaleString("id-ID")}
+                        </TableCell>
+
                         <TableCell align="center">{row.stock}</TableCell>
-                        <TableCell align="center">{row.volume}</TableCell>
-                        <TableCell align="center">{row.unit}</TableCell>
+                        <TableCell align="center">
+                          {parseInt(row.volume).toLocaleString("id-ID")}{" "}
+                          {row.unit}
+                        </TableCell>
+                        <TableCell align="center">
+                          {parseInt(row.stock_in_unit).toLocaleString("id-ID")}{" "}
+                          {row.unit}
+                        </TableCell>
                         <TableCell align="center">
                           <Box
                             className="cellAction"
@@ -756,11 +448,8 @@ function ProductsDatatable(props) {
                               >
                                 <RemoveRedEyeIcon fontSize="small" />
                               </Button>
-                            </Link>{" "}
-                            {/* <Link
-                            to={`/products/update/${row.id}`}
-                            style={{ textDecoration: "none" }}
-                          > */}
+                            </Link>
+
                             <Button
                               variant="outlined"
                               sx={{
@@ -771,11 +460,12 @@ function ProductsDatatable(props) {
                               onClick={() => {
                                 setOnEdit(true);
                                 setProductId(row.id);
-                                // console.log(`/admin/product/${row.id}`);
+
                                 axios
                                   .get(URL_API + `/admin/product/${row.id}`)
                                   .then((res) => {
                                     props.productData(res.data.content);
+                                    console.log(res.data.content);
                                   })
                                   .catch((err) => {
                                     console.log(err);
@@ -784,11 +474,9 @@ function ProductsDatatable(props) {
                             >
                               <EditIcon fontSize="small" />
                             </Button>
-                            {/* </Link> */}
                             <Button
                               variant="outlined"
                               sx={{
-                                // marginLeft: "3px",
                                 padding: "2px 0",
                               }}
                               color="error"
@@ -840,6 +528,7 @@ function ProductsDatatable(props) {
           </Alert>
         </Box>
       )}
+      {/* End - Data product beserta delete dan update functionality */}
     </Container>
   );
 }
@@ -850,7 +539,6 @@ const mapStateToProps = (state) => {
     productDescription: state.productReducer.description,
     productCategory: state.productReducer.category,
     productPrice: state.productReducer.price,
-    productSold: state.productReducer.sold,
     productStock: state.productReducer.stock,
     productVolume: state.productReducer.volume,
     productUnit: state.productReducer.unit,

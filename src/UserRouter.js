@@ -20,6 +20,7 @@ import UserPurchases from "./pages/user/UserPurchases";
 import NotificationTrial from "./pages/user/NotificationTrial";
 import UserNotifications from "./pages/user/UserNotifications";
 import { Box } from "@chakra-ui/react";
+import UserDashboard from "./pages/user/UserDashboard";
 
 function UserRouter() {
   const { is_verified } = useSelector((state) => state.user);
@@ -50,23 +51,31 @@ function UserRouter() {
           ) : (
             <Route path="/shop" element={<UserProducts />}></Route>
           )}
+          {localStorage.getItem("token") ? (
+            <Route exact path="/dashboard/*" element={<UserDashboard />} />
+          ) : (
+            <Route path="/cart" element={<Navigate to="/" replace />} />
+          )}
 
           {localStorage.getItem("token") ? (
             <Route path="/cart" element={<UserCart />}></Route>
           ) : (
             <Route path="/cart" element={<Navigate to="/" replace />} />
           )}
-          {/* {userId ? (
-          <Route path="/checkout" element={<UserCheckout />}></Route>
-        ) : (
-          <Route path="/checkout" element={<Navigate to="/" replace />} />
-        )} */}
-          <Route path="/checkout" element={<UserCheckout />}></Route>
-          {/* <Route path="/invoice" element={<UserInvoice />}></Route> */}
-          <Route path="/purchases">
-            <Route index element={<UserPurchases />} />
-            <Route path=":invoiceCode" element={<UserInvoice />} />
-          </Route>
+          {localStorage.getItem("token") ? (
+            <Route path="/checkout" element={<UserCheckout />}></Route>
+          ) : (
+            <Route path="/checkout" element={<Navigate to="/" replace />} />
+          )}
+
+          {localStorage.getItem("token") ? (
+            <Route path="/purchases">
+              <Route index element={<UserPurchases />} />
+              <Route path=":invoiceCode" element={<UserInvoice />} />
+            </Route>
+          ) : (
+            <Route path="/purchases" element={<Navigate to="/" replace />} />
+          )}
 
           <Route path="/products">
             <Route index element={<UserProducts />} />

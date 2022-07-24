@@ -71,7 +71,6 @@ export default function Navbar(props) {
   const { totalNotificationBadge } = useSelector(
     (state) => state.notificationReducer
   );
-  console.log(totalNotificationBadge);
   // useSelector((state) => console.log(state));
 
   const dispatch = useDispatch();
@@ -108,9 +107,7 @@ export default function Navbar(props) {
     api
       .get(url)
       .then((res) => {
-        console.log(res);
         setNotification(() => res.data.content);
-        console.log(res.data.details);
 
         dispatch({
           type: "UPDATE_BADGE",
@@ -149,8 +146,6 @@ export default function Navbar(props) {
         });
     });
   }, [socket, id]);
-
-  console.log(notification);
 
   return (
     <>
@@ -240,7 +235,7 @@ export default function Navbar(props) {
 
                         <MenuDivider />
                         <RRLink
-                          to="/notification"
+                          to="/dashboard/notifications"
                           onClick={() => setNotification("")}
                         >
                           <MenuItem as={Link} textAlign="center" margin="auto">
@@ -258,7 +253,7 @@ export default function Navbar(props) {
                         <MenuItem>No new notification</MenuItem>
                         <MenuDivider />
                         <RRLink
-                          to="/notification"
+                          to="/dashboard/notifications"
                           onClick={() => setNotification("")}
                         >
                           <MenuItem as={Link} textAlign="center" margin="auto">
@@ -280,12 +275,14 @@ export default function Navbar(props) {
                 </Stack>
 
                 <MenuList zIndex="999999999">
-                  <MenuItem>My Account</MenuItem>
+                  <RRLink to="/dashboard">
+                    <MenuItem>My Dashboard</MenuItem>
+                  </RRLink>
 
-                  <RRLink to="/cart">
+                  <RRLink to="/dashboard/cart">
                     <MenuItem>My Cart</MenuItem>
                   </RRLink>
-                  <RRLink to="/purchases">
+                  <RRLink to="/dashboard/purchases">
                     <MenuItem>My Purchase</MenuItem>
                   </RRLink>
 

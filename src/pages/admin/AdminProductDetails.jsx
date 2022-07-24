@@ -1,22 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import {
-  Box,
-  Typography,
-  Button,
-  TextField,
-  Container,
-  Grid,
-} from "@mui/material";
-import GppGoodIcon from "@mui/icons-material/GppGood";
+import { Box, Typography, Container, Grid } from "@mui/material";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import PaymentsIcon from "@mui/icons-material/Payments";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { Chip, Stack } from "@mui/material";
 import Divider from "@mui/material/Divider";
-import { Navigate, useNavigate } from "react-router-dom";
 import { URL_API } from "../../helpers";
 import MedicationIcon from "@mui/icons-material/Medication";
 
@@ -40,23 +30,12 @@ function ShowImage({ item, url }) {
           margin: "auto",
         }}
       />
-
-      {/* <Box sx={{ display: "flex", border: "1px solid", height: "350px" }}>
-          <CircularProgress sx={{ margin: "auto" }} />
-        </Box> */}
     </div>
   );
 }
 
 const AdminProductDetails = (props) => {
-  const navigate = useNavigate();
-
   const [product, setProduct] = useState("");
-  const [relatedProduct, setRelatedProduct] = useState([]);
-  const [error, setError] = useState(false);
-  const [quantity, setQuantity] = useState(0);
-  const [idChange, setIdChange] = useState("");
-  const [role, setRole] = useState(0);
 
   const productId = useParams().productId;
 
@@ -128,7 +107,7 @@ const AdminProductDetails = (props) => {
           </Typography>
           <Stack direction="row" spacing={1}>
             <Chip
-              label={`Category: ${product.category}`}
+              label={`Category: ${product.category_name}`}
               size="small"
               sx={{ padding: "0 10px", marginBottom: "20px" }}
             />
@@ -150,9 +129,7 @@ const AdminProductDetails = (props) => {
           <Stack direction="row" spacing={1}>
             {product.stock * product.volume > 0 ? (
               <Chip
-                label={`In stock: ${product.stock * product.volume} ${
-                  product.unit
-                }`}
+                label={`In stock: ${product.stock} packages (${product.stock_in_unit} ${product.unit})`}
                 color="primary"
                 size="small"
                 sx={{ padding: "0 10px", marginBottom: "20px" }}
@@ -165,29 +142,6 @@ const AdminProductDetails = (props) => {
               />
             )}
           </Stack>
-
-          {/* <Box
-            sx={{ maxWidth: "400px", display: "flex", marginBottom: "20px" }}
-          >
-            <TextField
-              size="small"
-              type="number"
-              value={quantity ? quantity : 1}
-              variant="outlined"
-              inputProps={{
-                min: 1,
-                max: product.stock * product.volume,
-                step: 1,
-              }}
-              onChange={(e) => setQuantity(parseInt(e.target.value))}
-              sx={{
-                maxWidth: "70px",
-                textAlign: "center",
-                paddingRight: "10px",
-              }}
-            />
-            <Button variant="contained">Add to cart</Button>
-          </Box> */}
 
           <Divider sx={{ marginBottom: "20px" }} />
 

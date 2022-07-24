@@ -252,7 +252,13 @@ const AdminTransaction = () => {
       editable: false,
       // headerAlign: "center",
     },
-
+    {
+      field: "payment_method",
+      headerName: "Payment Method",
+      width: 150,
+      editable: false,
+      // headerAlign: "center",
+    },
     {
       field: "status",
       headerName: "Status",

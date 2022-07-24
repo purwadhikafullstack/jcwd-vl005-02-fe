@@ -97,7 +97,7 @@ const UserPurchases = () => {
                       <Td>
                         <Link
                           style={{ color: "blue", textDecoration: "underline" }}
-                          to={`${item.code}`}
+                          to={`/purchases/${item.code}`}
                         >
                           {item.code}
                         </Link>

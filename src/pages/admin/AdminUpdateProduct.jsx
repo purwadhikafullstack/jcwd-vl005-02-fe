@@ -1,16 +1,12 @@
 import axios from "axios";
 import { connect } from "react-redux";
-
 import useInput from "../../hooks/useInput";
 import { URL_API } from "../../helpers";
 import { useNavigate } from "react-router-dom";
-
 import Spinner from "../../components/general/Spinner/Spinner";
 import Error from "../../components/general/Modals/Error";
 import Success from "../../components/general/Modals/Success";
 import { productData } from "../../actions";
-
-import { styled } from "@mui/material/styles";
 import { useState, useEffect } from "react";
 import {
   FormControl,
@@ -26,23 +22,6 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
-
-// const productCategories = [
-//   "Antibiotika",
-//   "Antijamur",
-//   "Antiseptika",
-//   "Antihipertensi",
-//   "Diuretika",
-//   "Antidiabetes",
-//   "Antidepresant",
-//   "Analgetik-antipiretik",
-//   "Antialergi",
-//   "Kortikosteroid",
-//   "Obat saluran cerna",
-//   "Obat saluran nafas",
-//   "Komedolitik",
-//   "Cairan Parenteral",
-// ];
 
 const Update = (props) => {
   //////////////////////

@@ -50,6 +50,7 @@ export default function UserProducts() {
   const [sortProperty, setSortProperty] = useState("");
   const [sortOrder, setSortOrder] = useState("");
   const [categoryFilterSelected, setCategoryFilterSelected] = useState("");
+  const { id: userId, is_verified } = useSelector((state) => state.user);
 
   // Make axios request
   useEffect(() => {
@@ -132,6 +133,23 @@ export default function UserProducts() {
               Genuine medicines and essentials delivered in a jiffy!
             </Text>
           </VStack>
+          {userId && is_verified === "unferified" ? (
+            <Alert
+              status="warning"
+              maxW="lg"
+              margin="auto"
+              textAlign="center"
+              justifyContent="center"
+              borderRadius="lg"
+              mt={5}
+            >
+              <AlertIcon />
+              Seems your account is not verified, please verify your account
+              before start shopping.
+            </Alert>
+          ) : (
+            ""
+          )}
 
           <Container maxW="6xl" centerContent>
             <Wrap
