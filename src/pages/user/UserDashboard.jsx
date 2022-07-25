@@ -46,7 +46,7 @@ const LinkItems = [
     url: "notifications",
   },
   { name: "Cart", icon: BsCart4, url: "cart" },
-  { name: "Purchase History", icon: MdPayment, url: "purchases" },
+  { name: "Purchases", icon: MdPayment, url: "purchases" },
   { name: "Address", icon: FaRegAddressBook, url: "address" },
 ];
 

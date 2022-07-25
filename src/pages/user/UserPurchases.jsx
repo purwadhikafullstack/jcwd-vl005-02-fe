@@ -16,6 +16,8 @@ import {
   Th,
   Thead,
   Tr,
+  Text,
+  Select,
   useColorModeValue as mode,
 } from "@chakra-ui/react";
 import * as React from "react";
@@ -30,8 +32,14 @@ const UserPurchases = () => {
   // const { email, username, id: userId } = useSelector((state) => state.user);
   // console.log(userId);
 
+  const [purchaseState, setPurchaseState] = useState("all");
+
+  const changeView = (event) => {
+    setPurchaseState(event.target.value);
+  };
+
   useEffect(() => {
-    let url = `/user/history`;
+    let url = `/user/history/${purchaseState}`;
 
     api
       .get(url)
@@ -44,7 +52,7 @@ const UserPurchases = () => {
         // console.log("error");
         console.log(err);
       });
-  }, []);
+  }, [purchaseState]);
 
   return (
     <Box
@@ -75,6 +83,16 @@ const UserPurchases = () => {
           My Purchase ({totalData} purchase(s))
         </Heading>
       </Stack>
+      <Flex justifyContent="center" alignItems="center" mt={6}>
+        <Text width={"40%"} fontSize="xl">
+          View purchase:{" "}
+        </Text>
+        <Select defaultValue="all" onChange={changeView}>
+          <option value="all">All Purchases</option>
+          <option value="ongoing">Ongoing Purchases</option>
+          <option value="finished">Finished Purchases</option>
+        </Select>
+      </Flex>
       <Stack mt={10}>
         {totalData ? (
           <TableContainer>
