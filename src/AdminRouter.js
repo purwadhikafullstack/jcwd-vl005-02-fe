@@ -1,5 +1,6 @@
 import { Navigate, Routes, Route } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useSelector } from "react-redux";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminNewProduct from "./pages/admin/AdminNewProduct";
 import AdminUpdateProduct from "./pages/admin/AdminUpdateProduct";
@@ -30,9 +31,10 @@ const theme = createTheme({
 
 const Content = () => {
   const tokenAdmin = localStorage.getItem("adminToken");
+  const { id } = useSelector((state) => state.adminReducer);
   return (
     <ThemeProvider theme={theme}>
-      {tokenAdmin ? (
+      {tokenAdmin?   (
         <Routes>
           <Route exact path="/" element={<AdminReports />} />
           <Route path="products" element={<AdminProducts />} />

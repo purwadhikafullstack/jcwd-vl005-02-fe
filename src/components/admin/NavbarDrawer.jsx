@@ -1,6 +1,7 @@
 import React, { ReactNode, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import Cookies from "js-cookie";
 import {
   Button as Tombol,
   IconButton,
@@ -24,6 +25,12 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
 } from "@chakra-ui/react";
 import {
   FiHome,
@@ -194,17 +201,25 @@ const MobileNav = ({ onOpen, ...rest }) => {
   const [test, setTest] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [confirm, setConfirm] = useState(false);
 
   // global state
-  const { email, username, id,first_name,last_name } = useSelector((state) => state.adminReducer);
-
+  const { email, username, id, first_name, last_name } = useSelector(
+    (state) => state.adminReducer
+  );
   const onButtonLogout = () => {
+    setConfirm(true);
+  };
+  const onBtnCancelConfirm = () => {
+    setConfirm(false);
+  };
+  const onConfirmButtonLogout = () => {
     localStorage.removeItem("adminToken");
-    setTest("Hi");
-    // console.log(test);
-
+    localStorage.removeItem("isCheckedAdmin");
+    Cookies.remove("loginstatusadmin");
     dispatch({ type: "ADMINLOGOUT" });
     navigate("/admin/login");
+    setConfirm(false);
   };
 
   const onButtonLogin = () => {
@@ -272,7 +287,9 @@ const MobileNav = ({ onOpen, ...rest }) => {
                       spacing="1px"
                       ml="2"
                     >
-                      <Text fontSize="sm">{first_name} {last_name}</Text>
+                      <Text fontSize="sm">
+                        {first_name} {last_name}
+                      </Text>
                       <Text fontSize="xs" color="gray.600">
                         Admin
                       </Text>
@@ -293,6 +310,33 @@ const MobileNav = ({ onOpen, ...rest }) => {
                   <MenuItem onClick={onButtonLogout}>Sign out</MenuItem>
                 </MenuList>
               </Menu>
+              <AlertDialog isOpen={confirm}>
+                <AlertDialogOverlay>
+                  <AlertDialogContent>
+                    <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                      Confirm Logout
+                    </AlertDialogHeader>
+
+                    <AlertDialogBody>
+                      Are you sure you want to Logout?
+                    </AlertDialogBody>
+
+                    <AlertDialogFooter>
+                      <Tombol onClick={onBtnCancelConfirm}>Cancel</Tombol>
+                      <Tombol
+                        onClick={onConfirmButtonLogout}
+                        w={"100px"}
+                        bg={"blue.500"}
+                        color={"white"}
+                        _hover={{ bg: "blue.600" }}
+                        ml={3}
+                      >
+                        Yes
+                      </Tombol>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialogOverlay>
+              </AlertDialog>
             </Flex>
           </HStack>
         </Flex>
