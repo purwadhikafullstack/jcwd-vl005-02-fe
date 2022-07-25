@@ -83,11 +83,11 @@ const UserPurchases = () => {
           My Purchase ({totalData} purchase(s))
         </Heading>
       </Stack>
-      <Flex justifyContent="center" alignItems="center" mt={6}>
-        <Text width={"40%"} fontSize="xl">
+      <Flex alignItems="center" mt={6}>
+        <Text fontSize="xl" mr={4}>
           View purchase:{" "}
         </Text>
-        <Select defaultValue="all" onChange={changeView}>
+        <Select defaultValue="all" onChange={changeView} w="fit-content">
           <option value="all">All Purchases</option>
           <option value="ongoing">Ongoing Purchases</option>
           <option value="finished">Finished Purchases</option>

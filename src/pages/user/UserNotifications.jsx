@@ -32,7 +32,9 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
-const socket = io.connect("http://localhost:2000");
+const BASE_URL = process.env.REACT_APP_URL_API;
+
+const socket = io.connect(BASE_URL);
 
 export default function UserNotifications() {
   let dispatch = useDispatch();
@@ -43,7 +45,6 @@ export default function UserNotifications() {
 
   useEffect(() => {
     let url = `/user/history/notifications`;
-
     api
       .get(url)
       .then((res) => {
@@ -80,7 +81,6 @@ export default function UserNotifications() {
   return (
     <Container maxW={"7xl"} margin="auto" py={12} px={10}>
       <Heading textAlign="center">Notifications</Heading>
-
       {data.length ? (
         <TableContainer pt={10}>
           <Table variant="simple">
@@ -93,8 +93,8 @@ export default function UserNotifications() {
             </Thead>
             <Tbody>
               {data.length &&
-                data.map((item) => (
-                  <Tr>
+                data.map((item, index) => (
+                  <Tr key={index}>
                     {item.opened == "false" ? (
                       <Td fontWeight="bold">{item.message}</Td>
                     ) : (
