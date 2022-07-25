@@ -36,7 +36,7 @@ function App() {
 
   // global state
   const global = useSelector((state) => state);
-  // console.log("Global:", global);
+  console.log("Global:", global);
   const dispatch = useDispatch();
 
   // KEEP LOGIN

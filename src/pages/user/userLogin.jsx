@@ -29,7 +29,6 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 import { Link as ReactLink } from "react-router-dom";
 
-
 export default function UserLogin() {
   const API_URL = process.env.REACT_APP_URL_API;
   const username = useRef("");
@@ -89,7 +88,9 @@ export default function UserLogin() {
         setLoading(false);
       });
   };
-
+  
+  const token = localStorage.getItem("token");
+  if (token) return <Navigate to="/" />;
   const color = useColorModeValue;
 
   return (
