@@ -28,7 +28,9 @@ import {
   Button,
 } from "@chakra-ui/react";
 
-const socket = io.connect("http://localhost:2000");
+const BASE_URL = process.env.REACT_APP_URL_API;
+
+const socket = io.connect(BASE_URL);
 
 const { RangePicker } = DatePicker;
 const { Title } = Typography;

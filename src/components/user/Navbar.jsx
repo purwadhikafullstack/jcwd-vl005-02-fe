@@ -35,7 +35,9 @@ import { io } from "socket.io-client";
 import api from "../../services/api";
 import { useToastHook } from "./ToastNotification";
 
-const socket = io.connect("http://localhost:2000");
+const BASE_URL = process.env.REACT_APP_URL_API;
+
+const socket = io.connect(BASE_URL);
 
 const Links = [
   { menu: "Home", url: "/" },

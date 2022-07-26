@@ -23,6 +23,7 @@ import {
   FiMenu,
 } from "react-icons/fi";
 import { IoMdNotificationsOutline } from "react-icons/io";
+import { CgProfile } from "react-icons/cg";
 import { FaRegAddressBook } from "react-icons/fa";
 import { MdPayment } from "react-icons/md";
 import { BsCart4 } from "react-icons/bs";
@@ -32,21 +33,21 @@ import { Link, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import UserNotifications from "./UserNotifications";
-import UserMainDashboard from "./UserMainDashboard";
+import UserProfile from "./UserProfile";
 import UserPurchases from "./UserPurchases";
 import UserAddress from "./UserAddress";
 import UserCart from "./UserCart";
 import ResendEmailVerification from "./UserResendVerification";
 
 const LinkItems = [
-  // { name: "Home", icon: FiHome, url: "" },
+  { name: "Profile", icon: CgProfile, url: "" },
   {
     name: "Notifications",
     icon: IoMdNotificationsOutline,
     url: "notifications",
   },
   { name: "Cart", icon: BsCart4, url: "cart" },
-  { name: "Purchase History", icon: MdPayment, url: "purchases" },
+  { name: "Purchases", icon: MdPayment, url: "purchases" },
   { name: "Address", icon: FaRegAddressBook, url: "address" },
 ];
 
@@ -77,7 +78,8 @@ export default function UserDashboard({ children }) {
       <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p="4">
         <Routes>
-          <Route path="" element={<UserNotifications />} />
+          <Route path="" element={<UserProfile />} />
+          <Route path="/notifications" element={<UserNotifications />} />
 
           {localStorage.getItem("token") && is_verified === "unferified" ? (
             <Route exact path="/cart" element={<ResendEmailVerification />} />
