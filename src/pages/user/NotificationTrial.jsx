@@ -13,7 +13,9 @@ import { io } from "socket.io-client";
 import { useEffect, useState } from "react";
 import NotificationBadge from "../../components/user/NotificationBadge";
 
-const socket = io.connect("http://localhost:2000");
+const BASE_URL = process.env.REACT_APP_URL_API;
+
+const socket = io.connect(BASE_URL);
 
 function NotificationTrial() {
   const [channel, setChannel] = useState("");
