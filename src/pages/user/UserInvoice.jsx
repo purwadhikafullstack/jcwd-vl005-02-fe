@@ -328,7 +328,7 @@ export default function UserInvoice() {
       });
   };
 
-  console.log(paymentData.clientToken);
+  // console.log(paymentData.clientToken);
 
   return (
     <>
