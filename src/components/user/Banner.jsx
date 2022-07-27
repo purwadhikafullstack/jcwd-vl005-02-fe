@@ -88,6 +88,19 @@ export default function Banner() {
               size={"lg"}
               fontWeight={"normal"}
               px={6}
+              colorScheme={"red"}
+              bg={"red.400"}
+              _hover={{ bg: "red.500" }}
+            >
+              <Link style={{ padding: "10px" }} to="/admin">
+                Admin
+              </Link>
+            </Button>
+            <Button
+              rounded={"full"}
+              size={"lg"}
+              fontWeight={"normal"}
+              px={6}
               leftIcon={<PlayIcon h={4} w={4} color={"gray.300"} />}
             >
               Who we are
