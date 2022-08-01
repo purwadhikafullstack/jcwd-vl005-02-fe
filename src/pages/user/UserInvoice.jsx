@@ -306,6 +306,8 @@ export default function UserInvoice() {
         headers: {
           Accept: "application/pdf",
           "Auth-Token": localStorage.getItem("token"),
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Header": "*",
         },
       }
     );

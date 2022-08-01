@@ -83,7 +83,7 @@ export default function Banner() {
                 Shop now
               </Link>
             </Button>
-            <Button
+            {/* <Button
               rounded={"full"}
               size={"lg"}
               fontWeight={"normal"}
@@ -95,7 +95,7 @@ export default function Banner() {
               <Link style={{ padding: "10px" }} to="/admin">
                 Admin
               </Link>
-            </Button>
+            </Button> */}
             <Button
               rounded={"full"}
               size={"lg"}
