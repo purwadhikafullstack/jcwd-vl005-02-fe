@@ -601,7 +601,7 @@ export default function UserInvoice() {
               subject: "",
               message: "",
             });
-            navigate("/shop", { replace: true });
+            // navigate("/shop", { replace: true });
           }}
           status={isOpen.status}
           subject={isOpen.subject}

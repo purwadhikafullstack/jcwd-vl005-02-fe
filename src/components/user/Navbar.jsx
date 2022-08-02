@@ -37,9 +37,7 @@ import { useToastHook } from "./ToastNotification";
 
 const BASE_URL = process.env.REACT_APP_URL_API;
 
-const socket = io.connect(BASE_URL, {
-  transports: ["websocket", "polling", "flashsocket"],
-});
+const socket = io.connect(BASE_URL);
 
 const Links = [
   { menu: "Home", url: "/" },

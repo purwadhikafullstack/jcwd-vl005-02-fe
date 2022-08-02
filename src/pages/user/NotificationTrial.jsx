@@ -15,9 +15,7 @@ import NotificationBadge from "../../components/user/NotificationBadge";
 
 const BASE_URL = process.env.REACT_APP_URL_API;
 
-const socket = io.connect(BASE_URL, {
-  transports: ["websocket", "polling", "flashsocket"],
-});
+const socket = io.connect(BASE_URL);
 
 function NotificationTrial() {
   const [channel, setChannel] = useState("");

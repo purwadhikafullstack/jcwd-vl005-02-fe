@@ -34,9 +34,7 @@ import { useDispatch } from "react-redux";
 
 const BASE_URL = process.env.REACT_APP_URL_API;
 
-const socket = io.connect(BASE_URL, {
-  transports: ["websocket", "polling", "flashsocket"],
-});
+const socket = io.connect(BASE_URL);
 
 export default function UserNotifications() {
   let dispatch = useDispatch();
