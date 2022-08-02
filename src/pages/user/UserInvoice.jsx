@@ -306,6 +306,8 @@ export default function UserInvoice() {
         headers: {
           Accept: "application/pdf",
           "Auth-Token": localStorage.getItem("token"),
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Header": "*",
         },
       }
     );
@@ -328,7 +330,7 @@ export default function UserInvoice() {
       });
   };
 
-  console.log(paymentData.clientToken);
+  // console.log(paymentData.clientToken);
 
   return (
     <>
@@ -599,7 +601,7 @@ export default function UserInvoice() {
               subject: "",
               message: "",
             });
-            navigate("/shop", { replace: true });
+            // navigate("/shop", { replace: true });
           }}
           status={isOpen.status}
           subject={isOpen.subject}

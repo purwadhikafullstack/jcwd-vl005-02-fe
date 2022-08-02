@@ -486,7 +486,7 @@ const Update = (props) => {
                     onBlur={() => setUnitIsFocused(false)}
                     value={enteredUnit}
                   >
-                    <MenuItem value="l">l</MenuItem>
+                    <MenuItem value="liter">liter</MenuItem>
                     <MenuItem value="ml">ml</MenuItem>
                     <MenuItem value="gr">gr</MenuItem>
                     <MenuItem value="mg">mg</MenuItem>

@@ -31,6 +31,8 @@ class API {
   _createAuthHeaders() {
     return {
       "Auth-Token": localStorage.getItem("token"),
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Header": "*",
     };
   }
 }
